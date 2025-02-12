@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "technicians",
+  "info": {
+    "singularName": "technician",
+    "pluralName": "technicians",
+    "displayName": "Technician",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Firstname": {
+      "type": "string"
+    },
+    "Lastname": {
+      "type": "string"
+    },
+    "Password": {
+      "type": "password"
+    },
+    "Role": {
+      "type": "enumeration",
+      "enum": [
+        "Head Technician",
+        "Technician"
+      ]
+    }
+  }
+}

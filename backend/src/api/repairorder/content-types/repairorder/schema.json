@@ -35,10 +35,10 @@
       "default": true,
       "required": true
     },
-    "users_permissions_user": {
+    "technician": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "target": "api::technician.technician"
     },
     "Paymentmethod": {
       "type": "enumeration",
@@ -55,16 +55,22 @@
       "default": false,
       "required": true
     },
-    "devices": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::device.device",
-      "mappedBy": "repairorder"
-    },
     "customer": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::customer.customer"
+    },
+    "parts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::part.part",
+      "mappedBy": "repairorders"
+    },
+    "device": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::device.device",
+      "inversedBy": "repairorders"
     }
   }
 }

@@ -453,10 +453,11 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
       'api::device.device'
     > &
       Schema.Attribute.Private;
-    model: Schema.Attribute.Relation<'oneToOne', 'api::model.model'>;
+    ModelNumber: Schema.Attribute.String;
+    Name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    repairorder: Schema.Attribute.Relation<
-      'manyToOne',
+    repairorders: Schema.Attribute.Relation<
+      'oneToMany',
       'api::repairorder.repairorder'
     >;
     Type: Schema.Attribute.Enumeration<
@@ -518,32 +519,6 @@ export interface ApiInvoiceInvoice extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiModelModel extends Struct.CollectionTypeSchema {
-  collectionName: 'models';
-  info: {
-    displayName: 'Model';
-    pluralName: 'models';
-    singularName: 'model';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::model.model'> &
-      Schema.Attribute.Private;
-    ModelName: Schema.Attribute.String;
-    ModelNumber: Schema.Attribute.String;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
 export interface ApiPartPart extends Struct.CollectionTypeSchema {
   collectionName: 'parts';
   info: {
@@ -559,12 +534,17 @@ export interface ApiPartPart extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    device: Schema.Attribute.Relation<'oneToOne', 'api::device.device'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::part.part'> &
       Schema.Attribute.Private;
     Name: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     PurchasePrice: Schema.Attribute.Decimal;
+    repairorders: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::repairorder.repairorder'
+    >;
     SellingPrice: Schema.Attribute.Decimal;
     suppliers: Schema.Attribute.Relation<
       'manyToMany',
@@ -592,7 +572,7 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
-    devices: Schema.Attribute.Relation<'oneToMany', 'api::device.device'>;
+    device: Schema.Attribute.Relation<'manyToOne', 'api::device.device'>;
     Invoice: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
@@ -603,6 +583,7 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
       'api::repairorder.repairorder'
     > &
       Schema.Attribute.Private;
+    parts: Schema.Attribute.Relation<'manyToMany', 'api::part.part'>;
     Paymentmethod: Schema.Attribute.Enumeration<
       ['Bancontact', 'Cash', 'Ecocheck']
     > &
@@ -626,13 +607,13 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Bestellen'>;
+    technician: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::technician.technician'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    users_permissions_user: Schema.Attribute.Relation<
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
   };
 }
 
@@ -659,6 +640,38 @@ export interface ApiSupplierSupplier extends Struct.CollectionTypeSchema {
     Name: Schema.Attribute.String;
     parts: Schema.Attribute.Relation<'manyToMany', 'api::part.part'>;
     publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
+  collectionName: 'technicians';
+  info: {
+    description: '';
+    displayName: 'Technician';
+    pluralName: 'technicians';
+    singularName: 'technician';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Firstname: Schema.Attribute.String;
+    Lastname: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::technician.technician'
+    > &
+      Schema.Attribute.Private;
+    Password: Schema.Attribute.Password;
+    publishedAt: Schema.Attribute.DateTime;
+    Role: Schema.Attribute.Enumeration<['Head Technician', 'Technician']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1178,10 +1191,10 @@ declare module '@strapi/strapi' {
       'api::customer.customer': ApiCustomerCustomer;
       'api::device.device': ApiDeviceDevice;
       'api::invoice.invoice': ApiInvoiceInvoice;
-      'api::model.model': ApiModelModel;
       'api::part.part': ApiPartPart;
       'api::repairorder.repairorder': ApiRepairorderRepairorder;
       'api::supplier.supplier': ApiSupplierSupplier;
+      'api::technician.technician': ApiTechnicianTechnician;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

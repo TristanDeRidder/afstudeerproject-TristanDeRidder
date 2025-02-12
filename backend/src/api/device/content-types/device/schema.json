@@ -28,22 +28,23 @@
       "target": "api::brand.brand",
       "inversedBy": "devices"
     },
-    "model": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::model.model"
-    },
     "customers": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::customer.customer",
       "inversedBy": "devices"
     },
-    "repairorder": {
+    "repairorders": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "oneToMany",
       "target": "api::repairorder.repairorder",
-      "inversedBy": "devices"
+      "mappedBy": "device"
+    },
+    "Name": {
+      "type": "string"
+    },
+    "ModelNumber": {
+      "type": "string"
     }
   }
 }

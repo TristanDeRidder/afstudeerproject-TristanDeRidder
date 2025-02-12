@@ -26,6 +26,17 @@
       "relation": "manyToMany",
       "target": "api::supplier.supplier",
       "inversedBy": "parts"
+    },
+    "device": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::device.device"
+    },
+    "repairorders": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::repairorder.repairorder",
+      "inversedBy": "parts"
     }
   }
 }
