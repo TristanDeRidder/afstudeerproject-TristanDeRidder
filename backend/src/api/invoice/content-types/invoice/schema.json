@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "invoices",
+  "info": {
+    "singularName": "invoice",
+    "pluralName": "invoices",
+    "displayName": "Invoice"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Repairorder": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::repairorder.repairorder"
+    },
+    "TotalAmount": {
+      "type": "decimal",
+      "default": 0,
+      "min": 0
+    },
+    "Paid": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "Paymentmethod": {
+      "type": "enumeration",
+      "enum": [
+        "Bancontact",
+        "Cash",
+        "Ecocheque"
+      ],
+      "default": "Bancontact",
+      "required": true
+    },
+    "Invoice": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    }
+  }
+}

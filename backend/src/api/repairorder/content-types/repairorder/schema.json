@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "repairorders",
+  "info": {
+    "singularName": "repairorder",
+    "pluralName": "repairorders",
+    "displayName": "Repairorder",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "StatusRepair": {
+      "type": "enumeration",
+      "enum": [
+        "Bestellen",
+        "Besteld",
+        "Binnengekomen",
+        "Op de hoogte gebracht van onderdeel",
+        "Binnengebracht",
+        "Reparatie",
+        "Klaar voor ophalen",
+        "Opgehaald"
+      ],
+      "default": "Bestellen",
+      "required": true
+    },
+    "Issue": {
+      "type": "string"
+    },
+    "Repairable": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "Paymentmethod": {
+      "type": "enumeration",
+      "enum": [
+        "Bancontact",
+        "Cash",
+        "Ecocheck"
+      ],
+      "required": true,
+      "default": "Bancontact"
+    },
+    "Invoice": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "devices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::device.device",
+      "mappedBy": "repairorder"
+    },
+    "customer": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::customer.customer"
+    }
+  }
+}
