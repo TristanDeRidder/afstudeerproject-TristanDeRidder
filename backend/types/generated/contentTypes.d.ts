@@ -499,9 +499,10 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiFaqFaq extends Struct.SingleTypeSchema {
+export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   collectionName: 'faqs';
   info: {
+    description: '';
     displayName: 'FAQ';
     pluralName: 'faqs';
     singularName: 'faq';
@@ -510,14 +511,15 @@ export interface ApiFaqFaq extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    Answer: Schema.Attribute.Text;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    Faq: Schema.Attribute.DynamicZone<['blocks.header', 'blocks.card']>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    Question: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
