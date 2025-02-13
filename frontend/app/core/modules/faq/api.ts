@@ -6,7 +6,7 @@ import API from '../../networking/API.server';
 
 // Type
 
-export async function getBrands() {
+export async function getFAQs() {
     const query = qs.stringify({
 
     }, { 
@@ -14,7 +14,7 @@ export async function getBrands() {
     });
 
     try {
-        const response = await API.get(`brands?${query}`);
+        const response = await API.get(`faqs?${query}`);
         console.log(response.data)
         return response.data;
     } catch (error) {
