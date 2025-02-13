@@ -1,5 +1,5 @@
 export default function PrimaryTitle({ title }: { title: string }) {
     return (
-        <h1>{title}</h1>
+        <h1 className="bold">{title}</h1>
     )
 }
