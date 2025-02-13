@@ -4,7 +4,9 @@ export default function Navigation() {
     return (
       <nav>
         <div>
-          <img src="" alt="" />
+          <NavLink to="/">
+            <img src="" alt="" />
+          </NavLink>
         </div>
         <div>
           <NavLink
