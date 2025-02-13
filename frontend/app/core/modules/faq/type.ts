@@ -1,7 +1,8 @@
 export type Faq = {
-    id: number;
-    brandName: string;
-    created_at: string;
-    updated_at: string;
-    published_at: string;
-}
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  Question: string;
+  Answer: string;
+};
