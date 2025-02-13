@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_blocks_whies",
+  "info": {
+    "displayName": "Why",
+    "icon": "question",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "FirstCard": {
+      "displayName": "WhyCard",
+      "type": "component",
+      "repeatable": false,
+      "component": "blocks.why-card"
+    },
+    "SecondCard": {
+      "type": "component",
+      "repeatable": false,
+      "component": "blocks.why-card"
+    },
+    "ThirdCard": {
+      "type": "component",
+      "repeatable": false,
+      "component": "blocks.why-card"
+    }
+  }
+}

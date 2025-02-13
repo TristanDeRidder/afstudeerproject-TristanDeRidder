@@ -369,9 +369,38 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAboutAbout extends Struct.SingleTypeSchema {
+  collectionName: 'abouts';
+  info: {
+    description: '';
+    displayName: 'About';
+    pluralName: 'abouts';
+    singularName: 'about';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::about.about'> &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.header', 'blocks.rich-text-image', 'blocks.why', 'blocks.card']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiBrandBrand extends Struct.CollectionTypeSchema {
   collectionName: 'brands';
   info: {
+    description: '';
     displayName: 'Brand';
     pluralName: 'brands';
     singularName: 'brand';
@@ -388,6 +417,7 @@ export interface ApiBrandBrand extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::brand.brand'> &
       Schema.Attribute.Private;
+    Logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -463,6 +493,31 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
     Type: Schema.Attribute.Enumeration<
       ['Smartphone', 'Tablet', 'Laptop', 'Desktop', 'Console']
     >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFaqFaq extends Struct.SingleTypeSchema {
+  collectionName: 'faqs';
+  info: {
+    displayName: 'FAQ';
+    pluralName: 'faqs';
+    singularName: 'faq';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Faq: Schema.Attribute.DynamicZone<['blocks.header', 'blocks.card']>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1187,9 +1242,11 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::about.about': ApiAboutAbout;
       'api::brand.brand': ApiBrandBrand;
       'api::customer.customer': ApiCustomerCustomer;
       'api::device.device': ApiDeviceDevice;
+      'api::faq.faq': ApiFaqFaq;
       'api::invoice.invoice': ApiInvoiceInvoice;
       'api::part.part': ApiPartPart;
       'api::repairorder.repairorder': ApiRepairorderRepairorder;

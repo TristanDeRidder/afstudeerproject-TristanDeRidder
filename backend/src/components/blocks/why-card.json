@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_blocks_why_cards",
+  "info": {
+    "displayName": "WhyCard",
+    "icon": "question",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "Icon": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "Title": {
+      "type": "string"
+    },
+    "Text": {
+      "type": "text"
+    }
+  }
+}

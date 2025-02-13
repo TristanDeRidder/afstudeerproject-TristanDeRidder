@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "abouts",
+  "info": {
+    "singularName": "about",
+    "pluralName": "abouts",
+    "displayName": "About",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "PageContent": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.header",
+        "blocks.rich-text-image",
+        "blocks.why",
+        "blocks.card"
+      ]
+    }
+  }
+}

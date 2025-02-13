@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "faqs",
+  "info": {
+    "singularName": "faq",
+    "pluralName": "faqs",
+    "displayName": "FAQ"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Faq": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.header",
+        "blocks.card"
+      ]
+    }
+  }
+}

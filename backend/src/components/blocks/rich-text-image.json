@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_blocks_rich_text_images",
+  "info": {
+    "displayName": "RichText + Image",
+    "icon": "apps",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "Text": {
+      "type": "component",
+      "repeatable": false,
+      "component": "blocks.rich-text"
+    },
+    "Image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "Title": {
+      "type": "string"
+    }
+  }
+}
