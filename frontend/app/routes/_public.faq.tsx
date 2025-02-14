@@ -25,21 +25,16 @@ export default function Faq() {
   const { faqs } = useLoaderData() as LoaderData;
 
   return (
-    <div className="flex flex-col gap-4 bg-black">
-
+    <div className="flex flex-col gap-4 bg-white">
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>
-            {faqs.map((faq: { Question: string }, index: number) => (
-              <p key={index}>{faq.Question}</p>
-            ))}
-          </AccordionTrigger>
-          <AccordionContent>
-            {faqs.map((faq: { Question: string }, index: number) => (
-              <p key={index}>{faq.Answer}</p>
-            ))}
-          </AccordionContent>
-        </AccordionItem>
+        {faqs.map(
+          (faq: { Question: string; Answer: string }, index: number) => (
+            <AccordionItem key={index} value={`item-${index}`}>
+              <AccordionTrigger>{faq.Question}</AccordionTrigger>
+              <AccordionContent>{faq.Answer}</AccordionContent>
+            </AccordionItem>
+          )
+        )}
       </Accordion>
     </div>
   );
