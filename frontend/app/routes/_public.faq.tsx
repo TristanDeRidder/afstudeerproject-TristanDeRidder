@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion";
+import PrimaryTitle from "../components/design/Title/PrimaryTitle";
 
 
 type LoaderData = {
@@ -26,10 +27,19 @@ export default function Faq() {
 
   return (
     <div className="flex flex-col gap-4 bg-white">
-      <Accordion type="single" collapsible>
+      <PrimaryTitle title="FAQ" />
+      <Accordion
+        type="single"
+        collapsible
+        className="flex flex-col gap-4 items-center lg:flex-row lg:flex-wrap lg:justify-between lg:items-start "
+      >
         {faqs.map(
           (faq: { Question: string; Answer: string }, index: number) => (
-            <AccordionItem key={index} value={`item-${index}`}>
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className="bg-primaryHelper rounded-xl border border-primary px-10 w-full lg:w-96"
+            >
               <AccordionTrigger>{faq.Question}</AccordionTrigger>
               <AccordionContent>{faq.Answer}</AccordionContent>
             </AccordionItem>

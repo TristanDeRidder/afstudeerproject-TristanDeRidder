@@ -1,63 +1,32 @@
-import { NavLink } from "@remix-run/react"
+import { NavLink } from "@remix-run/react";
+
+const navLinks = [
+  { to: "/herstellingen", label: "Herstellingen" },
+  { to: "/status", label: "Status" },
+  { to: "/over", label: "Over" },
+  { to: "/contact", label: "Contact" },
+];
 
 export default function Navigation() {
-    return (
-      <nav>
-        <div>
-          <NavLink to="/">
-            <img src="" alt="" />
-          </NavLink>
-        </div>
-        <div>
-          <NavLink
-            to="/Herstellingen"
-            className={({ isActive, isPending }) =>
+  return (
+    <nav className="flex gap-4">
+      {navLinks.map(({ to, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          className={({ isActive, isPending }) =>
+            `transition-colors duration-200 px-4 py-2 rounded-lg ${
               isActive
-                ? "color-blue-500"
+                ? "text-blue-500 font-semibold border-b-2 border-blue-500"
                 : isPending
-                ? "color-teal-500"
-                : "color-gray-500"
-            }
-          >
-            Herstellingen
-          </NavLink>
-          <NavLink
-            to="/Status"
-            className={({ isActive, isPending }) =>
-              isActive
-                ? "color-blue-500"
-                : isPending
-                ? "color-teal-500"
-                : "color-gray-500"
-            }
-          >
-            Status
-          </NavLink>
-          <NavLink
-            to="/Over"
-            className={({ isActive, isPending }) =>
-              isActive
-                ? "color-blue-500"
-                : isPending
-                ? "color-teal-500"
-                : "color-gray-500"
-            }
-          >
-            Over
-          </NavLink>
-          <NavLink
-            to="/Contact"
-            className={({ isActive, isPending }) =>
-              isActive
-                ? "color-blue-500"
-                : isPending
-                ? "color-teal-500"
-                : "color-gray-500"
-            }
-          >
-            Contact
-          </NavLink>
-        </div>
-      </nav>
-    );
+                ? "text-teal-500"
+                : "text-gray-500 hover:text-gray-700"
+            }`
+          }
+        >
+          {label}
+        </NavLink>
+      ))}
+    </nav>
+  );
 }
