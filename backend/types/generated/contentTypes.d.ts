@@ -751,9 +751,7 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
     device: Schema.Attribute.Relation<'manyToOne', 'api::device.device'>;
-    Invoice: Schema.Attribute.Boolean &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<false>;
+    invoice: Schema.Attribute.Relation<'oneToOne', 'api::invoice.invoice'>;
     Issue: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -762,11 +760,6 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     parts: Schema.Attribute.Relation<'manyToMany', 'api::part.part'>;
-    Paymentmethod: Schema.Attribute.Enumeration<
-      ['Bancontact', 'Cash', 'Ecocheck']
-    > &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'Bancontact'>;
     publishedAt: Schema.Attribute.DateTime;
     Repairable: Schema.Attribute.Boolean &
       Schema.Attribute.Required &

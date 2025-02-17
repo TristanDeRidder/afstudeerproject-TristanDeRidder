@@ -40,21 +40,6 @@
       "relation": "oneToOne",
       "target": "api::technician.technician"
     },
-    "Paymentmethod": {
-      "type": "enumeration",
-      "enum": [
-        "Bancontact",
-        "Cash",
-        "Ecocheck"
-      ],
-      "required": true,
-      "default": "Bancontact"
-    },
-    "Invoice": {
-      "type": "boolean",
-      "default": false,
-      "required": true
-    },
     "customer": {
       "type": "relation",
       "relation": "oneToOne",
@@ -71,6 +56,11 @@
       "relation": "manyToOne",
       "target": "api::device.device",
       "inversedBy": "repairorders"
+    },
+    "invoice": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::invoice.invoice"
     }
   }
 }
