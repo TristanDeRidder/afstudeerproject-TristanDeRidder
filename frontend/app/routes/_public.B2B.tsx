@@ -1,33 +1,41 @@
 import { useLoaderData } from "@remix-run/react";
-import { getAboutPage } from "../core/modules/SingleTypes/about/api";
+import { getB2BPage } from "../core/modules/SingleTypes/b2b/api";
 
 type LoaderData = {
-  about: any;
+  business: any;
 };
 
 export async function loader() {
   try {
-    const about = await getAboutPage();
+    const business = await getB2BPage();
 
-    if (!about || !about.data) {
+    if (!business || !business.data) {
       throw new Error("Geen data beschikbaar");
     }
 
     return {
-      about: about.data,
+      business: business.data,
     };
   } catch (error) {
-    console.error("Fout bij het ophalen van contactgegevens:", error);
-    return { about: null };
+    console.error("Fout bij het ophalen van B2B-gegevens:", error);
+    return { business: null };
   }
 }
 
-export default function About() {
-  const { about } = useLoaderData() as LoaderData;
+export default function B2B() {
+  const { business } = useLoaderData() as LoaderData;
+
+  if (!business || !business.PageContent) {
+    return (
+      <div className="flex items-center justify-center h-40 bg-gray-100 text-gray-500">
+        Geen data beschikbaar
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {about.PageContent.map((block: any) => {
+      {business.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
             return (
@@ -39,27 +47,20 @@ export default function About() {
               </header>
             );
 
-          case "blocks.rich-text-image":
+          case "blocks.rich-text":
             return (
-              <section key={block.id} className="space-y-2">
-                <h2 className="text-2xl font-semibold">{block.Title}</h2>
-                <div className="text-gray-700">
-                  {block.Text.map((paragraph: any, index: number) => (
-                    <p key={index}>
-                      {paragraph.children.map((child: any, i: number) => (
-                        <span key={i}>{child.text}</span>
-                      ))}
-                    </p>
-                  ))}
-                </div>
+              <section
+                key={block.id}
+                className="p-4 border rounded-lg bg-gray-100"
+              >
+                {block.content?.map((paragraph: any, index: number) => (
+                  <p key={index} className="text-gray-700">
+                    {paragraph.children.map((child: any, i: number) => (
+                      <span key={i}>{child.text}</span>
+                    ))}
+                  </p>
+                ))}
               </section>
-            );
-
-          case "blocks.why":
-            return (
-              <div key={block.id} className="p-4 border rounded-lg bg-gray-100">
-                <p className="text-lg font-semibold">Waarom kiezen voor ons?</p>
-              </div>
             );
 
           default:
