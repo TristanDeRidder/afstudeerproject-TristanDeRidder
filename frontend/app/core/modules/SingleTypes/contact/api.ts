@@ -14,7 +14,7 @@ export async function getContactPage() {
     });
 
     try {
-        const response = await API.get(`contact?${query}`);
+        const response = await API.get(`contact?populate=*`);
         console.log(response.data)
         return response.data;
     } catch (error) {

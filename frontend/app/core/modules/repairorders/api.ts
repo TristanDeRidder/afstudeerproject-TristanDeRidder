@@ -14,7 +14,7 @@ export async function getRepairorders() {
     });
 
     try {
-        const response = await API.get(`repairorders?${query}`);
+        const response = await API.get(`repairorders?populate=*`);
         console.log(response.data)
         return response.data;
     } catch (error) {

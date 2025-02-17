@@ -1,9 +1,9 @@
 import { NavLink } from "@remix-run/react";
 
 const navLinks = [
-  { to: "/herstellingen", label: "Herstellingen" },
+  { to: "/repair", label: "Herstellingen" },
   { to: "/status", label: "Status" },
-  { to: "/over", label: "Over" },
+  { to: "/about", label: "Over" },
   { to: "/contact", label: "Contact" },
 ];
 

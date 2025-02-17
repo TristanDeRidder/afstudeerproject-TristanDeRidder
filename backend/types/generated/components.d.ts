@@ -66,7 +66,7 @@ export interface BlocksRichTextImage extends Struct.ComponentSchema {
   };
   attributes: {
     Image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    Text: Schema.Attribute.Component<'blocks.rich-text', false>;
+    Text: Schema.Attribute.Blocks;
     Title: Schema.Attribute.String;
   };
 }

@@ -14,7 +14,7 @@ export async function getAboutPage() {
     });
 
     try {
-        const response = await API.get(`about?${query}`);
+        const response = await API.get(`about?populate=*`);
         console.log(response.data)
         return response.data;
     } catch (error) {

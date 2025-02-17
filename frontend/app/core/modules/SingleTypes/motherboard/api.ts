@@ -14,7 +14,7 @@ export async function getMotherboardPage() {
     });
 
     try {
-        const response = await API.get(`motherboard?${query}`);
+        const response = await API.get(`motherboard?populate=*`);
         console.log(response.data)
         return response.data;
     } catch (error) {

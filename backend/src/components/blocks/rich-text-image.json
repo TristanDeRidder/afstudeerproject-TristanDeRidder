@@ -7,11 +7,6 @@
   },
   "options": {},
   "attributes": {
-    "Text": {
-      "type": "component",
-      "repeatable": false,
-      "component": "blocks.rich-text"
-    },
     "Image": {
       "type": "media",
       "multiple": false,
@@ -25,6 +20,9 @@
     },
     "Title": {
       "type": "string"
+    },
+    "Text": {
+      "type": "blocks"
     }
   }
 }
