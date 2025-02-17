@@ -755,7 +755,7 @@ export interface ApiProtectionProtection extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     PageContent: Schema.Attribute.DynamicZone<
-      ['blocks.rich-text', 'blocks.header']
+      ['blocks.rich-text', 'blocks.header', 'blocks.rich-text-image']
     >;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;

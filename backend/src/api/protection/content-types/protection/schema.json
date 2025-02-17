@@ -16,7 +16,8 @@
       "type": "dynamiczone",
       "components": [
         "blocks.rich-text",
-        "blocks.header"
+        "blocks.header",
+        "blocks.rich-text-image"
       ]
     }
   }

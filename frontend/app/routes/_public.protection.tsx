@@ -63,6 +63,25 @@ export default function Protection() {
               </section>
             );
 
+          case "blocks.rich-text-image":
+            return (
+              <section
+                key={block.id}
+                className="p-4 border rounded-lg bg-gray-50"
+              >
+                {block.Title && (
+                  <h2 className="text-xl font-semibold">{block.Title}</h2>
+                )}
+                {block.Text?.map((paragraph: any, index: number) => (
+                  <p key={index} className="text-gray-700">
+                    {paragraph.children.map((child: any, i: number) => (
+                      <span key={i}>{child.text}</span>
+                    ))}
+                  </p>
+                ))}
+              </section>
+            );
+
           default:
             return null;
         }
