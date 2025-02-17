@@ -425,6 +425,36 @@ export interface ApiBrandBrand extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBusinessBusiness extends Struct.SingleTypeSchema {
+  collectionName: 'businesses';
+  info: {
+    displayName: 'Business';
+    pluralName: 'businesses';
+    singularName: 'business';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::business.business'
+    > &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.header', 'blocks.rich-text']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiContactContact extends Struct.SingleTypeSchema {
   collectionName: 'contacts';
   info: {
@@ -1360,6 +1390,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::about.about': ApiAboutAbout;
       'api::brand.brand': ApiBrandBrand;
+      'api::business.business': ApiBusinessBusiness;
       'api::contact.contact': ApiContactContact;
       'api::customer.customer': ApiCustomerCustomer;
       'api::device.device': ApiDeviceDevice;

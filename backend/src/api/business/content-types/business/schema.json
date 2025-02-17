@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "businesses",
+  "info": {
+    "singularName": "business",
+    "pluralName": "businesses",
+    "displayName": "Business"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "PageContent": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.header",
+        "blocks.rich-text"
+      ]
+    }
+  }
+}
