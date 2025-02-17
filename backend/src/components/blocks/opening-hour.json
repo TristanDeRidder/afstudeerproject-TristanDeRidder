@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_blocks_opening_hours",
+  "info": {
+    "displayName": "OpeningHour",
+    "icon": "clock"
+  },
+  "options": {},
+  "attributes": {
+    "Open": {
+      "type": "json"
+    }
+  }
+}

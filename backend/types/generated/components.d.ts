@@ -24,6 +24,28 @@ export interface BlocksHeader extends Struct.ComponentSchema {
   };
 }
 
+export interface BlocksIFrame extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_i_frames';
+  info: {
+    displayName: 'iFrame';
+    icon: 'pinMap';
+  };
+  attributes: {
+    iFrame: Schema.Attribute.String;
+  };
+}
+
+export interface BlocksOpeningHour extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_opening_hours';
+  info: {
+    displayName: 'OpeningHour';
+    icon: 'clock';
+  };
+  attributes: {
+    Open: Schema.Attribute.JSON;
+  };
+}
+
 export interface BlocksRichText extends Struct.ComponentSchema {
   collectionName: 'components_blocks_rich_texts';
   info: {
@@ -82,6 +104,8 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'blocks.card': BlocksCard;
       'blocks.header': BlocksHeader;
+      'blocks.i-frame': BlocksIFrame;
+      'blocks.opening-hour': BlocksOpeningHour;
       'blocks.rich-text': BlocksRichText;
       'blocks.rich-text-image': BlocksRichTextImage;
       'blocks.why': BlocksWhy;

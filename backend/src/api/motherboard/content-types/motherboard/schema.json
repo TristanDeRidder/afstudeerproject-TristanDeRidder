@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "motherboards",
+  "info": {
+    "singularName": "motherboard",
+    "pluralName": "motherboards",
+    "displayName": "Motherboard",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "PageContent": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.rich-text-image",
+        "blocks.header"
+      ]
+    }
+  }
+}
