@@ -15,21 +15,22 @@
     "BrandName": {
       "type": "string"
     },
-    "devices": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::device.device",
-      "mappedBy": "brand"
-    },
     "Logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "devices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::device.device",
+      "mappedBy": "brand"
     }
   }
 }

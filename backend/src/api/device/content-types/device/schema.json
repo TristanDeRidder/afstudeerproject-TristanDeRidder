@@ -22,12 +22,6 @@
         "Console"
       ]
     },
-    "brand": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::brand.brand",
-      "inversedBy": "devices"
-    },
     "customers": {
       "type": "relation",
       "relation": "manyToMany",
@@ -45,6 +39,12 @@
     },
     "ModelNumber": {
       "type": "string"
+    },
+    "brand": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::brand.brand",
+      "inversedBy": "devices"
     }
   }
 }

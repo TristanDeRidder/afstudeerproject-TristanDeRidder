@@ -1,4 +1,4 @@
-export default function PrimaryTitle({
+export default function SecondaryTitle({
   title,
   subtitle,
 }: {
@@ -7,7 +7,7 @@ export default function PrimaryTitle({
 }) {
   return (
     <div className="text-center mt-10">
-      <h1 className="text-3xl font-bold">{title}</h1>
+      <h2 className="text-3xl font-bold">{title}</h2>
       {subtitle && <h3 className="text-xl mt-2">{subtitle}</h3>}
     </div>
   );
