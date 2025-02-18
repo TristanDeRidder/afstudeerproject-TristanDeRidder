@@ -2,6 +2,7 @@ import { Repairorders } from "../repairorders/type";
 
 export type Devices = {
   id: number;
+  documentId: string;
   Type: string;
   Brand: string;
   Customers: string;

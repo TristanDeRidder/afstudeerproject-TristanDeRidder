@@ -879,6 +879,31 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiWhyWhy extends Struct.SingleTypeSchema {
+  collectionName: 'whies';
+  info: {
+    displayName: 'Why';
+    pluralName: 'whies';
+    singularName: 'why';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::why.why'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Why: Schema.Attribute.Component<'blocks.why-card', true>;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -1403,6 +1428,7 @@ declare module '@strapi/strapi' {
       'api::repairorder.repairorder': ApiRepairorderRepairorder;
       'api::supplier.supplier': ApiSupplierSupplier;
       'api::technician.technician': ApiTechnicianTechnician;
+      'api::why.why': ApiWhyWhy;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

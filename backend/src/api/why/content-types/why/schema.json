@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "whies",
+  "info": {
+    "singularName": "why",
+    "pluralName": "whies",
+    "displayName": "Why"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Why": {
+      "type": "component",
+      "repeatable": true,
+      "component": "blocks.why-card"
+    }
+  }
+}

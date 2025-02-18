@@ -2,11 +2,11 @@
 import qs from 'qs';
 
 // Core
-import API from '../../networking/API.server';
+import API from '../../../networking/API.server';
 
 // Type
 
-export async function getBrands() {
+export async function getWhyCard() {
     const query = qs.stringify({
 
     }, { 
@@ -14,7 +14,8 @@ export async function getBrands() {
     });
 
     try {
-        const response = await API.get(`brands?${query}`);
+        const response = await API.get(`why?populate=*`);
+        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);

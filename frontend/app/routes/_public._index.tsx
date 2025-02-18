@@ -8,15 +8,28 @@ import BrandAnimation from "../components/design/Animation/BrandAnimation";
 
 // API
 import { getBrands } from "../core/modules/brands/api";
+import { getTopDevices } from "../core/modules/devices/api";
+import { getWhyCard } from "../core/modules/SingleTypes/why/api";
 
-// Loader om data server-side op te halen
+// Types
+import { Devices } from "../core/modules/devices/type";
+
+type LoaderData = {
+  brands: any;
+  topDevices: any;
+  whyCards: any;
+};
+
 export async function loader() {
   const brands = await getBrands();
-  return json({ brands: brands.data });
+  const topDevices = await getTopDevices();
+  const whyCards = await getWhyCard();
+
+  return { brands: brands.data, topDevices, whyCards: whyCards.data}; // ✅ Gebruik `data`
 }
 
 export default function Index() {
-  const { brands } = useLoaderData<typeof loader>();
+  const { brands, topDevices, whyCards } = useLoaderData() as LoaderData;
 
   return (
     <>
@@ -55,14 +68,40 @@ export default function Index() {
         </div>
       </div>
 
-      {/* ✅ Data als props doorgeven aan BrandAnimation */}
       <BrandAnimation brands={brands} />
 
       <SecondaryTitle
         title="Veelvoorkomende herstellingen"
         subtitle="Alle merken van smartphones tot tablets, smartwatches tot consoles."
       />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {topDevices && topDevices.length === 0 ? (
+          <p>Geen apparaten gevonden...</p>
+        ) : (
+          topDevices?.map((device: Devices) => (
+            <div
+              key={device.documentId}
+              className="bg-primaryHelper p-5 rounded-lg"
+            >
+              <h3 className="text-lg font-bold">{device.Name}</h3>
+              <p className="text-sm">Status: {device.ModelNumber}</p>
+            </div>
+          ))
+        )}
+      </div>
       <SecondaryTitle title="Waarom kiezen voor Fixit?" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {whyCards.map((card: any) => (
+          <div
+            key={card.id}
+            className="bg-primaryHelper p-5 rounded-lg flex flex-col gap-3"
+          >
+            <h3 className="text-lg font-bold">{card.Title}</h3>
+            <p className="text-sm">{card.Description}</p>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
