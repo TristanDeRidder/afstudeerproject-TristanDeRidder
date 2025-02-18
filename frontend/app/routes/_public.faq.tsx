@@ -14,12 +14,20 @@ type LoaderData = {
 };
 
 export async function loader() {
-  const faqs = await getFAQs();
-    console.log(faqs.data)
+  try {
+    const faqs = await getFAQs();
 
-  return {
-    faqs: faqs.data,
-  };
+    if (!faqs || !faqs.data) {
+      throw new Error("Geen data beschikbaar");
+    }
+
+    return {
+      faqs: faqs.data,
+    };
+  } catch (error) {
+    console.error("Error while fetching faqs:", error);
+    return { faqs: null };
+  }
 }
 
 export default function Faq() {
