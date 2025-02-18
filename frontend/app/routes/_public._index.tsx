@@ -25,7 +25,7 @@ export async function loader() {
   const topDevices = await getTopDevices();
   const whyCards = await getWhyCard();
 
-  return { brands: brands.data, topDevices, whyCards: whyCards.data}; // ✅ Gebruik `data`
+  return { brands: brands.data, topDevices, whyCards: whyCards.data }; // ✅ Gebruik `data`
 }
 
 export default function Index() {
@@ -90,17 +90,24 @@ export default function Index() {
           ))
         )}
       </div>
+
       <SecondaryTitle title="Waarom kiezen voor Fixit?" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {whyCards.map((card: any) => (
-          <div
-            key={card.id}
-            className="bg-primaryHelper p-5 rounded-lg flex flex-col gap-3"
-          >
-            <h3 className="text-lg font-bold">{card.Title}</h3>
-            <p className="text-sm">{card.Description}</p>
-          </div>
-        ))}
+
+      {/* Why Cards Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+        {Array.isArray(whyCards) && whyCards.length > 0 ? (
+          whyCards.map((card: { id: number; Title: string; Text: string }) => (
+            <div
+              key={card.id}
+              className="bg-primaryHelper p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all"
+            >
+              <h4 className="text-xl font-semibold mb-3">{card.Title}</h4>
+              <p className="text-sm">{card.Text}</p>
+            </div>
+          ))
+        ) : (
+          <p>Geen gegevens beschikbaar voor "Waarom kiezen voor Fixit?"</p>
+        )}
       </div>
     </>
   );

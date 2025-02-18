@@ -4,17 +4,19 @@
   "info": {
     "singularName": "why",
     "pluralName": "whies",
-    "displayName": "Why"
+    "displayName": "Why",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "Why": {
-      "type": "component",
-      "repeatable": true,
-      "component": "blocks.why-card"
+    "PageContent": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.why-card"
+      ]
     }
   }
 }

@@ -882,6 +882,7 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
 export interface ApiWhyWhy extends Struct.SingleTypeSchema {
   collectionName: 'whies';
   info: {
+    description: '';
     displayName: 'Why';
     pluralName: 'whies';
     singularName: 'why';
@@ -896,11 +897,11 @@ export interface ApiWhyWhy extends Struct.SingleTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::why.why'> &
       Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<['blocks.why-card']>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    Why: Schema.Attribute.Component<'blocks.why-card', true>;
   };
 }
 
