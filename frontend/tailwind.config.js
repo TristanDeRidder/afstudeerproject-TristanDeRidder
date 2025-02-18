@@ -14,7 +14,21 @@ export default {
         secondary: "#004F73",
         accent: "#B8CAF6",
         accentLight: "#F1F5FD"
-      }
+      },
+      animation: {
+        marquee: "marquee 20s linear infinite",
+        reverse: "marquee-reverse 20s linear infinite",
+      },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" }, // Exact de helft voor seamless loop
+        },
+        "marquee-reverse": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0%)" },
+        },
+      },
     },
   },
   plugins: [],
