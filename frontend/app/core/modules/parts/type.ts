@@ -4,6 +4,7 @@ import { Suppliers } from "../suppliers/type";
 
 export type Parts = {
   id: number;
+  documentId: string;
   Name: string;
   PurchasePrice: number;
   SellingPrice: number;
