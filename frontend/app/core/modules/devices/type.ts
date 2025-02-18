@@ -6,7 +6,7 @@ export type Devices = {
   id: number;
   documentId: string;
   Type: string;
-  Brand: Brand[];
+  Brand: Brand;
   Customers: Customers[];
   Repairorders: Repairorders[];
   Name: string;

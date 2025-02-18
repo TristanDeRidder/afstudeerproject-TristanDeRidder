@@ -15,7 +15,6 @@ export async function getParts() {
 
     try {
         const response = await API.get(`parts?${query}`);
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);
