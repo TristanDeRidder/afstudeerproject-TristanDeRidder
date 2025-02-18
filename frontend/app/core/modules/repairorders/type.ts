@@ -5,6 +5,7 @@ import { Parts } from "../parts/type";
 
 export type Repairorders = {
     id: number;
+    documentId: string;
     StatusRepair: string;
     Issue: string;
     Repairable: boolean;
