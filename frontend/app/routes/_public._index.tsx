@@ -93,18 +93,19 @@ export default function Index() {
 
       <SecondaryTitle title="Waarom kiezen voor Fixit?" />
 
-      {/* Why Cards Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-        {Array.isArray(whyCards) && whyCards.length > 0 ? (
-          whyCards.map((card: { id: number; Title: string; Text: string }) => (
-            <div
-              key={card.id}
-              className="bg-primaryHelper p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all"
-            >
-              <h4 className="text-xl font-semibold mb-3">{card.Title}</h4>
-              <p className="text-sm">{card.Text}</p>
-            </div>
-          ))
+        {whyCards && whyCards.PageContent.length > 0 ? (
+          whyCards.PageContent.map(
+            (card: { id: number; Title: string; Text: string }) => (
+              <div
+                key={card.id}
+                className="bg-primaryHelper p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all"
+              >
+                <h4 className="text-xl font-semibold mb-3">{card.Title}</h4>
+                <p className="text-sm">{card.Text}</p>
+              </div>
+            )
+          )
         ) : (
           <p>Geen gegevens beschikbaar voor "Waarom kiezen voor Fixit?"</p>
         )}
