@@ -1,51 +1,87 @@
 import { useLoaderData } from "@remix-run/react";
+import { getRepairorderByDocumentId } from "../core/modules/repairorders/api";
 
-// API
-import { getRepairorders } from "../core/modules/repairorders/api"
-import { Repairorders } from "~/core/modules/repairorders/type";
-
+// Type Definition
 type LoaderData = {
-    repairorders: any;
-}
+  repairorder: any | null;
+  error?: string;
+};
 
-export async function loader() {
-  try {
-    const repairorders = await getRepairorders();
+// Loader Function
+export async function loader({ request }: { request: Request }) {
+  const url = new URL(request.url);
+  const documentId = url.searchParams.get("documentId");
 
-    if (!repairorders?.data) {
-      throw new Error("No data available");
-    }
-
-    return { repairorders: repairorders.data };
-  } catch (error) {
-    console.error("Error while fetching data:", error);
-
-    return { brands: null, devices: null, parts: null };
+  if (!documentId) {
+    return { repairorder: null, error: "No documentId provided" };
   }
+
+  const repairorders = await getRepairorderByDocumentId(documentId);
+
+  return {
+    repairorder: repairorders.data,
+  }; 
 }
 
+// Component
 export default function Repair() {
-    const { repairorders } = useLoaderData() as LoaderData;
+  const { repairorder, error } = useLoaderData() as LoaderData;
+  console.log("Repair Order:", repairorder);
 
-    return (
+  if (error) return <div>Error: {error}</div>;
+  if (!repairorder) return <div>Loading repair order...</div>;
+
+  return (
+    <div>
+      <h2>Repair Order Details</h2>
       <div>
-        <div>
-          {repairorders.map((repairorder: any, index: number) => (
-            <div key={index}>
-              <div>Document ID: {repairorder.documentId}</div>
-              <div>Issue: {repairorder.Issue}</div>
-              {repairorder.device ? (
-                <div>
-                  <div>Device Name: {repairorder.device.Name}</div>
-                  <div>Device Model: {repairorder.device.ModelNumber}</div>
-                  <div>Device Type: {repairorder.device.Type}</div>
-                </div>
-              ) : (
-                <div>No device available</div>
-              )}
-            </div>
-          ))}
-        </div>
+        <strong>Document ID:</strong> {repairorder.documentId}
       </div>
-    );
+      <div>
+        <strong>Status:</strong> {repairorder.StatusRepair}
+      </div>
+      <div>
+        <strong>Issue:</strong> {repairorder.Issue}
+      </div>
+      {/* <div>
+        <strong>Repairable:</strong> {repairorder.Repairable ? "Yes" : "No"}
+      </div> */}
+
+      {/* Device Information */}
+      {repairorder.device ? (
+        <div>
+          <h3>Device Information</h3>
+          <div>
+            <strong>Name:</strong> {repairorder.device.Name}
+          </div>
+          <div>
+            <strong>Model:</strong> {repairorder.device.ModelNumber}
+          </div>
+          <div>
+            <strong>Type:</strong> {repairorder.device.Type}
+          </div>
+        </div>
+      ) : (
+        <div>No device information available.</div>
+      )}
+
+      {/* Invoice Information */}
+      {/* {repairorder.invoice ? (
+        <div>
+          <h3>Invoice Information</h3>
+          <div>
+            <strong>Total Amount:</strong> €{repairorder.invoice.TotalAmount}
+          </div>
+          <div>
+            <strong>Paid:</strong> {repairorder.invoice.Paid ? "Yes" : "No"}
+          </div>
+          <div>
+            <strong>Payment Method:</strong> {repairorder.invoice.Paymentmethod}
+          </div>
+        </div>
+      ) : (
+        <div>No invoice available.</div>
+      )} */}
+    </div>
+  );
 }
