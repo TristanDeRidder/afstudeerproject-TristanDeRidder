@@ -9,10 +9,12 @@ import { Repairorders } from '../repairorders/type';
 
 export async function getDevices() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
         const response = await API.get(`devices?${query}`);

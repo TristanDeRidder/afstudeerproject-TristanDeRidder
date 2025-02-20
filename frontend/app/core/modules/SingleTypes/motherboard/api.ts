@@ -8,13 +8,13 @@ import API from '../../../networking/API.server';
 
 export async function getMotherboardPage() {
     const query = qs.stringify({
-
+        populate: "*",
     }, { 
         encodeValuesOnly: true,
     });
 
     try {
-        const response = await API.get(`motherboard?populate=*`);
+        const response = await API.get(`motherboard?${query}`);
         console.log(response.data)
         return response.data;
     } catch (error) {

@@ -8,10 +8,12 @@ import API from '../../networking/API.server';
 
 export async function getOpeninghours() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
         const response = await API.get(`openinghours?${query}`);

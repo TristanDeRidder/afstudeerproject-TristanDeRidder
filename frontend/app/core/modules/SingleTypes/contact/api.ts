@@ -8,13 +8,15 @@ import API from '../../../networking/API.server';
 
 export async function getContactPage() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
-        const response = await API.get(`contact?populate=*`);
+        const response = await API.get(`contact?${query}`);
         console.log(response.data)
         return response.data;
     } catch (error) {

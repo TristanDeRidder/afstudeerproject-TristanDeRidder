@@ -8,10 +8,12 @@ import API from '../../networking/API.server';
 
 export async function getFAQs() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
         const response = await API.get(`faqs?${query}`);

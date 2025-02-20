@@ -8,13 +8,15 @@ import API from '../../networking/API.server';
 
 export async function getRepairorders() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
-        const response = await API.get(`repairorders?populate=*`);
+        const response = await API.get(`repairorders?${query}`);
         return response.data;
     } catch (error) {
         console.error(error);

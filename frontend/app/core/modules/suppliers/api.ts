@@ -8,10 +8,12 @@ import API from '../../networking/API.server';
 
 export async function getSuppliers() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
         const response = await API.get(`suppliers?${query}`);

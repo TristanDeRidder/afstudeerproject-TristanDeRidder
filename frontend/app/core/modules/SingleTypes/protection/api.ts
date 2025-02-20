@@ -8,13 +8,15 @@ import API from '../../../networking/API.server';
 
 export async function getProtectionPage() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
-        const response = await API.get(`protection?populate=*`);
+        const response = await API.get(`protection?${query}`);
         console.log(response.data)
         return response.data;
     } catch (error) {

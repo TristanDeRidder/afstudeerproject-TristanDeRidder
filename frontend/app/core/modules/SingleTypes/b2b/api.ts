@@ -8,13 +8,15 @@ import API from '../../../networking/API.server';
 
 export async function getB2BPage() {
     const query = qs.stringify({
-
-    }, { 
+        populate: "*",
+      },
+      {
         encodeValuesOnly: true,
-    });
+      }
+    );
 
     try {
-        const response = await API.get(`business?populate=*`);
+        const response = await API.get(`business?${query}`);
         console.log(response.data)
         return response.data;
     } catch (error) {
