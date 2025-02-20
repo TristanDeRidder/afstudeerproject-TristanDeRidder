@@ -25,7 +25,7 @@ export async function getContactForms() {
 }
 
 
-export async function PostContactForm(firstname: string, lastname: string, email: string, phonenumber: string | null, message: string): Promise<StrapiResponse<ContactForm>> {
+export async function addContactForm(firstname: string, lastname: string, email: string, phonenumber: string | null, message: string): Promise<StrapiResponse<ContactForm>> {
     const data = { data: { firstname, lastname, email, phonenumber: phonenumber || undefined, message } };
 
     try {

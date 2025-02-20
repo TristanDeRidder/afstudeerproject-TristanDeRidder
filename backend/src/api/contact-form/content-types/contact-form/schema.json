@@ -12,22 +12,22 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Firstname": {
+    "firstname": {
       "type": "string"
     },
-    "Lastname": {
+    "lastname": {
       "type": "string"
     },
-    "Mail": {
+    "email": {
       "type": "email"
     },
-    "Phonenumber": {
+    "phonenumber": {
       "type": "string"
     },
-    "Message": {
+    "message": {
       "type": "richtext"
     },
-    "MessageStatus": {
+    "messageStatus": {
       "type": "enumeration",
       "enum": [
         "Open",
@@ -35,7 +35,7 @@
         "Lopend"
       ]
     },
-    "Subject": {
+    "subject": {
       "type": "string"
     }
   }

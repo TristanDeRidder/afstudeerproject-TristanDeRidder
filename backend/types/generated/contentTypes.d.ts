@@ -470,20 +470,20 @@ export interface ApiContactFormContactForm extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    Firstname: Schema.Attribute.String;
-    Lastname: Schema.Attribute.String;
+    email: Schema.Attribute.Email;
+    firstname: Schema.Attribute.String;
+    lastname: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::contact-form.contact-form'
     > &
       Schema.Attribute.Private;
-    Mail: Schema.Attribute.Email;
-    Message: Schema.Attribute.RichText;
-    MessageStatus: Schema.Attribute.Enumeration<['Open', 'Gesloten', 'Lopend']>;
-    Phonenumber: Schema.Attribute.String;
+    message: Schema.Attribute.RichText;
+    messageStatus: Schema.Attribute.Enumeration<['Open', 'Gesloten', 'Lopend']>;
+    phonenumber: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    Subject: Schema.Attribute.String;
+    subject: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

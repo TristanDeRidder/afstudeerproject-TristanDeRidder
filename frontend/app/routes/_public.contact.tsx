@@ -1,7 +1,8 @@
-import { useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import { getContactPage } from "../core/modules/SingleTypes/contact/api";
-import { PostContactForm } from "../core/modules/contactForm/api";
+import { addContactForm } from "../core/modules/contactForm/api";
+import { ActionFunctionArgs } from "@remix-run/node";
+import { useRef, useState } from "react";
 
 type LoaderData = {
   contact: any;
@@ -24,8 +25,55 @@ export async function loader() {
   }
 }
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+  try {
+    const formData = new URLSearchParams(await request.text());
+    const data = {
+      firstname: formData.get("firstname") || "",
+      lastname: formData.get("lastname") || "",
+      email: formData.get("email") || "",
+      phonenumber: formData.get("phonenumber") || "",
+      message: formData.get("message") || "",
+    };
+    const { firstname, lastname, email, phonenumber, message } = data;
+
+    if (!firstname || !lastname || !email || !message) {
+      return { error: "Alle verplichte velden moeten ingevuld worden." };
+    }
+
+    const messageResponse = await addContactForm(
+      firstname,
+      lastname,
+      email,
+      phonenumber,
+      message
+    );
+
+    console.log("1", messageResponse.data);
+
+    if (!messageResponse.data) {
+      return {
+        error: "Er is een fout opgetreden bij het verzenden van het bericht.",
+      };
+    }
+
+    return { success: "Het bericht is succesvol verzonden." };
+  } catch (error) {
+    return {
+      error: "Er is een fout opgetreden bij het verzenden van het bericht.",
+    };
+  }
+};
+
 export default function Contact() {
   const { contact } = useLoaderData() as LoaderData;
+
+  const actionData: any = useActionData();
+
+  const [error, setError] = useState<string | null>(actionData?.error || null);
+  const [success, setSuccess] = useState<string | null>(
+    actionData?.success || null
+  );
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -33,40 +81,35 @@ export default function Contact() {
     phonenumber: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleInputChange = (
+  const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await PostContactForm(
-        formData.firstname,
-        formData.lastname,
-        formData.email,
-        formData.phonenumber || null,
-        formData.message
-      );
-      setSubmissionStatus("Formulier succesvol verzonden!");
-      setFormData({
-        firstname: "",
-        lastname: "",
-        email: "",
-        phonenumber: "",
-        message: "",
-      });
-    } catch (error) {
-      setSubmissionStatus("Er is een fout opgetreden bij het verzenden.");
-    } finally {
-      setIsSubmitting(false);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault(); // Prevent page refresh
+    setSuccess(null);
+
+    // Validation
+    if (
+      !formData.firstname ||
+      !formData.lastname ||
+      !formData.email ||
+      !formData.message
+    ) {
+      setError("Alle verplichte velden moeten ingevuld worden.");
+      return;
     }
+
+    // Reset error message before submitting
+    setError(null);
+
+    // Submit form
+    e.target.submit();
   };
 
   if (!contact || !contact.PageContent) {
@@ -141,14 +184,22 @@ export default function Contact() {
 
       {/* Contact Form */}
       <h3 className="text-xl font-semibold mb-2">Neem contact op</h3>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <p className="p-4 border border-red rounded-[5px] mb-4 text-red">
+          {error}
+        </p>
+      )}
+      {success && (
+        <p className="p-4 border rounded-[5px] mb-4 font-medium">{success}</p>
+      )}
+      <form method="post" ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Voornaam</label>
           <input
             type="text"
             name="firstname"
             value={formData.firstname}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="w-full p-2 border rounded"
           />
@@ -159,7 +210,7 @@ export default function Contact() {
             type="text"
             name="lastname"
             value={formData.lastname}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="w-full p-2 border rounded"
           />
@@ -170,7 +221,7 @@ export default function Contact() {
             type="email"
             name="email"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             className="w-full p-2 border rounded"
           />
@@ -183,7 +234,7 @@ export default function Contact() {
             type="text"
             name="phonenumber"
             value={formData.phonenumber}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="w-full p-2 border rounded"
           />
         </div>
@@ -192,7 +243,7 @@ export default function Contact() {
           <textarea
             name="message"
             value={formData.message}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
             rows={4}
             className="w-full p-2 border rounded"
@@ -200,14 +251,10 @@ export default function Contact() {
         </div>
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="w-full p-2 bg-blue-500 text-white rounded"
         >
-          {isSubmitting ? "Versturen..." : "Verstuur"}
+          Verstuur
         </button>
-        {submissionStatus && (
-          <p className="text-sm text-gray-600">{submissionStatus}</p>
-        )}
       </form>
     </div>
   );

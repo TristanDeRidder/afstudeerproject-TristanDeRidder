@@ -1,4 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Home, Inbox, Calendar, Search, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -11,36 +12,28 @@ import {
   SidebarMenuItem,
 } from "../../ui/sidebar";
 
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
+// API
+import { getSidebars } from "../../../core/modules/sidebar/api";
 
 export function AppSidebar() {
+  const [items, setItems] = useState<{ title: string; url: string }[]>([]);
+
+  useEffect(() => {
+    async function fetchSidebarItems() {
+      const response = await getSidebars();
+      if (response?.data) {
+        setItems(
+          response.data.map((item: any) => ({
+            title: item.PageTitle,
+            url: item.URL,
+          }))
+        );
+      }
+    }
+
+    fetchSidebarItems();
+  }, []);
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -52,7 +45,6 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
-                      <item.icon />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
