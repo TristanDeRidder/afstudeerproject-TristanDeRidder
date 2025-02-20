@@ -480,7 +480,11 @@ export interface ApiContactFormContactForm extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     message: Schema.Attribute.RichText;
-    messageStatus: Schema.Attribute.Enumeration<['Open', 'Gesloten', 'Lopend']>;
+    messageStatus: Schema.Attribute.Enumeration<
+      ['Open', 'Gesloten', 'Lopend']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Open'>;
     phonenumber: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     subject: Schema.Attribute.String;

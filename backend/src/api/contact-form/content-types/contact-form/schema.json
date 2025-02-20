@@ -33,7 +33,9 @@
         "Open",
         "Gesloten",
         "Lopend"
-      ]
+      ],
+      "default": "Open",
+      "required": true
     },
     "subject": {
       "type": "string"
