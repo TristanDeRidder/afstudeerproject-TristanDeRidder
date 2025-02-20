@@ -42,8 +42,29 @@ export default function Repair() {
   const [selectedDevice, setSelectedDevice] = useState<Devices | null>(null);
   const [confirmSelection, setConfirmSelection] = useState(false);
 
+  // Function to get the correct image
+  const getImageSrc = () => {
+    if (selectedDevice) {
+      return selectedDevice.imageUrl; // Ensure the API provides `imageUrl` for the device
+    }
+    return selectedBrand?.Logo?.url || "/placeholder.png"; // Fallback if no logo available
+  };
+
   return (
     <div className="p-4">
+      {/* Display Image (Brand or Device) */}
+      <div className="flex justify-center mb-6">
+        <img
+          src={getImageSrc()}
+          alt={
+            selectedDevice
+              ? selectedDevice.Name
+              : selectedBrand?.BrandName || "Brand Logo"
+          }
+          className="w-48 h-48 object-contain"
+        />
+      </div>
+
       {/* Step 1: Select a Brand */}
       {step === 1 && (
         <div>
