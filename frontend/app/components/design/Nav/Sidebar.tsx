@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Home, Inbox, Calendar, Search, Settings } from "lucide-react";
+import {
+  House,
+  Bolt,
+  Inbox,
+  BookOpen,
+  Smartphone,
+  CreditCard,
+  List,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -12,28 +19,33 @@ import {
   SidebarMenuItem,
 } from "../../ui/sidebar";
 
-// API
-import { getSidebars } from "../../../core/modules/sidebar/api";
+interface SidebarItem {
+  title: string;
+  url: string;
+  icon: string;
+}
 
-export function AppSidebar() {
-  const [items, setItems] = useState<{ title: string; url: string }[]>([]);
+const iconMap: Record<string, React.ElementType> = {
+  House,
+  Bolt,
+  Inbox,
+  BookOpen,
+  Smartphone,
+  CreditCard,
+  List,
+};
 
-  useEffect(() => {
-    async function fetchSidebarItems() {
-      const response = await getSidebars();
-      if (response?.data) {
-        setItems(
-          response.data.map((item: any) => ({
-            title: item.PageTitle,
-            url: item.URL,
-          }))
-        );
-      }
-    }
+const customOrder = [
+  "Home",
+  "Contacts",
+  "Devices",
+  "Invoices",
+  "Order",
+  "Repairorders",
+  "Detail",
+];
 
-    fetchSidebarItems();
-  }, []);
-
+export function AppSidebar({ items }: { items: SidebarItem[] }) {
   return (
     <Sidebar>
       <SidebarContent>
@@ -41,15 +53,30 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items
+                .sort((a, b) => {
+                  const indexA = customOrder.indexOf(a.title);
+                  const indexB = customOrder.indexOf(b.title);
+
+                  return (
+                    (indexA !== -1 ? indexA : 999) -
+                    (indexB !== -1 ? indexB : 999)
+                  );
+                })
+                .map((item) => {
+                  const IconComponent = iconMap[item.icon] || List;
+
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <a href={item.url} className="flex items-center gap-2">
+                          <IconComponent className="w-5 h-5" />
+                          <span>{item.title}</span>
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

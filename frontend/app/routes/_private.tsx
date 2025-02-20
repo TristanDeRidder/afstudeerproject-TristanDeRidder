@@ -1,17 +1,30 @@
 import { SidebarProvider, SidebarTrigger } from "../components/ui/sidebar";
 import { AppSidebar } from "../components/design/Nav/Sidebar";
+import { Outlet, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import { getSidebars } from "../core/modules/sidebar/api";
 
-import { Outlet } from "@remix-run/react";
+export async function loader() {
+  const sidebars = await getSidebars();
 
-// Make loader with check function is user jwt is in cookies
-// If not redirect to login page
-// If yes, return user data
+  // Ensure we're returning an array of objects with the expected format
+  return json({
+    items: sidebars.data.map((item: any) => ({
+      title: item.PageTitle,
+      url: item.URL,
+      icon: item.PageIcon,
+    })),
+  });
+}
 
+export default function Layout() {
+  const { items } = useLoaderData<{
+    items: { title: string; url: string; icon: string }[];
+  }>();
 
-export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar items={items} />
       <main>
         <SidebarTrigger />
         <Outlet />
