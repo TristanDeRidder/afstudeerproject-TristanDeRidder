@@ -15,7 +15,6 @@ export async function getBrands() {
 
     try {
         const response = await API.get(`brands?${query}`);
-        console.log(response.data.data)
         return response.data;
     } catch (error) {
         console.error(error);

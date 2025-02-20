@@ -18,6 +18,7 @@ export async function getDevices() {
 
     try {
         const response = await API.get(`devices?${query}`);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error(error);

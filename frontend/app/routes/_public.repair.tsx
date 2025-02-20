@@ -40,6 +40,7 @@ export default function Repair() {
   const [step, setStep] = useState(1);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
   const [selectedDevice, setSelectedDevice] = useState<Devices | null>(null);
+  const [confirmSelection, setConfirmSelection] = useState(false);
 
   return (
     <div className="p-4">
@@ -52,16 +53,24 @@ export default function Repair() {
               key={brand.documentId}
               className="block p-2 my-2 border rounded w-full text-left"
               onClick={() => {
-                console.log(
-                  `Brand selected: ${brand.BrandName} (${brand.documentId})`
-                );
                 setSelectedBrand(brand);
-                setStep(2);
+                setConfirmSelection(true);
               }}
             >
               {brand.BrandName}
             </button>
           ))}
+          {confirmSelection && (
+            <button
+              className="mt-4 p-2 border rounded w-full bg-blue-500 text-white"
+              onClick={() => {
+                setStep(2);
+                setConfirmSelection(false);
+              }}
+            >
+              Confirm Selection
+            </button>
+          )}
         </div>
       )}
 
@@ -71,26 +80,31 @@ export default function Repair() {
           <h2 className="text-xl font-bold">Select a Model</h2>
           {devices
             .filter(
-              (device) => device.Brand?.documentId === selectedBrand.documentId
+              (device) => device.brand?.BrandName === selectedBrand.BrandName
             )
             .map((device) => (
               <button
                 key={device.documentId}
                 className="block p-2 my-2 border rounded w-full text-left"
                 onClick={() => {
-                  console.log(`Device selected: ${device.documentId}`);
                   setSelectedDevice(device);
-                  setStep(3);
+                  setConfirmSelection(true);
                 }}
               >
                 {device.Name} - {device.ModelNumber}
               </button>
             ))}
-          {devices.filter(
-            (device) => device.Brand?.documentId === selectedBrand.documentId
-          ).length === 0 && <p>No devices found for this brand.</p>}
-          {console.log(
-            devices)}
+          {confirmSelection && (
+            <button
+              className="mt-4 p-2 border rounded w-full bg-blue-500 text-white"
+              onClick={() => {
+                setStep(3);
+                setConfirmSelection(false);
+              }}
+            >
+              Confirm Selection
+            </button>
+          )}
           <button
             className="mt-4 p-2 border rounded"
             onClick={() => setStep(1)}
