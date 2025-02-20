@@ -1,23 +1,14 @@
-// Component imports
-import Footer from "../components/design/Footer/Footer";
-import Navigation from "../components/design/Nav/Navigation";
+import { SidebarProvider, SidebarTrigger } from "../components/ui/sidebar";
+import { AppSidebar } from "../components/design/Nav/Sidebar";
 
-// Remix imports
-import { Outlet } from "@remix-run/react";
-import { useLoaderData } from "@remix-run/react";
-
-export default function PublicLayout() {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <header>
-        <Navigation />
-      </header>
+    <SidebarProvider>
+      <AppSidebar />
       <main>
-        <Outlet />
+        <SidebarTrigger />
+        {children}
       </main>
-      <footer>
-          <Footer />
-      </footer>
-    </div>
+    </SidebarProvider>
   );
 }
