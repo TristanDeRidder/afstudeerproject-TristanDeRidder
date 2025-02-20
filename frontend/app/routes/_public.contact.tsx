@@ -1,5 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
+import { useState } from "react";
 import { getContactPage } from "../core/modules/SingleTypes/contact/api";
+import { PostContactForm } from "../core/modules/contactForm/api";
 
 type LoaderData = {
   contact: any;
@@ -24,6 +26,48 @@ export async function loader() {
 
 export default function Contact() {
   const { contact } = useLoaderData() as LoaderData;
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phonenumber: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await PostContactForm(
+        formData.firstname,
+        formData.lastname,
+        formData.email,
+        formData.phonenumber || null,
+        formData.message
+      );
+      setSubmissionStatus("Formulier succesvol verzonden!");
+      setFormData({
+        firstname: "",
+        lastname: "",
+        email: "",
+        phonenumber: "",
+        message: "",
+      });
+    } catch (error) {
+      setSubmissionStatus("Er is een fout opgetreden bij het verzenden.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (!contact || !contact.PageContent) {
     return (
@@ -73,10 +117,98 @@ export default function Contact() {
               </section>
             );
 
+          case "blocks.i-frame":
+            return (
+              <section key={block.id} className="border rounded-lg p-4">
+                <h2 className="text-xl font-semibold mb-2">Locatie</h2>
+                <div className="aspect-w-16 aspect-h-9 mb-6">
+                  <iframe
+                    src={block.iFrame}
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    allowFullScreen
+                    title="Google Map"
+                  ></iframe>
+                </div>
+              </section>
+            );
+
           default:
             return null;
         }
       })}
+
+      {/* Contact Form */}
+      <h3 className="text-xl font-semibold mb-2">Neem contact op</h3>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium">Voornaam</label>
+          <input
+            type="text"
+            name="firstname"
+            value={formData.firstname}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Achternaam</label>
+          <input
+            type="text"
+            name="lastname"
+            value={formData.lastname}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">E-mail</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">
+            Telefoonnummer (optioneel)
+          </label>
+          <input
+            type="text"
+            name="phonenumber"
+            value={formData.phonenumber}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Bericht</label>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleInputChange}
+            required
+            rows={4}
+            className="w-full p-2 border rounded"
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          {isSubmitting ? "Versturen..." : "Verstuur"}
+        </button>
+        {submissionStatus && (
+          <p className="text-sm text-gray-600">{submissionStatus}</p>
+        )}
+      </form>
     </div>
   );
 }

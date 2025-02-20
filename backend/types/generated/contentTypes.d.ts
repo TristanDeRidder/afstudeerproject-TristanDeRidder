@@ -455,6 +455,41 @@ export interface ApiBusinessBusiness extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiContactFormContactForm extends Struct.CollectionTypeSchema {
+  collectionName: 'contact_forms';
+  info: {
+    description: '';
+    displayName: 'ContactForm';
+    pluralName: 'contact-forms';
+    singularName: 'contact-form';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Firstname: Schema.Attribute.String;
+    Lastname: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contact-form.contact-form'
+    > &
+      Schema.Attribute.Private;
+    Mail: Schema.Attribute.Email;
+    Message: Schema.Attribute.RichText;
+    MessageStatus: Schema.Attribute.Enumeration<['Open', 'Gesloten', 'Lopend']>;
+    Phonenumber: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    Subject: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiContactContact extends Struct.SingleTypeSchema {
   collectionName: 'contacts';
   info: {
@@ -1417,6 +1452,7 @@ declare module '@strapi/strapi' {
       'api::about.about': ApiAboutAbout;
       'api::brand.brand': ApiBrandBrand;
       'api::business.business': ApiBusinessBusiness;
+      'api::contact-form.contact-form': ApiContactFormContactForm;
       'api::contact.contact': ApiContactContact;
       'api::customer.customer': ApiCustomerCustomer;
       'api::device.device': ApiDeviceDevice;
