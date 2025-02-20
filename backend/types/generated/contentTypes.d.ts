@@ -856,6 +856,7 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
 export interface ApiSidebarSidebar extends Struct.CollectionTypeSchema {
   collectionName: 'sidebars';
   info: {
+    description: '';
     displayName: 'Sidebar';
     pluralName: 'sidebars';
     singularName: 'sidebar';
@@ -873,10 +874,7 @@ export interface ApiSidebarSidebar extends Struct.CollectionTypeSchema {
       'api::sidebar.sidebar'
     > &
       Schema.Attribute.Private;
-    PageIcon: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
+    PageIcon: Schema.Attribute.String;
     PageTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;

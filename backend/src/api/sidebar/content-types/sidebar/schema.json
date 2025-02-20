@@ -4,7 +4,8 @@
   "info": {
     "singularName": "sidebar",
     "pluralName": "sidebars",
-    "displayName": "Sidebar"
+    "displayName": "Sidebar",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -18,14 +19,7 @@
       "type": "string"
     },
     "PageIcon": {
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      "type": "string"
     }
   }
 }
