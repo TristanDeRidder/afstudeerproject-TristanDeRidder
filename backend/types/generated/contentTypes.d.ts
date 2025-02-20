@@ -853,6 +853,39 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiSidebarSidebar extends Struct.CollectionTypeSchema {
+  collectionName: 'sidebars';
+  info: {
+    displayName: 'Sidebar';
+    pluralName: 'sidebars';
+    singularName: 'sidebar';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::sidebar.sidebar'
+    > &
+      Schema.Attribute.Private;
+    PageIcon: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    PageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    URL: Schema.Attribute.String;
+  };
+}
+
 export interface ApiSupplierSupplier extends Struct.CollectionTypeSchema {
   collectionName: 'suppliers';
   info: {
@@ -1463,6 +1496,7 @@ declare module '@strapi/strapi' {
       'api::part.part': ApiPartPart;
       'api::protection.protection': ApiProtectionProtection;
       'api::repairorder.repairorder': ApiRepairorderRepairorder;
+      'api::sidebar.sidebar': ApiSidebarSidebar;
       'api::supplier.supplier': ApiSupplierSupplier;
       'api::technician.technician': ApiTechnicianTechnician;
       'api::why.why': ApiWhyWhy;

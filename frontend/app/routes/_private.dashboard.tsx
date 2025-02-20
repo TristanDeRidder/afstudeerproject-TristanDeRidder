@@ -9,15 +9,7 @@ import { useLoaderData } from "@remix-run/react";
 export default function PublicLayout() {
   return (
     <div>
-      <header>
-        <Navigation />
-      </header>
-      <main>
-        <Outlet />
-      </main>
-      <footer>
-          <Footer />
-      </footer>
+      <p>Test</p>
     </div>
   );
 }
