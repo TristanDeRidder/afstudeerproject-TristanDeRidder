@@ -2,12 +2,13 @@
   "collectionName": "components_blocks_i_frames",
   "info": {
     "displayName": "iFrame",
-    "icon": "pinMap"
+    "icon": "pinMap",
+    "description": ""
   },
   "options": {},
   "attributes": {
     "iFrame": {
-      "type": "string"
+      "type": "text"
     }
   }
 }

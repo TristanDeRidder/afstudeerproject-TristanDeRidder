@@ -27,11 +27,12 @@ export interface BlocksHeader extends Struct.ComponentSchema {
 export interface BlocksIFrame extends Struct.ComponentSchema {
   collectionName: 'components_blocks_i_frames';
   info: {
+    description: '';
     displayName: 'iFrame';
     icon: 'pinMap';
   };
   attributes: {
-    iFrame: Schema.Attribute.String;
+    iFrame: Schema.Attribute.Text;
   };
 }
 
