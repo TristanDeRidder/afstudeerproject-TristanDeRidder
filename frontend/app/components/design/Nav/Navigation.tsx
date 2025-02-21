@@ -21,10 +21,10 @@ export default function Navigation() {
             key={to}
             to={to}
             className={({ isActive }) =>
-              `transition-colors duration-200 px-4 py-2 rounded-lg ${
+              `transition-colors duration-200 px-4 py-2 rounded-full ${
                 isActive
-                  ? "text-blue-500 font-semibold border-b-2 border-blue-500"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-secondary font-semibold bg-accent"
+                  : "text-text hover:text-accentLight"
               }`
             }
           >
@@ -49,7 +49,7 @@ export default function Navigation() {
         <div className="fixed inset-0 bg-bg flex flex-col items-center justify-center z-50 transition-opacity duration-300">
           {/* Sluitknop */}
           <button
-            className="absolute top-6 right-6 text-text p-2"
+            className="absolute top-6 left-6 text-text p-2"
             onClick={() => setIsOpen(false)}
             aria-label="Sluit navigatie"
           >
@@ -66,8 +66,8 @@ export default function Navigation() {
                 className={({ isActive }) =>
                   `text-2xl font-semibold transition-colors duration-200 ${
                     isActive
-                      ? "text-blue-400"
-                      : "text-text hover:text-accent"
+                      ? "text-accent"
+                      : "text-text hover:text-primary"
                   }`
                 }
               >
