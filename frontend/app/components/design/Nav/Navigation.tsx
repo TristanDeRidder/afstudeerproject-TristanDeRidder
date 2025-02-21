@@ -13,7 +13,7 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="relative bg-white  p-4">
+    <nav className="relative bg-white p-4 pb-9 md:pb-12">
       {/* Desktop navigatie */}
       <div className="hidden md:flex justify-center gap-6">
         {navLinks.map(({ to, label }) => (

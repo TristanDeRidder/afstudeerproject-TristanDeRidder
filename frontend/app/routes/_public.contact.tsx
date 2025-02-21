@@ -3,6 +3,8 @@ import { getContactPage } from "../core/modules/SingleTypes/contact/api";
 import { addContactForm } from "../core/modules/contactForm/api";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { useRef, useState } from "react";
+import PrimaryTitle from "../components/design/Title/PrimaryTitle";
+import SecondaryTitle from "../components/design/Title/SecondaryTitle";
 
 type LoaderData = {
   contact: any;
@@ -127,10 +129,7 @@ export default function Contact() {
           case "blocks.header":
             return (
               <header key={block.id} className="text-center">
-                <h1 className="text-3xl font-bold">{block.Title}</h1>
-                {block.Subtext && (
-                  <p className="text-gray-600">{block.Subtext}</p>
-                )}
+                <PrimaryTitle title={block.Title} subtitle={block.Subtext} />
               </header>
             );
 
@@ -138,7 +137,7 @@ export default function Contact() {
             return (
               <section
                 key={block.id}
-                className="p-4 border rounded-lg bg-gray-100"
+                className="p-4 border rounded-lg bg-primaryHelper"
               >
                 <h2 className="text-xl font-semibold mb-2">Openingstijden</h2>
                 <ul className="space-y-1">
@@ -162,9 +161,9 @@ export default function Contact() {
 
           case "blocks.i-frame":
             return (
-              <section key={block.id} className="border rounded-lg p-4">
-                <h2 className="text-xl font-semibold mb-2">Locatie</h2>
-                <div className="aspect-w-16 aspect-h-9 mb-6">
+              <section key={block.id}>
+                <h2 className="text-xl font-semibold mb-2 p-4">Locatie</h2>
+                <div className="w-full h-80 mb-6">
                   <iframe
                     src={block.iFrame}
                     width="100%"
@@ -183,7 +182,7 @@ export default function Contact() {
       })}
 
       {/* Contact Form */}
-      <h3 className="text-xl font-semibold mb-2">Neem contact op</h3>
+      <SecondaryTitle title="Neem contact op" />
       {error && (
         <p className="p-4 border border-red rounded-[5px] mb-4 text-red">
           {error}
@@ -192,54 +191,61 @@ export default function Contact() {
       {success && (
         <p className="p-4 border rounded-[5px] mb-4 font-medium">{success}</p>
       )}
-      <form method="post" ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Voornaam</label>
-          <input
-            type="text"
-            name="firstname"
-            value={formData.firstname}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
+      <form
+        method="post"
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
+        <div className="flex gap-4 ">
+          <div>
+            <label className="block text-sm font-medium">Voornaam*</label>
+            <input
+              type="text"
+              name="firstname"
+              value={formData.firstname}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Achternaam*</label>
+            <input
+              type="text"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border rounded"
+            />
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <div>
+            <label className="block text-sm font-medium">E-mail*</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Telefoonnummer</label>
+            <input
+              type="text"
+              name="phonenumber"
+              value={formData.phonenumber}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
         </div>
         <div>
-          <label className="block text-sm font-medium">Achternaam</label>
-          <input
-            type="text"
-            name="lastname"
-            value={formData.lastname}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">E-mail</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">
-            Telefoonnummer (optioneel)
-          </label>
-          <input
-            type="text"
-            name="phonenumber"
-            value={formData.phonenumber}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Bericht</label>
+          <label className="block text-sm font-medium">Bericht*</label>
           <textarea
             name="message"
             value={formData.message}
@@ -251,7 +257,7 @@ export default function Contact() {
         </div>
         <button
           type="submit"
-          className="w-full p-2 bg-blue-500 text-white rounded"
+          className="w-full p-2 bg-secondary text-white rounded-full"
         >
           Verstuur
         </button>
