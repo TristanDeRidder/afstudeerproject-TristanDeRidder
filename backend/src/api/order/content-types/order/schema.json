@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "OrderStatus": {
+      "type": "enumeration",
+      "enum": [
+        "Bestellen",
+        "Besteld",
+        "Geleverd"
+      ],
+      "default": "Bestellen",
+      "required": true
+    },
+    "customer": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::customer.customer"
+    },
+    "parts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::part.part",
+      "inversedBy": "orders"
+    },
+    "devices": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::device.device",
+      "inversedBy": "orders"
+    },
+    "invoice": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::invoice.invoice"
+    }
+  }
+}

@@ -37,6 +37,12 @@
       "relation": "manyToMany",
       "target": "api::repairorder.repairorder",
       "inversedBy": "parts"
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::order.order",
+      "mappedBy": "parts"
     }
   }
 }

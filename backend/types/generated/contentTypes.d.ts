@@ -585,6 +585,7 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
     Model: Schema.Attribute.String;
     ModelNumber: Schema.Attribute.String;
     ModelType: Schema.Attribute.String;
+    orders: Schema.Attribute.Relation<'manyToMany', 'api::order.order'>;
     publishedAt: Schema.Attribute.DateTime;
     repairorders: Schema.Attribute.Relation<
       'oneToMany',
@@ -767,6 +768,40 @@ export interface ApiOpeningHourOpeningHour extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
+  collectionName: 'orders';
+  info: {
+    description: '';
+    displayName: 'Order';
+    pluralName: 'orders';
+    singularName: 'order';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
+    devices: Schema.Attribute.Relation<'manyToMany', 'api::device.device'>;
+    invoice: Schema.Attribute.Relation<'oneToOne', 'api::invoice.invoice'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
+      Schema.Attribute.Private;
+    OrderStatus: Schema.Attribute.Enumeration<
+      ['Bestellen', 'Besteld', 'Geleverd']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Bestellen'>;
+    parts: Schema.Attribute.Relation<'manyToMany', 'api::part.part'>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPartPart extends Struct.CollectionTypeSchema {
   collectionName: 'parts';
   info: {
@@ -787,6 +822,7 @@ export interface ApiPartPart extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::part.part'> &
       Schema.Attribute.Private;
     Name: Schema.Attribute.String;
+    orders: Schema.Attribute.Relation<'manyToMany', 'api::order.order'>;
     publishedAt: Schema.Attribute.DateTime;
     PurchasePrice: Schema.Attribute.Decimal;
     repairorders: Schema.Attribute.Relation<
@@ -1528,6 +1564,7 @@ declare module '@strapi/strapi' {
       'api::motherboard.motherboard': ApiMotherboardMotherboard;
       'api::navigation.navigation': ApiNavigationNavigation;
       'api::opening-hour.opening-hour': ApiOpeningHourOpeningHour;
+      'api::order.order': ApiOrderOrder;
       'api::part.part': ApiPartPart;
       'api::protection.protection': ApiProtectionProtection;
       'api::repairorder.repairorder': ApiRepairorderRepairorder;
