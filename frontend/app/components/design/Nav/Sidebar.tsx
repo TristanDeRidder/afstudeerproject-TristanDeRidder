@@ -47,7 +47,7 @@ const customOrder = [
 
 export function AppSidebar({ items }: { items: SidebarItem[] }) {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup className="gap-4">
           <SidebarGroupLabel>Fixit Aalst</SidebarGroupLabel>
