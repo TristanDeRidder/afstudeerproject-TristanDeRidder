@@ -1,4 +1,4 @@
-export default function PublicLayout() {
+export default function Dashboard() {
   return (
     <div>
       <p>Test</p>

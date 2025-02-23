@@ -49,8 +49,8 @@ export function AppSidebar({ items }: { items: SidebarItem[] }) {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroup className="gap-4">
+          <SidebarGroupLabel>Fixit Aalst</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items
@@ -71,7 +71,7 @@ export function AppSidebar({ items }: { items: SidebarItem[] }) {
                       <SidebarMenuButton asChild>
                         <a href={item.url} className="flex items-center gap-2">
                           <IconComponent className="w-5 h-5" />
-                          <span>{item.title}</span>
+                          <span className="text-md">{item.title}</span>
                         </a>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
