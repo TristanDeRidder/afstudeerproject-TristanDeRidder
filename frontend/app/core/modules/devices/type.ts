@@ -9,7 +9,8 @@ export type Devices = {
   Brand: Brand;
   Customers: Customers[];
   Repairorders: Repairorders[];
-  Name: string;
+  Model: string;
+  ModelType: string;
   ModelNumber: string;
   created_at: string;
   updated_at: string;
