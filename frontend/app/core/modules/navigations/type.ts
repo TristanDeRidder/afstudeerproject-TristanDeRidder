@@ -1,6 +1,8 @@
-export type OpeningHours = {
+export type Navigation = {
     id: number;
-    Opening: JSON;
+    Logo: string;
+    PageTitle: string;
+    URL: string;
     created_at: string;
     updated_at: string;
     published_at: string;

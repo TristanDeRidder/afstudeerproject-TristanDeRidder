@@ -2,35 +2,49 @@ import { useState } from "react";
 import { NavLink } from "@remix-run/react";
 import { Menu, X } from "lucide-react";
 
-const navLinks = [
-  { to: "/repair", label: "Herstellingen" },
-  { to: "/status", label: "Status" },
-  { to: "/about", label: "Over" },
-  { to: "/contact", label: "Contact" },
+interface NavLinkItem {
+  title: string;
+  url: string;
+  logo: string;
+}
+
+const customOrder = [
+  "Home",
+  "Herstellingen",
+  "Status",
+  "Over",
+  "Contact",
 ];
 
-export default function Navigation() {
+export default function Navigation({ items }: { items: NavLinkItem[] }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="relative bg-white p-4 pb-9 md:pb-12">
       {/* Desktop navigatie */}
       <div className="hidden md:flex justify-center gap-6">
-        {navLinks.map(({ to, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `transition-colors duration-200 px-4 py-2 rounded-full ${
-                isActive
-                  ? "text-secondary font-semibold bg-accent"
-                  : "text-text hover:text-accentLight"
-              }`
-            }
-          >
-            {label}
-          </NavLink>
-        ))}
+        {items
+          .sort((a, b) => {
+            const indexA = customOrder.indexOf(a.title);
+            const indexB = customOrder.indexOf(b.title);
+
+            return (
+              (indexA !== -1 ? indexA : 999) - (indexB !== -1 ? indexB : 999)
+            );
+          })
+          .map(({ title, url, logo }) => (
+            <NavLink
+              key={title}
+              to={url}
+              className={({ isActive }) =>
+                `text-xl font-semibold transition-colors duration-200 ${
+                  isActive ? "text-accent" : "text-text hover:text-primary"
+                }`
+              }
+            >
+              <img src={logo} alt={title} className="h-8" />
+            </NavLink>
+          ))}
       </div>
 
       {/* Hamburger menu knop (mobiel) */}
@@ -65,9 +79,7 @@ export default function Navigation() {
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
                   `text-2xl font-semibold transition-colors duration-200 ${
-                    isActive
-                      ? "text-accent"
-                      : "text-text hover:text-primary"
+                    isActive ? "text-accent" : "text-text hover:text-primary"
                   }`
                 }
               >

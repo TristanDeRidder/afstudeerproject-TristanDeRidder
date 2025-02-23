@@ -187,7 +187,7 @@ export default function Repair() {
           })}
 
           {/* Confirm Selection */}
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-row gap-2">
             <button
               className="py-2 px-4 rounded bg-accentLight"
               onClick={() => setStep(2)}
