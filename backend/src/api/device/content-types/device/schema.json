@@ -34,7 +34,7 @@
       "target": "api::repairorder.repairorder",
       "mappedBy": "device"
     },
-    "Name": {
+    "Model": {
       "type": "string"
     },
     "ModelNumber": {
@@ -45,6 +45,9 @@
       "relation": "manyToOne",
       "target": "api::brand.brand",
       "inversedBy": "devices"
+    },
+    "ModelType": {
+      "type": "string"
     }
   }
 }

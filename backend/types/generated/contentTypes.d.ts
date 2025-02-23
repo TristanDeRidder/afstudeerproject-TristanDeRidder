@@ -582,8 +582,9 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
       'api::device.device'
     > &
       Schema.Attribute.Private;
+    Model: Schema.Attribute.String;
     ModelNumber: Schema.Attribute.String;
-    Name: Schema.Attribute.String;
+    ModelType: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     repairorders: Schema.Attribute.Relation<
       'oneToMany',
@@ -703,6 +704,37 @@ export interface ApiMotherboardMotherboard extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiNavigationNavigation extends Struct.CollectionTypeSchema {
+  collectionName: 'navigations';
+  info: {
+    description: '';
+    displayName: 'Navigation';
+    pluralName: 'navigations';
+    singularName: 'navigation';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::navigation.navigation'
+    > &
+      Schema.Attribute.Private;
+    Logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    PageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    URL: Schema.Attribute.String;
   };
 }
 
@@ -1494,6 +1526,7 @@ declare module '@strapi/strapi' {
       'api::faq.faq': ApiFaqFaq;
       'api::invoice.invoice': ApiInvoiceInvoice;
       'api::motherboard.motherboard': ApiMotherboardMotherboard;
+      'api::navigation.navigation': ApiNavigationNavigation;
       'api::opening-hour.opening-hour': ApiOpeningHourOpeningHour;
       'api::part.part': ApiPartPart;
       'api::protection.protection': ApiProtectionProtection;
