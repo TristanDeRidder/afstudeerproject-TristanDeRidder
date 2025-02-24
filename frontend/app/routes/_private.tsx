@@ -1,6 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "../components/ui/sidebar";
 import { AppSidebar } from "../components/design/Nav/Sidebar";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { LoaderFunction, json, redirect } from "@remix-run/node";
 import { getSidebars } from "../core/modules/sidebar/api";
 import { getJwtFromCookie } from "../core/utils/auth.server";
@@ -28,10 +28,19 @@ export default function PrivateLayout() {
     items: { title: string; url: string; icon: string }[];
   }>();
 
+    const location = useLocation();
+  
+
   return (
     <SidebarProvider>
       <AppSidebar items={items} />
-      <main>
+      <main
+        className={
+          location.pathname !== "/"
+            ? "w-screen px-5 lg:px-32 overflow-hidden"
+            : "w-screen overflow-hidden"
+        }
+      >
         <SidebarTrigger />
         <Outlet />
       </main>
