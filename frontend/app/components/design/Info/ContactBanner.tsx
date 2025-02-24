@@ -21,9 +21,9 @@ export default function ContactBanner() {
           width="400"
           height="200"
           style={{ borderRadius: "10px" }}
-          allowFullScreen=""
+          allowFullScreen
           loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
+          referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>
     );

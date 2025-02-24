@@ -14,4 +14,11 @@ export default ({ env }) => ({
       },
     },
   },
+  'user-permissions': {
+    config: {
+      jwt: {
+        expiresIn: "7d",
+      }
+    }
+  }
 });
