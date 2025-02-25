@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { MoveRight } from "lucide-react";
 import { ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
+import DashboardTitle from "../components/design/Title/DashboardTitle";
 
 type LoaderData = {
   repairs: any[];
@@ -46,7 +47,13 @@ function getLastWeekDates() {
   return dates;
 }
 
-const ChartTooltipContent = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
+const ChartTooltipContent = ({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: any[];
+}) => {
   if (!active || !payload || !payload.length) return null;
 
   return (
@@ -68,6 +75,7 @@ const ChartTooltipContent = ({ active, payload }: { active?: boolean; payload?: 
 export default function Dashboard() {
   const { repairs, invoices } = useLoaderData<LoaderData>();
   const [selectedDate, setSelectedDate] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const filteredRepairs = selectedDate
     ? repairs.filter((repair) => repair.createdAt.startsWith(selectedDate))
@@ -86,18 +94,60 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Filter repairs by date:
-        </label>
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="border rounded p-2 w-full"
-        />
+      {/* Datepicker */}
+      <div className="flex justify-between items-center mb-4">
+        <DashboardTitle title="Dashboard" />
+        <div className="relative">
+          <button
+            onClick={() => setShowDatePicker(!showDatePicker)}
+            className="border rounded-full p-2  text-left bg-secondary text-bg"
+          >
+            {selectedDate
+              ? new Date(selectedDate).toLocaleDateString("en-GB")
+              : "Select a date"}
+          </button>
+
+          {showDatePicker && (
+            <div className="absolute top-full mt-2 bg-secondary border rounded-md shadow-md p-4 z-10">
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value);
+                  setShowDatePicker(false);
+                }}
+                className="border rounded p-2 w-full"
+              />
+              <div className="flex justify-between mt-2 gap-4">
+                <button
+                  onClick={() => {
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    setSelectedDate(yesterday.toISOString().split("T")[0]);
+                    setShowDatePicker(false);
+                  }}
+                  className="bg-accent text-text p-2 rounded-md hover:bg-accentLight transition-colors duration-300"
+                >
+                  Gisteren
+                </button>
+                <button
+                  onClick={() => {
+                    const twoDaysAgo = new Date();
+                    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+                    setSelectedDate(twoDaysAgo.toISOString().split("T")[0]);
+                    setShowDatePicker(false);
+                  }}
+                  className="bg-accent text-text p-2 rounded-md hover:bg-accentLight transition-colors duration-300"
+                >
+                  Eergisteren
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* Chart */}
       <div className="flex justify-between space-x-4">
         <div className="bg-primary rounded-md border p-4 w-1/2">
           <h2 className="text-2xl mb-4">Inkomsten</h2>
@@ -129,6 +179,7 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </div>
 
+        {/* Repairs */}
         <div className="bg-primary rounded-md border p-4 w-1/2">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl">Reparaties</h2>
