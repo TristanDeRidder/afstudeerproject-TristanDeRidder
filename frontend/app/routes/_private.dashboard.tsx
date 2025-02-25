@@ -14,6 +14,7 @@ import {
 import DashboardTitle from "../components/design/Title/DashboardTitle";
 import DatePicker from "../components/design/DatePicker/DataPicker";
 import DashboardLink from "../components/design/Link/DashboardLink";
+import DashboardSecondaryTitle from "../components/design/Title/DashboardSecondaryTitle";
 
 type LoaderData = {
   repairs: any[];
@@ -108,7 +109,7 @@ export default function Dashboard() {
       {/* Chart */}
       <div className="flex justify-between space-x-4">
         <div className="bg-primary rounded-md border p-4 w-1/2">
-          <h2 className="text-2xl mb-4">Inkomsten</h2>
+          <DashboardSecondaryTitle title="Inkomsten" />
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={dailyIncome}>
               <XAxis
@@ -140,9 +141,10 @@ export default function Dashboard() {
         {/* Repairs */}
         <div className="bg-primary rounded-md border p-4 w-1/2">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl">Reparaties</h2>
+            <DashboardSecondaryTitle title="Reparaties" />
             <DashboardLink url="/repairorders" />
           </div>
+
           <div className="w-full grid gap-2">
             {filteredRepairs.map((repair) => (
               <Link
@@ -158,7 +160,7 @@ export default function Dashboard() {
                   {repair.device?.Model} {repair.device?.ModelType}
                 </div>
                 <div>
-                  {repair.parts.map((part) => (
+                  {repair.parts.map((part: any) => (
                     <div key={part.id}>{part.Name}</div>
                   ))}
                 </div>
