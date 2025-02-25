@@ -11,9 +11,9 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { MoveRight } from "lucide-react";
-import { ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
+import DatePicker from "../components/design/DatePicker/DataPicker";
+import DashboardLink from "../components/design/Link/DashboardLink";
 
 type LoaderData = {
   repairs: any[];
@@ -75,7 +75,7 @@ const ChartTooltipContent = ({
 export default function Dashboard() {
   const { repairs, invoices } = useLoaderData<LoaderData>();
   const [selectedDate, setSelectedDate] = useState("");
-  const [showDatePicker, setShowDatePicker] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
   const filteredRepairs = selectedDate
     ? repairs.filter((repair) => repair.createdAt.startsWith(selectedDate))
@@ -94,57 +94,15 @@ export default function Dashboard() {
 
   return (
     <>
-      {/* Datepicker */}
+      {/* Datepicker and filter buttons */}
       <div className="flex justify-between items-center mb-4">
         <DashboardTitle title="Dashboard" />
-        <div className="relative">
-          <button
-            onClick={() => setShowDatePicker(!showDatePicker)}
-            className="border rounded-full p-2  text-left bg-secondary text-bg"
-          >
-            {selectedDate
-              ? new Date(selectedDate).toLocaleDateString("en-GB")
-              : "Select a date"}
-          </button>
-
-          {showDatePicker && (
-            <div className="absolute top-full mt-2 bg-secondary border rounded-md shadow-md p-4 z-10">
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => {
-                  setSelectedDate(e.target.value);
-                  setShowDatePicker(false);
-                }}
-                className="border rounded p-2 w-full"
-              />
-              <div className="flex justify-between mt-2 gap-4">
-                <button
-                  onClick={() => {
-                    const yesterday = new Date();
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    setSelectedDate(yesterday.toISOString().split("T")[0]);
-                    setShowDatePicker(false);
-                  }}
-                  className="bg-accent text-text p-2 rounded-md hover:bg-accentLight transition-colors duration-300"
-                >
-                  Gisteren
-                </button>
-                <button
-                  onClick={() => {
-                    const twoDaysAgo = new Date();
-                    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-                    setSelectedDate(twoDaysAgo.toISOString().split("T")[0]);
-                    setShowDatePicker(false);
-                  }}
-                  className="bg-accent text-text p-2 rounded-md hover:bg-accentLight transition-colors duration-300"
-                >
-                  Eergisteren
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        <DatePicker
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          showDatePicker={showDatePicker}
+          setShowDatePicker={setShowDatePicker}
+        />
       </div>
 
       {/* Chart */}
@@ -183,12 +141,7 @@ export default function Dashboard() {
         <div className="bg-primary rounded-md border p-4 w-1/2">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl">Reparaties</h2>
-            <Link
-              to="/repairorders"
-              className="block bg-primaryHelper rounded-full p-3 text-accent hover:bg-accent hover:text-primary transition-all duration-300"
-            >
-              <MoveRight className="w-5" />
-            </Link>
+            <DashboardLink url="/repairorders" />
           </div>
           <div className="w-full grid gap-2">
             {filteredRepairs.map((repair) => (
