@@ -25,27 +25,25 @@ export default function Devices() {
   const { devices } = useLoaderData<LoaderData>();
 
   return (
-    <div>
-      <table className="table-auto w-full">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Type</th>
-            <th className="px-4 py-2">Brand</th>
-            <th className="px-4 py-2">Model</th>
-          </tr>
-        </thead>
-        <tbody>
-          {devices.map((device) => (
-            <tr key={device.id}>
-              <td className="border px-4 py-2">{device.Type}</td>
-              <td className="border px-4 py-2">{device.brand?.BrandName}</td>
-              <td className="border px-4 py-2">
-                {device.Model} {device.ModelType}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="bg-primary p-4">
+      <div className="flex justify-between">
+        <div className="font-bold px-4 py-2 w-1/3">Type</div>
+        <div className="font-bold px-4 py-2 w-1/3">Brand</div>
+        <div className="font-bold px-4 py-2 w-1/3">Model</div>
+      </div>
+      <div>
+        {devices.map((device) => (
+          <div key={device.id} className="flex justify-between bg-primaryHelper mt-2">
+            <div className="px-4 py-2 w-1/3">{device.Type}</div>
+            <div className="px-4 py-2 w-1/3">
+              {device.brand?.BrandName}
+            </div>
+            <div className="px-4 py-2 w-1/3">
+              {device.Model} {device.ModelType}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
