@@ -6,6 +6,7 @@ import {
   Smartphone,
   CreditCard,
   List,
+  Globe,
 } from "lucide-react";
 
 import {
@@ -33,6 +34,7 @@ const iconMap: Record<string, React.ElementType> = {
   Smartphone,
   CreditCard,
   List,
+  Globe,
 };
 
 const customOrder = [
@@ -43,6 +45,7 @@ const customOrder = [
   "Order",
   "Repairorders",
   "Detail",
+  "Website"
 ];
 
 export function AppSidebar({ items }: { items: SidebarItem[] }) {
