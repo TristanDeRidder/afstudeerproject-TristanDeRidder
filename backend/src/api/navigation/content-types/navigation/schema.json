@@ -12,17 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Logo": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
-    },
     "PageTitle": {
       "type": "string"
     },

@@ -729,7 +729,6 @@ export interface ApiNavigationNavigation extends Struct.CollectionTypeSchema {
       'api::navigation.navigation'
     > &
       Schema.Attribute.Private;
-    Logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     PageTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
