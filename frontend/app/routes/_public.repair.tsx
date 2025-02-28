@@ -46,7 +46,7 @@ export default function Repair() {
 
   const getImageSrc = () => {
     if (selectedDevice) {
-      return selectedDevice.imageUrl;
+      return selectedDevice.Image?.url;
     }
     return selectedBrand?.Logo?.url;
   };
