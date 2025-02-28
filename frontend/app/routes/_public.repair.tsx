@@ -64,7 +64,7 @@ export default function Repair() {
                 ? selectedDevice.Name
                 : selectedBrand?.BrandName || "Brand Logo"
             }
-            className="w-48 h-48 object-contain"
+            className="w-72 h-72 object-contain"
           />
         </div>
 

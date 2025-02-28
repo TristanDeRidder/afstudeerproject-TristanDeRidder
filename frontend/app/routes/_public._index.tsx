@@ -99,15 +99,15 @@ export default function Index() {
                   key={device.documentId}
                   className="bg-primaryHelper p-5 rounded-lg w-full"
                 >
-                  <h3 className="text-lg font-bold">
-                    {device.Model} {device.ModelType}
-                  </h3>
-                  <p className="text-sm">Status: {device.ModelNumber}</p>
                   <img
                     src={device.Image?.url}
                     alt={device.Model}
                     className="w-full h-40 object-cover mt-3"
                   />
+                  <h3 className="text-lg font-bold">
+                    {device.Model} {device.ModelType}
+                  </h3>
+                  <p className="text-sm">Status: {device.ModelNumber}</p>
                 </div>
               ))
             )}
