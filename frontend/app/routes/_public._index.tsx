@@ -57,14 +57,26 @@ export default function Index() {
     <div className="flex flex-col gap-10">
       <div className="px-5 lg:px-32 flex flex-col gap-8">
         <PrimaryTitle
-          title="Fixit"
-          subtitle="Snelle herstellingen voor uw Smartphone"
+          title="Een snelle herstellingen voor uw Smartphone"
+          subtitle=""
         />
 
         <div className="flex flex-col lg:flex-row justify-center gap-10 bg-primary p-3 lg:p-10 rounded-lg">
-          <RepairCard title="Herstel een smartphone" images={images["20"]} url="repair" />
-          <RepairCard title="Herstel een tablet" images={images["21"]} url="repair" />
-          <RepairCard title="Herstel een laptop" images={images["22"]} url="repair" />
+          <RepairCard
+            title="Herstel een smartphone"
+            images={images["20"]}
+            url="repair"
+          />
+          <RepairCard
+            title="Herstel een tablet"
+            images={images["21"]}
+            url="repair"
+          />
+          <RepairCard
+            title="Herstel een laptop"
+            images={images["22"]}
+            url="repair"
+          />
         </div>
       </div>
 
@@ -110,7 +122,12 @@ export default function Index() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-10 pb-5">
           {whyCards && whyCards.PageContent.length > 0 ? (
             whyCards.PageContent.map(
-              (card: { id: number; Title: string; Text: string; Icon: string }) => (
+              (card: {
+                id: number;
+                Title: string;
+                Text: string;
+                Icon: string;
+              }) => (
                 <div
                   key={card.id}
                   className="bg-primaryHelper p-6 rounded-lg flex items-center"

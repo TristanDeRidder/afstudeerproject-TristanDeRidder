@@ -576,6 +576,7 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
       'manyToMany',
       'api::customer.customer'
     >;
+    Image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

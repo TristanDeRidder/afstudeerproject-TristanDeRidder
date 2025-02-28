@@ -27,8 +27,8 @@ export default {
   			}
   		},
   		animation: {
-  			marquee: 'marquee 20s linear infinite',
-  			reverse: 'marquee-reverse 20s linear infinite',
+  			marquee: 'marquee 30s linear infinite',
+  			reverse: 'marquee-reverse 30s linear infinite',
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
