@@ -15,6 +15,7 @@ export default {
   			secondary: '#004F73',
   			accent: '#B8CAF6',
   			accentLight: '#F1F5FD',
+			footer: '#2F6B8D',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',
