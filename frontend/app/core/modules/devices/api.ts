@@ -31,6 +31,7 @@ export async function getTopDevices() {
     // Haal alle repairorders op
     const response = await API.get("/repairorders?populate=*");
     const repairOrders = response.data;
+    
     const deviceCounts: { [key: string]: { count: number, device: any } } = {};
 
     // Tel hoe vaak elk toestel voorkomt
@@ -39,6 +40,8 @@ export async function getTopDevices() {
 
       // Here we can use the device object directly
       const device = repairOrder.device;
+
+      console.log(device);
 
       if (!deviceCounts[device.documentId]) {
         deviceCounts[device.documentId] = {

@@ -53,6 +53,7 @@ export async function loader() {
 export default function Index() {
   const { brands, topDevices, whyCards, images } =
     useLoaderData() as LoaderData & { images: Record<string, string> };
+
   return (
     <div className="flex flex-col gap-10">
       <div className="px-5 lg:px-32 flex flex-col gap-8">
@@ -102,6 +103,11 @@ export default function Index() {
                     {device.Model} {device.ModelType}
                   </h3>
                   <p className="text-sm">Status: {device.ModelNumber}</p>
+                  <img
+                    src={device.Image?.url}
+                    alt={device.Model}
+                    className="w-full h-40 object-cover mt-3"
+                  />
                 </div>
               ))
             )}
@@ -116,7 +122,7 @@ export default function Index() {
         </div>
       </div>
 
-      <div className="bg-accentLight p-10 rounded-lg">
+      <div className="bg-accentLight p-10 rounded-lg px-5 lg:px-32">
         <SecondaryTitle title="Waarom kiezen voor Fixit?" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-10 pb-5">
@@ -130,7 +136,7 @@ export default function Index() {
               }) => (
                 <div
                   key={card.id}
-                  className="bg-primaryHelper p-6 rounded-lg flex items-center"
+                  className="bg-primaryHelper p-6 rounded-lg flex items-start"
                 >
                   <div>
                     <h4 className="text-xl font-semibold mb-3">{card.Title}</h4>
