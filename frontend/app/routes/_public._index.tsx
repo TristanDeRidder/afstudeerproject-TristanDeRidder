@@ -14,6 +14,8 @@ import { getWhyCard } from "../core/modules/SingleTypes/why/api";
 // Types
 import { Devices } from "../core/modules/devices/type";
 import ContactBanner from "../components/design/Info/ContactBanner";
+import RepairCard from "../components/design/Card/RepairCard";
+import { getImageById } from "../components/.server/images/getImage";
 
 type LoaderData = {
   brands: any;
@@ -26,12 +28,31 @@ export async function loader() {
   const topDevices = await getTopDevices();
   const whyCards = await getWhyCard();
 
-  return { brands: brands.data, topDevices, whyCards: whyCards.data }; // ✅ Gebruik `data`
+  // Collect all image IDs you need
+  const repairImages = ["20", "21", "22"]; // Replace with real IDs
+
+  // Fetch all images in parallel
+  const imageResponses = await Promise.all(
+    repairImages.map((id) => getImageById({ id }))
+  );
+
+  // Create an object mapping IDs to URLs
+  const images = imageResponses.reduce((acc, image) => {
+    acc[image.id] = image.url;
+    return acc;
+  }, {} as Record<string, string>);
+
+  return json({
+    brands: brands.data,
+    topDevices,
+    whyCards: whyCards.data,
+    images,
+  });
 }
 
 export default function Index() {
-  const { brands, topDevices, whyCards } = useLoaderData() as LoaderData;
-
+  const { brands, topDevices, whyCards, images } =
+    useLoaderData() as LoaderData & { images: Record<string, string> };
   return (
     <div className="flex flex-col gap-10">
       <div className="px-5 lg:px-32 flex flex-col gap-8">
@@ -41,33 +62,9 @@ export default function Index() {
         />
 
         <div className="flex flex-col lg:flex-row justify-center gap-10 bg-primary p-3 lg:p-10 rounded-lg">
-          <div className="bg-primaryHelper p-10 rounded-lg flex flex-col gap-5">
-            <Link to="repair">Herstel een smartphone</Link>
-            <div className="group border-accent text-accent hover:text-secondary hover:border-secondary p-4">
-              <img src="" alt="Device Image" />
-              <span className="border rounded-full p-2 border-accent group-hover:border-secondary">
-                {"->"}
-              </span>
-            </div>
-          </div>
-          <div className="bg-primaryHelper p-10 rounded-lg flex flex-col gap-5">
-            <Link to="repair">Herstel een tablet</Link>
-            <div className="group border-accent text-accent hover:text-secondary hover:border-secondary p-4">
-              <img src="" alt="Device Image" />
-              <span className="border rounded-full p-2 border-accent group-hover:border-secondary">
-                {"->"}
-              </span>
-            </div>
-          </div>
-          <div className="bg-primaryHelper p-10 rounded-lg flex flex-col gap-5">
-            <Link to="repair">Herstel een laptop</Link>
-            <div className="group border-accent text-accent hover:text-secondary hover:border-secondary p-4">
-              <img src="" alt="Device Image" />
-              <span className="border rounded-full p-2 border-accent group-hover:border-secondary">
-                {"->"}
-              </span>
-            </div>
-          </div>
+          <RepairCard title="Herstel een smartphone" images={images["20"]} url="repair" />
+          <RepairCard title="Herstel een tablet" images={images["21"]} url="repair" />
+          <RepairCard title="Herstel een laptop" images={images["22"]} url="repair" />
         </div>
       </div>
 

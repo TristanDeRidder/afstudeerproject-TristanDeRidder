@@ -17,7 +17,6 @@ export async function getFAQs() {
 
     try {
         const response = await API.get(`faqs?${query}`);
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);

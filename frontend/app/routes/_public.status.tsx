@@ -27,7 +27,6 @@ export async function loader({ request }: { request: Request }) {
 // Component
 export default function Repair() {
   const { repairorder, error } = useLoaderData() as LoaderData;
-  console.log("Repair Order:", repairorder);
 
   if (error) return <div>Error: {error}</div>;
   if (!repairorder) return <div>Loading repair order...</div>;

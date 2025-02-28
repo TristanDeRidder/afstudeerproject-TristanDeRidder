@@ -17,7 +17,6 @@ export async function getSuppliers() {
 
     try {
         const response = await API.get(`suppliers?${query}`);
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);

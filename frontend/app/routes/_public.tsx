@@ -14,8 +14,6 @@ export async function loader() {
     const images = await getImageById({ id: "3" });
     const nav = await getNavigation();
 
-    console.log(nav);
-
     if (!images) {
       throw new Error("No images found");
     }

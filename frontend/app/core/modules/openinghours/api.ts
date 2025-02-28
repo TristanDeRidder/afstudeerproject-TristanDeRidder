@@ -17,7 +17,6 @@ export async function getOpeninghours() {
 
     try {
         const response = await API.get(`openinghours?${query}`);
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);

@@ -17,7 +17,6 @@ export async function getWhyCard() {
 
     try {
         const response = await API.get(`why?${query}`);
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);

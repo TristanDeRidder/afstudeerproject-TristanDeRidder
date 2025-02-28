@@ -51,7 +51,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       message
     );
 
-    console.log("1", messageResponse.data);
 
     if (!messageResponse.data) {
       return {

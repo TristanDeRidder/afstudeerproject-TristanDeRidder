@@ -1,0 +1,26 @@
+import { Link } from "@remix-run/react";
+import { MoveRight } from "lucide-react";
+
+export default function RepairCard({title, images, url}: {title: string, images: any, url: string}) {    
+    return (
+      <Link
+        to={url}
+        className="group text-3xl font-bold bg-primaryHelper p-10 rounded-lg flex flex-col justify-between items-center gap-10 hover:bg-accentLight transition-all overflow-hidden"
+      >
+        <div className="w-48">{title}</div>
+
+        <div className="relative h-48 w-64 flex items-center">
+          {images && (
+            <img
+              src={images}
+              alt={title}
+              className="absolute -right-24 w-96 h-auto -rotate-12"
+            />
+          )}
+          <span className="absolute left-0 bottom-0 bg-primaryHelper rounded-full p-3 text-accent border border-accent rotate-45 group-hover:bg-accent group-hover:text-primary group-hover:rotate-0 transition-all duration-500 ease-in-out">
+            <MoveRight />
+          </span>
+        </div>
+      </Link>
+    );
+}

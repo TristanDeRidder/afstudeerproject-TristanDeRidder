@@ -17,7 +17,6 @@ export async function getB2BPage() {
 
     try {
         const response = await API.get(`business?${query}`);
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);

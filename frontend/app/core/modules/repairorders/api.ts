@@ -29,7 +29,6 @@ export async function getRepairorderByDocumentId(documentId: string) {
     const response = await API.get(
       `repairorders/${documentId}?populate=*`
     );
-    // console.log("API response", response.data);
     return response.data
   } catch (error) {
     console.error("Error fetching repair order:", error);
