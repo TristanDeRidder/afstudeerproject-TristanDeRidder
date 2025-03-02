@@ -905,11 +905,11 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
       [
         'Bestellen',
         'Besteld',
-        'Binnengekomen',
-        'Op de hoogte gebracht van onderdeel',
-        'Binnengebracht',
+        'Geleverd',
+        'Op de hoogte',
+        'Binnen',
         'Reparatie',
-        'Klaar voor ophalen',
+        'Klaar',
         'Opgehaald',
       ]
     > &

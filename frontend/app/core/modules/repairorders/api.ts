@@ -5,6 +5,8 @@ import qs from 'qs';
 import API from '../../networking/API.server';
 
 // Type
+import { StrapiResponse } from '../strapi/type';
+import { Repairorders } from './type';
 
 export async function getRepairorders() {
     const query = qs.stringify({
@@ -32,6 +34,34 @@ export async function getRepairorderByDocumentId(documentId: string) {
     return response.data
   } catch (error) {
     console.error("Error fetching repair order:", error);
+    throw error;
+  }
+}
+
+
+export async function addRepairorder(
+  statusRepair: string,
+  issue: string,
+  repairable: boolean,
+  authToken: string
+): Promise<StrapiResponse<Repairorders>> {
+  const data = {
+    data: { StatusRepair: statusRepair, Issue: issue, Repairable: repairable },
+  };
+  
+
+  console.log(`authToken: ${authToken}`);
+
+  try {
+    const response = await API.post("repairorders", data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`, // Use the passed token
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("2: Failed add response:", error);
     throw error;
   }
 }
