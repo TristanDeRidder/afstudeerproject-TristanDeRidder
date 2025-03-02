@@ -14,11 +14,24 @@ export default ({ env }) => ({
       },
     },
   },
-  'user-permissions': {
+  email: {
+    config: {
+      provider: "sendgrid", // For community providers pass the full package name (e.g. provider: 'strapi-provider-email-mandrill')
+      providerOptions: {
+        apiKey: env("SENDGRID_API_KEY"),
+      },
+      settings: {
+        defaultFrom: "tristanderidder1@gmail.com",
+        defaultReplyTo: "tristanderidder1@gmail.com",
+        testAddress: "tristanderidder1@gmail.com",
+      },
+    },
+  },
+  "user-permissions": {
     config: {
       jwt: {
         expiresIn: "7d",
-      }
-    }
-  }
+      },
+    },
+  },
 });
