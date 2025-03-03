@@ -8,6 +8,7 @@ import type { Repairorders } from "../core/modules/repairorders/type";
 import Datepicker from "../components/design/DatePicker/DataPicker";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
 import DashboardCard from "../components/design/Card/DashboardCard";
+import { jwtCookie } from "../core/cookies/cookies.server";
 
 type LoaderData = { repairs: Repairorders[] };
 
@@ -23,13 +24,16 @@ export async function loader() {
 }
 
 export async function action({ request }: any) {
+  const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
+  
+
   const formData = await request.formData();
   const statusRepair = formData.get("statusRepair");
   const issue = formData.get("issue");
   const repairable = formData.get("repairable") === "true";
 
   try {
-    await addRepairorder(statusRepair, issue, repairable);
+    await addRepairorder(statusRepair, issue, repairable, jwt);
     return { success: true };
   } catch (error) {
     console.error("Failed to add repair order:", error);

@@ -43,19 +43,16 @@ export async function addRepairorder(
   statusRepair: string,
   issue: string,
   repairable: boolean,
-  authToken: string
+  authToken: string // Add authToken as a parameter
 ): Promise<StrapiResponse<Repairorders>> {
   const data = {
     data: { StatusRepair: statusRepair, Issue: issue, Repairable: repairable },
   };
   
-
-  console.log(`authToken: ${authToken}`);
-
   try {
     const response = await API.post("repairorders", data, {
       headers: {
-        Authorization: `Bearer ${authToken}`, // Use the passed token
+        Authorization: `Bearer ${authToken}`, // Use the provided token
       },
     });
 

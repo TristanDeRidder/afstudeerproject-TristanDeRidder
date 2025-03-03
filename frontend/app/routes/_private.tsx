@@ -17,7 +17,7 @@ export async function action({ request }: any) {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const jwt = jwtCookie.parse(request.headers.get("Cookie"));
+  const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
 
   if (!jwt) {
     return redirect("/signin");
