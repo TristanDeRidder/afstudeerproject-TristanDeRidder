@@ -12,7 +12,7 @@ export type Repairorders = {
     Invoice: Invoices;
     Customer: Customers;
     Parts: Parts[];
-    Devices: Devices[];
+    devices: Devices[];
     created_at: string;
     updated_at: string;
     published_at: string;

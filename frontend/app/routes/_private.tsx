@@ -3,14 +3,27 @@ import { AppSidebar } from "../components/design/Nav/Sidebar";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { LoaderFunction, json, redirect } from "@remix-run/node";
 import { getSidebars } from "../core/modules/sidebar/api";
-import { getJwtFromCookie } from "../core/utils/auth.server";
+import { jwtCookie } from "../core/cookies/cookies.server";
+import API from "../core/networking/API.server";
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const jwt = await getJwtFromCookie(request);
+export async function action({ request }: any) {
+  const jwt = jwtCookie.parse(request.headers.get("Cookie"));
 
   if (!jwt) {
     return redirect("/signin");
   }
+  
+  API.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const jwt = jwtCookie.parse(request.headers.get("Cookie"));
+
+  if (!jwt) {
+    return redirect("/signin");
+  }
+
+  API.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
 
   const sidebars = await getSidebars();
 

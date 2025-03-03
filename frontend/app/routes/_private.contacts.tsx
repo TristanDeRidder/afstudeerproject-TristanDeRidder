@@ -23,7 +23,7 @@ export async function loader() {
 }
 
 export default function Contact() {
-  const { contact } = useLoaderData<LoaderData>();
+  const { contact } = useLoaderData() as LoaderData;
 
   return (
     <div>
