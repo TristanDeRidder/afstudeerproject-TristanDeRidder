@@ -106,8 +106,8 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Chart */}
       <div className="flex justify-between space-x-4">
+      {/* Chart */}
         <div className="bg-primary rounded-md border p-4 w-1/2">
           <DashboardSecondaryTitle title="Inkomsten" />
           <ResponsiveContainer width="100%" height={300}>
@@ -148,7 +148,7 @@ export default function Dashboard() {
           <div className="w-full grid gap-2">
             {filteredRepairs.map((repair) => (
               <Link
-                key={repair.documentIdd}
+                key={repair.documentId}
                 to={`/detail?documentId=${repair.documentId}`}
                 className={`rounded-md p-4 grid grid-cols-3 gap-4 list-decimal ${
                   repair.StatusRepair === "Opgehaald"

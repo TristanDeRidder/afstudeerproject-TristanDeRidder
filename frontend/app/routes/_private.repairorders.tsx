@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useLoaderData, useFetcher, json } from "@remix-run/react";
+import { useLoaderData, useFetcher, json, Link } from "@remix-run/react";
 import {
   getRepairorders,
   addRepairorder,
@@ -180,8 +180,9 @@ export default function Repairorders() {
         <div className="px-4 py-2 rounded-md">
           {filteredRepairs.length > 0 ? (
             filteredRepairs.map((repair) => (
-              <div
-                key={repair.id}
+              <Link
+                key={repair.documentId}
+                to={`/detail?documentId=${repair.documentId}`}
                 className="flex justify-between bg-accentLight mt-2"
               >
                 <div className="px-4 py-2 w-1/5">
@@ -201,7 +202,7 @@ export default function Repairorders() {
                   €{repair.invoice?.TotalAmount}
                 </div>
                 <div className="px-4 py-2 w-1/5">{repair.StatusRepair}</div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="px-4 py-2 text-center">

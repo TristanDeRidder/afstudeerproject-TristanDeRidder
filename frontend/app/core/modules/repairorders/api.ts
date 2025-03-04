@@ -50,6 +50,7 @@ export async function addRepairorder(
   };
   
   try {
+    console.log(authToken)
     const response = await API.post("repairorders", data, {
       headers: {
         Authorization: `Bearer ${authToken}`, // Use the provided token
@@ -58,7 +59,7 @@ export async function addRepairorder(
 
     return response.data;
   } catch (error) {
-    console.error("2: Failed add response:", error);
+    console.error("Failed add response:", error);
     throw error;
   }
 }

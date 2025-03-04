@@ -28,6 +28,8 @@ export async function loader() {
   const topDevices = await getTopDevices();
   const whyCards = await getWhyCard();
 
+  console.log("topDevices", topDevices);
+
   // Collect all image IDs you need
   const repairImages = ["20", "21", "22"]; // Replace with real IDs
 
@@ -142,7 +144,7 @@ export default function Index() {
                     <h4 className="text-xl font-semibold mb-3">{card.Title}</h4>
                     <p className="text-sm">{card.Text}</p>
                   </div>
-                  <img src={card.Icon} alt={card.Title} />
+                  <img src={card.Icon?.url} alt={card.Title} />
                 </div>
               )
             )

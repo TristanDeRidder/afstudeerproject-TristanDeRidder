@@ -7,13 +7,17 @@ import API from '../../../networking/API.server';
 // Type
 
 export async function getWhyCard() {
-    const query = qs.stringify({
-        populate: "*",
+    const query = qs.stringify(
+      {
+        populate: {
+          PageContent: {
+            populate: "*",
+          },
+        },
       },
       {
         encodeValuesOnly: true,
-      }
-    );
+      });
 
     try {
         const response = await API.get(`why?${query}`);

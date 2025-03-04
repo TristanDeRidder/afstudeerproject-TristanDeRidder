@@ -27,9 +27,17 @@ export async function getDevices() {
 
 export async function getTopDevices() {
   try {
-    
     // Haal alle repairorders op
-    const response = await API.get("/repairorders?populate=*");
+    const query = qs.stringify({
+      populate: {
+        device: {
+          populate: "Image",
+        },
+        parts: true,
+        customer: true,
+      },
+    });
+    const response = await API.get(`/repairorders?${query}`);
     const repairOrders = response.data;
     
     const deviceCounts: { [key: string]: { count: number, device: any } } = {};
@@ -40,8 +48,6 @@ export async function getTopDevices() {
 
       // Here we can use the device object directly
       const device = repairOrder.device;
-
-      console.log(device);
 
       if (!deviceCounts[device.documentId]) {
         deviceCounts[device.documentId] = {
