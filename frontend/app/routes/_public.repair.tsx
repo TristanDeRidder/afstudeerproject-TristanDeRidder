@@ -44,6 +44,9 @@ export default function Repair() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [confirmSelection, setConfirmSelection] = useState(false);
 
+  // New state for search functionality
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   const getImageSrc = () => {
     if (selectedDevice) {
       return selectedDevice.Image?.url;
@@ -53,179 +56,217 @@ export default function Repair() {
 
   const deviceTypes = Array.from(new Set(devices.map((device) => device.Type)));
 
+  // Handle search input and filter devices and parts
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    const foundDevice = devices.find(
+      (device) =>
+      device.Model.toLowerCase().includes(event.target.value.toLowerCase()) ||
+      (device.ModelType && device.ModelType.toLowerCase().includes(event.target.value.toLowerCase()))
+    );
+
+    console.log(foundDevice);
+
+    if (foundDevice) {
+      setSelectedDevice(foundDevice); // Automatically select device based on search
+      setStep(4); // Skip the steps and go straight to parts
+    } else {
+      setSelectedDevice(null); // Reset if no device is found
+      setStep(1); // Show the first step
+    }
+  };
+
   return (
     <div>
-      <div className="p-4 flex flex-col md:flex-row justify-center items-center h-screen">
-        <div className="none md:flex justify-center items-center mb-6 w-1/2">
-          <img
-            src={getImageSrc()}
-            alt={
-              selectedDevice
-                ? selectedDevice.Name
-                : selectedBrand?.BrandName || "Brand Logo"
-            }
-            className="w-72 h-72 object-contain"
+      <div className="p-4 flex flex-col justify-center items-center h-screen">
+        {/* Search Bar */}
+        <div className="md:w-1/2 p-4">
+          <input
+            type="text"
+            placeholder="Search for a device..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="block w-full p-2 mb-4 border rounded"
           />
         </div>
 
-        {step === 1 && (
-          <div className="md:w-1/2 bg-primary p-4 rounded-md">
-            <h2 className="text-xl font-bold">Select a Type</h2>
-            {deviceTypes.map((type) => (
-              <button
-                key={type}
-                className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper"
-                onClick={() => {
-                  setSelectedType(type);
-                  setConfirmSelection(true);
-                }}
-              >
-                {type}
-              </button>
-            ))}
-            {confirmSelection && (
-              <button
-                className="mt-4 p-2 border rounded-lg bg-accent text-text"
-                onClick={() => {
-                  setStep(2);
-                  setConfirmSelection(false);
-                }}
-              >
-                Confirm Selection
-              </button>
-            )}
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+          {/* Device Image Display */}
+          <div className="none md:flex justify-center items-center mb-6 w-1/2">
+            <img
+              src={getImageSrc()}
+              alt={
+                selectedDevice
+                  ? selectedDevice.Name
+                  : selectedBrand?.BrandName || "Brand Logo"
+              }
+              className="w-72 h-72 object-contain"
+            />
           </div>
-        )}
 
-        {step === 2 && selectedType && (
-          <div className="md:w-1/2 bg-primary p-4">
-            <h2 className="text-xl font-bold">Select a Brand</h2>
-            {brands.map((brand) => (
-              <button
-                key={brand.documentId}
-                className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper"
-                onClick={() => {
-                  setSelectedBrand(brand);
-                  setConfirmSelection(true);
-                }}
-              >
-                {brand.BrandName}
-              </button>
-            ))}
-            <div className="flex flex-row-reverse justify-end gap-2">
+          {/* Step 1: Select a Type */}
+          {step === 1 && (
+            <div className="md:w-1/2 bg-primary p-4 rounded-md">
+              <h2 className="text-xl font-bold">Select a Type</h2>
+              {deviceTypes.map((type) => (
+                <button
+                  key={type}
+                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper"
+                  onClick={() => {
+                    setSelectedType(type);
+                    setConfirmSelection(true);
+                  }}
+                >
+                  {type}
+                </button>
+              ))}
               {confirmSelection && (
                 <button
                   className="mt-4 p-2 border rounded-lg bg-accent text-text"
                   onClick={() => {
-                    setStep(3);
+                    setStep(2);
                     setConfirmSelection(false);
                   }}
                 >
                   Confirm Selection
                 </button>
               )}
-              <button
-                className="mt-4 py-2 px-4 rounded bg-accentLight"
-                onClick={() => setStep(1)}
-              >
-                Back
-              </button>
             </div>
-          </div>
-        )}
+          )}
 
-        {step === 3 && selectedBrand && (
-          <div className="md:w-1/2 bg-primary p-4">
-            <h2 className="text-xl font-bold mb-4">Select a Model</h2>
-            {Array.from(
-              new Set(
-                devices
-                  .filter(
-                    (device) =>
-                      device.brand?.BrandName === selectedBrand.BrandName &&
-                      device.Type === selectedType
-                  )
-                  .map((device) => device.Model)
-              )
-            ).map((model) => {
-              const modelVariants = devices.filter(
-                (device) =>
-                  device.Model === model &&
-                  device.brand?.BrandName === selectedBrand.BrandName &&
-                  device.Type === selectedType
-              );
-
-              return (
-                <details key={model} className="border rounded mb-2">
-                  <summary className="p-2 bg-primaryHelper cursor-pointer">
-                    {model}
-                  </summary>
-                  <div className="p-2">
-                    {modelVariants.map((variant) => (
-                      <button
-                        key={variant.documentId}
-                        className={`block w-full p-2 my-1 border rounded text-left ${
-                          selectedDevice?.documentId === variant.documentId
-                            ? "bg-accent text-white"
-                            : "bg-accentLight hover:bg-accent"
-                        }`}
-                        onClick={() => setSelectedDevice(variant)}
-                      >
-                        {variant.ModelType || "Standard"}
-                      </button>
-                    ))}
-                  </div>
-                </details>
-              );
-            })}
-
-            {/* Confirm Selection */}
-            <div className="flex flex-row gap-2">
-              <button
-                className="py-2 px-4 rounded bg-accentLight"
-                onClick={() => setStep(2)}
-              >
-                Back
-              </button>
-              {selectedDevice && (
+          {/* Step 2: Select a Brand */}
+          {step === 2 && selectedType && (
+            <div className="md:w-1/2 bg-primary p-4">
+              <h2 className="text-xl font-bold">Select a Brand</h2>
+              {brands.map((brand) => (
                 <button
-                  className="p-2 border rounded-lg bg-accent text-text"
-                  onClick={() => setStep(4)}
+                  key={brand.documentId}
+                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper"
+                  onClick={() => {
+                    setSelectedBrand(brand);
+                    setConfirmSelection(true);
+                  }}
                 >
-                  Confirm Selection
+                  {brand.BrandName}
                 </button>
-              )}
+              ))}
+              <div className="flex flex-row-reverse justify-end gap-2">
+                {confirmSelection && (
+                  <button
+                    className="mt-4 p-2 border rounded-lg bg-accent text-text"
+                    onClick={() => {
+                      setStep(3);
+                      setConfirmSelection(false);
+                    }}
+                  >
+                    Confirm Selection
+                  </button>
+                )}
+                <button
+                  className="mt-4 py-2 px-4 rounded bg-accentLight"
+                  onClick={() => setStep(1)}
+                >
+                  Back
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {step === 4 && selectedDevice && (
-          <div className="md:w-1/2 bg-primary p-4">
-            <h2 className="text-xl font-bold">Select a Part</h2>
-            {parts.map((part) => (
-              <button
-                key={part.documentId}
-                className={`block p-2 my-2 border rounded w-full text-left ${
-                  selectedDevice?.Parts?.find(
-                    (devicePart) => devicePart.documentId === part.documentId
-                  )
-                    ? "bg-accent text-white"
-                    : "bg-primaryHelper hover:bg-accent"
-                }`}
-              >
-                {part.Name} - {part.SellingPrice}
-              </button>
-            ))}
-            <div className="flex justify-between items-center mt-4">
-              <button
-                className="py-2 px-4 rounded bg-accentLight"
-                onClick={() => setStep(3)}
-              >
-                Back
-              </button>
+          {/* Step 3: Select a Model */}
+          {step === 3 && selectedBrand && (
+            <div className="md:w-1/2 bg-primary p-4">
+              <h2 className="text-xl font-bold mb-4">Select a Model</h2>
+              {Array.from(
+                new Set(
+                  devices
+                    .filter(
+                      (device) =>
+                        device.brand?.BrandName === selectedBrand.BrandName &&
+                        device.Type === selectedType
+                    )
+                    .map((device) => device.Model)
+                )
+              ).map((model) => {
+                const modelVariants = devices.filter(
+                  (device) =>
+                    device.Model === model &&
+                    device.brand?.BrandName === selectedBrand.BrandName &&
+                    device.Type === selectedType
+                );
+
+                return (
+                  <details key={model} className="border rounded mb-2">
+                    <summary className="p-2 bg-primaryHelper cursor-pointer">
+                      {model}
+                    </summary>
+                    <div className="p-2">
+                      {modelVariants.map((variant) => (
+                        <button
+                          key={variant.documentId}
+                          className={`block w-full p-2 my-1 border rounded text-left ${
+                            selectedDevice?.documentId === variant.documentId
+                              ? "bg-accent text-white"
+                              : "bg-accentLight hover:bg-accent"
+                          }`}
+                          onClick={() => setSelectedDevice(variant)}
+                        >
+                          {variant.ModelType || "Standard"}
+                        </button>
+                      ))}
+                    </div>
+                  </details>
+                );
+              })}
+
+              {/* Confirm Selection */}
+              <div className="flex flex-row gap-2">
+                <button
+                  className="py-2 px-4 rounded bg-accentLight"
+                  onClick={() => setStep(2)}
+                >
+                  Back
+                </button>
+                {selectedDevice && (
+                  <button
+                    className="p-2 border rounded-lg bg-accent text-text"
+                    onClick={() => setStep(4)}
+                  >
+                    Confirm Selection
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Step 4: Select a Part */}
+          {step === 4 && selectedDevice && (
+            <div className="md:w-1/2 bg-primary p-4">
+              <h2 className="text-xl font-bold">Select a Part</h2>
+              {parts.map((part) => (
+                <button
+                  key={part.documentId}
+                  className={`block p-2 my-2 border rounded w-full text-left ${
+                    selectedDevice?.Parts?.find(
+                      (devicePart) => devicePart.documentId === part.documentId
+                    )
+                      ? "bg-accent text-white"
+                      : "bg-primaryHelper hover:bg-accent"
+                  }`}
+                >
+                  {part.Name} - {part.SellingPrice}
+                </button>
+              ))}
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  className="py-2 px-4 rounded bg-accentLight"
+                  onClick={() => setStep(3)}
+                >
+                  Back
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       <ContactBanner />
     </div>
