@@ -15,16 +15,19 @@ import DashboardTitle from "../components/design/Title/DashboardTitle";
 import DatePicker from "../components/design/DatePicker/DataPicker";
 import DashboardLink from "../components/design/Link/DashboardLink";
 import DashboardSecondaryTitle from "../components/design/Title/DashboardSecondaryTitle";
+import { Repairorders } from "../core/modules/repairorders/type";
+import { Invoices } from "../core/modules/invoices/type";
 
 type LoaderData = {
-  repairs: any[];
-  invoices: any[];
+  repairs: Repairorders[];
+  invoices: Invoices[];
 };
 
 export async function loader() {
   try {
     const repairs = await getRepairorders();
     const invoices = await getInvoices();
+
 
     if (!repairs?.data || !invoices?.data) {
       throw new Error("No data available");
@@ -74,7 +77,7 @@ const ChartTooltipContent = ({
 };
 
 export default function Dashboard() {
-  const { repairs, invoices } = useLoaderData<LoaderData>();
+  const { repairs, invoices } = useLoaderData() as LoaderData;
   const [selectedDate, setSelectedDate] = useState("");
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -92,6 +95,8 @@ export default function Dashboard() {
   });
 
   const today = new Date().toISOString().split("T")[0];
+
+  console.log("1: repairs", invoices)
 
   return (
     <>

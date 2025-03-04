@@ -4,36 +4,65 @@ import {
   getRepairorders,
   addRepairorder,
 } from "../core/modules/repairorders/api";
+import { getDevices } from "../core/modules/devices/api";
+import { getParts } from "../core/modules/parts/api";
+
 import type { Repairorders } from "../core/modules/repairorders/type";
+import type { Devices } from "../core/modules/devices/type";
+import type { Parts } from "../core/modules/parts/type";
+
 import Datepicker from "../components/design/DatePicker/DataPicker";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
 import DashboardCard from "../components/design/Card/DashboardCard";
 import { jwtCookie } from "../core/cookies/cookies.server";
 
-type LoaderData = { repairs: Repairorders[] };
+type LoaderData = { 
+  repairs: Repairorders[],
+  devices: Devices[],
+  parts: Parts[]
+};
 
 export async function loader() {
   try {
     const repairs = await getRepairorders();
+    const devices = await getDevices();
+    const parts = await getParts();
+
     if (!repairs?.data) throw new Error("No data available");
-    return { repairs: repairs.data };
+    if (!devices?.data) throw new Error("No devices available");
+    if (!parts?.data) throw new Error("No parts available");
+
+    return { repairs: repairs.data, devices: devices.data, parts: parts.data };
   } catch (error) {
     console.error("Error while fetching data:", error);
-    return { repairs: [] };
+    return { repairs: [], devices: [], parts: [] };
   }
 }
 
 export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
-  
 
   const formData = await request.formData();
   const statusRepair = formData.get("statusRepair");
   const issue = formData.get("issue");
   const repairable = formData.get("repairable") === "true";
+  const customerId = formData.get("customerId");
+  const deviceId = formData.get("deviceId");
+  const parts = formData.getAll("parts[]"); // Collect multiple parts
+  const invoiceId = formData.get("invoiceId");
+
+  const repairData = {
+    statusRepair,
+    issue,
+    repairable,
+    customer: customerId ? { connect: { id: customerId } } : null,
+    device: deviceId ? { connect: { id: deviceId } } : null,
+    parts: parts.length > 0 ? parts.map((partId) => ({ id: partId })) : [],
+    invoice: invoiceId ? { connect: { id: invoiceId } } : null,
+  };
 
   try {
-    await addRepairorder(statusRepair, issue, repairable, jwt);
+    await addRepairorder(repairData, jwt);
     return { success: true };
   } catch (error) {
     console.error("Failed to add repair order:", error);
@@ -43,7 +72,7 @@ export async function action({ request }: any) {
 
 export default function Repairorders() {
   const fetcher = useFetcher();
-  const { repairs } = useLoaderData<LoaderData>();
+  const { repairs, devices, parts } = useLoaderData() as LoaderData;
 
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
@@ -77,6 +106,41 @@ export default function Repairorders() {
     setShowOverlay(false);
   };
 
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
+
+  const filteredParts = useMemo(() => {
+    console.log("Current selected device ID:", selectedDeviceId);
+    const filtered = parts.filter(
+      (part) => part.device?.id.toString() === selectedDeviceId.toString()
+    );
+    console.log("Filtered parts:", filtered);
+    return filtered;
+  }, [selectedDeviceId, parts]);
+  
+  
+  const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newDeviceId = e.target.value;
+    console.log("Device selected:", newDeviceId);
+    setSelectedDeviceId(newDeviceId);
+  };
+
+  const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
+
+  const totalPrice = useMemo(() => {
+    return selectedPartIds.reduce((sum, partId) => {
+      const part = filteredParts.find((part) => part.id.toString() === partId.toString());
+      return sum + (part?.SellingPrice || 0);
+    }, 0);
+  }, [selectedPartIds, filteredParts]);
+
+  const handlePartChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions).map(
+      (opt) => opt.value
+    );
+    setSelectedPartIds(selectedOptions);
+  };
+
+
   return (
     <div className="relative">
       <div className="flex justify-between items-center mb-4">
@@ -109,65 +173,126 @@ export default function Repairorders() {
         <DashboardCard title="Complete" data={completedRepairs.length} />
       </div>
 
-      {showOverlay && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-primaryHelper p-4 rounded-md w-1/2">
-            <h2 className="text-xl font-bold mb-4">
-              Nieuwe reparatie toevoegen
-            </h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-2">
-                <label>Status Repair</label>
-                <select
-                  name="statusRepair"
-                  required
-                  className="border rounded-md p-2 w-full"
-                >
-                  <option value="">Select Status</option>
-                  <option value="Bestellen">Bestellen</option>
-                  <option value="Besteld">Besteld</option>
-                  <option value="Geleverd">Geleverd</option>
-                  <option value="Op de hoogte">Op de hoogte</option>
-                  <option value="Binnen">Binnen</option>
-                  <option value="Reparatie">Reparatie</option>
-                  <option value="Klaar">Klaar</option>
-                  <option value="Opgehaald">Opgehaald</option>
-                </select>
-              </div>
-              <div className="mb-2">
-                <label>Issue</label>
+      {/* {showOverlay && ( */}
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-primaryHelper p-4 rounded-md w-1/2">
+          <h2 className="text-xl font-bold mb-4">Nieuwe reparatie toevoegen</h2>
+          <form onSubmit={handleSubmit}>
+            {/* Repair data */}
+            <div className="mb-2">
+              <label>Status Repair</label>
+              <select
+                name="statusRepair"
+                required
+                className="border rounded-md p-2 w-full"
+              >
+                <option value="">Select Status</option>
+                <option value="Bestellen">Bestellen</option>
+                <option value="Reparatie">Reparatie</option>
+                <option value="Opgehaald">Opgehaald</option>
+              </select>
+            </div>
+
+            <div className="mb-2">
+              <label>Issue</label>
+              <input
+                type="text"
+                name="issue"
+                required
+                className="border rounded-md p-2 w-full"
+              />
+            </div>
+
+            {/* Customer data */}
+            <div className="mb-2 flex flex-col gap-2">
+              <label>Klant</label>
+              <div className="flex gap-2">
                 <input
                   type="text"
-                  name="issue"
-                  required
+                  name="firstname"
+                  placeholder="voornaam"
+                  className="border rounded-md p-2 w-full"
+                />
+                <input
+                  type="text"
+                  name="lastname"
+                  placeholder="achternaam"
                   className="border rounded-md p-2 w-full"
                 />
               </div>
-              <div className="mb-4">
-                <label>
-                  <input type="checkbox" name="repairable" value="true" />{" "}
-                  Repairable
-                </label>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  name="mail"
+                  placeholder="e-mailadres"
+                  className="border rounded-md p-2 w-full"
+                />
+                <input
+                  type="text"
+                  name="phonenumber"
+                  placeholder="+32 123 45 67 89"
+                  className="border rounded-md p-2 w-full"
+                />
               </div>
-              <div className="flex gap-4">
-                <button
-                  type="submit"
-                  className="bg-accentLight px-4 py-2 rounded-md"
-                >
-                  Reparatie toevoegen
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowOverlay(false)}
-                  className="bg-gray-400 px-4 py-2 rounded-md"
-                >
-                  Annuleren
-                </button>
-              </div>
-            </form>
-          </div>
+            </div>
+
+            {/* Device Data */}
+            <div className="mb-2">
+              <label>Device</label>
+              <select
+                name="deviceId"
+                className="border rounded-md p-2 w-full"
+                onChange={handleDeviceChange}
+              >
+                <option value="">Select Device</option>
+                {devices.map((device) => (
+                  <option key={device.id} value={device.id}>
+                    {device.Model} {device.ModelType}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-2">
+              <label>Parts</label>
+              <select
+                key={selectedDeviceId}
+                name="parts"
+                multiple
+                className="border rounded-md p-2 w-full"
+                onChange={handlePartChange}
+              >
+                {filteredParts.map((part) => (
+                  <option key={part.id} value={part.id}>
+                    {part.Name} - €{part.SellingPrice.toFixed(2)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-2">
+              <label>Invoice</label>
+              <p className="text-lg font-bold">
+                Total: €{totalPrice.toFixed(2)}
+              </p>
+            </div>
+
+            <div className="mb-4">
+              <label>
+                <input type="checkbox" name="repairable" value="false" /> No fix
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              className="bg-accentLight px-4 py-2 rounded-md"
+            >
+              Reparatie toevoegen
+            </button>
+          </form>
         </div>
-      )}
+      </div>
+      {/* )} */}
 
       <div className="bg-primaryHelper rounded-md mt-4">
         <div className="flex justify-between font-bold px-4 py-2">
