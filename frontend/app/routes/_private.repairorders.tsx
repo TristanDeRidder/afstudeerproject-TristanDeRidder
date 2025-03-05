@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import { useLoaderData, useFetcher, Link } from "@remix-run/react";
 import { jwtCookie } from "../core/cookies/cookies.server";
 
-import { getRepairorders, createRepairorder} from "../core/modules/repairorders/api";
+import {
+  getRepairorders,
+  createRepairorder,
+} from "../core/modules/repairorders/api";
 import { getDevices } from "../core/modules/devices/api";
 import { getParts } from "../core/modules/parts/api";
 import { createCustomer } from "../core/modules/customers/api";
@@ -16,11 +19,14 @@ import type { Parts } from "../core/modules/parts/type";
 import Datepicker from "../components/design/DatePicker/DataPicker";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
 import DashboardCard from "../components/design/Card/DashboardCard";
+import { Technicians } from "../core/modules/technicians/type";
+import { getTechnicians } from "../core/modules/technicians/api";
 
-type LoaderData = { 
-  repairs: Repairorders[],
-  devices: Devices[],
-  parts: Parts[]
+type LoaderData = {
+  repairs: Repairorders[];
+  devices: Devices[];
+  parts: Parts[];
+  technicians: Technicians[];
 };
 
 export async function loader() {
@@ -28,12 +34,14 @@ export async function loader() {
     const repairs = await getRepairorders();
     const devices = await getDevices();
     const parts = await getParts();
+    const technicians = await getTechnicians();
 
     if (!repairs?.data) throw new Error("No data available");
     if (!devices?.data) throw new Error("No devices available");
     if (!parts?.data) throw new Error("No parts available");
+    if (!technicians?.data) throw new Error("No technicians available");
 
-    return { repairs: repairs.data, devices: devices.data, parts: parts.data };
+    return { repairs: repairs.data, devices: devices.data, parts: parts.data, technicians: technicians.data };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { repairs: [], devices: [], parts: [] };
@@ -48,41 +56,64 @@ export async function action({ request }: any) {
   const statusRepair = formData.get("statusRepair");
   const issue = formData.get("issue");
   const repairable = formData.get("repairable") === "true";
+  
   // customerData
   const firstname = formData.get("firstname");
   const lastname = formData.get("lastname");
   const mail = formData.get("mail");
   const phonenumber = formData.get("phonenumber");
+  
   // device
   const deviceId = formData.get("deviceId");
+  
   // parts
   const parts = formData.getAll("parts");
+
   // invoice
   const invoiceTotal = formData.get("invoiceTotal");
   const invoiceBool = false;
   const paid = false;
   const paymentMethod = "Bancontact";
 
+  // technician
+  const technicianId = formData.get("technicianId");
+
   try {
     // 1. Create customer
-    const customer = await createCustomer({ Firstname: firstname, Lastname: lastname, Mailaddress: mail, Phonenumber: phonenumber }, jwt);
+    const customer = await createCustomer(
+      {
+        Firstname: firstname,
+        Lastname: lastname,
+        Mailaddress: mail,
+        Phonenumber: phonenumber,
+      },
+      jwt
+    );
     const customerId = customer?.data?.id;
 
     if (!customerId) throw new Error("Failed to get customer ID");
 
     // 2. Create invoice
-    const invoice = await createInvoice({ TotalAmount: invoiceTotal, Invoice: invoiceBool, Paid: paid, invoiceMethod: paymentMethod}, jwt);
+    const invoice = await createInvoice(
+      {
+        TotalAmount: invoiceTotal,
+        Invoice: invoiceBool,
+        Paid: paid,
+        invoiceMethod: paymentMethod,
+      },
+      jwt
+    );
     const invoiceId = invoice?.data?.id;
 
     if (!invoiceId) throw new Error("Failed to get invoice ID");
 
-
     // 3. create order
-    if(statusRepair === "Bestellen"){
+    if (statusRepair === "Bestellen") {
       const orderData = {
         statusOrder: statusRepair,
         device: deviceId,
-        parts: parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
+        parts:
+          parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
         customer: customerId,
         invoice: invoiceId,
       };
@@ -96,8 +127,10 @@ export async function action({ request }: any) {
       repairable,
       customer: customerId,
       device: deviceId,
-      parts: parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
+      parts:
+        parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
       invoice: invoiceId,
+      technician: technicianId,
     };
 
     await createRepairorder(repairData, jwt);
@@ -110,7 +143,7 @@ export async function action({ request }: any) {
 
 export default function Repairorders() {
   const fetcher = useFetcher();
-  const { repairs, devices, parts } = useLoaderData() as LoaderData;
+  const { repairs, devices, parts, technicians } = useLoaderData() as LoaderData;
 
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
@@ -125,6 +158,8 @@ export default function Repairorders() {
       return repairDate === new Date(selectedDate).toLocaleDateString("en-GB");
     });
   }, [selectedDate, repairs]);
+
+  console.log(filteredRepairs);
 
   const openRepairs = useMemo(
     () =>
@@ -153,8 +188,7 @@ export default function Repairorders() {
     );
     return filtered;
   }, [selectedDeviceId, parts]);
-  
-  
+
   const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newDeviceId = e.target.value;
     setSelectedDeviceId(newDeviceId);
@@ -165,7 +199,9 @@ export default function Repairorders() {
 
   const totalPrice = useMemo(() => {
     return selectedPartIds.reduce((sum, partId) => {
-      const part = filteredParts.find((part) => part.id.toString() === partId.toString());
+      const part = filteredParts.find(
+        (part) => part.id.toString() === partId.toString()
+      );
       return sum + (part?.sellingPrice || 0);
     }, 0);
   }, [selectedPartIds, filteredParts]);
@@ -176,7 +212,6 @@ export default function Repairorders() {
     );
     setSelectedPartIds(selectedOptions);
   };
-
 
   return (
     <div className="relative">
@@ -211,133 +246,152 @@ export default function Repairorders() {
       </div>
 
       {showOverlay && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-primaryHelper p-4 rounded-md w-1/2">
-          <h2 className="text-xl font-bold mb-4">Nieuwe reparatie toevoegen</h2>
-          <form onSubmit={handleSubmit}>
-            {/* Repair data */}
-            <div className="mb-2">
-              <label>Status Repair</label>
-              <select
-                name="statusRepair"
-                required
-                className="border rounded-md p-2 w-full"
-              >
-                <option value="">Select Status</option>
-                <option value="Bestellen">Bestellen</option>
-                <option value="Besteld">Besteld</option>
-                <option value="Geleverd">Geleverd</option>
-                <option value="Op de hoogte">Op de hoogte</option>
-                <option value="Binnen">Binnen</option>
-                <option value="Reparatie">Reparatie</option>
-                <option value="Klaar">Klaar</option>
-                <option value="Opgehaald">Opgehaald</option>
-              </select>
-            </div>
-
-            <div className="mb-2">
-              <label>Issue</label>
-              <input
-                type="text"
-                name="issue"
-                required
-                className="border rounded-md p-2 w-full"
-              />
-            </div>
-
-            {/* Customer data */}
-            <div className="mb-2 flex flex-col gap-2">
-              <label>Klant</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  name="firstname"
-                  placeholder="voornaam"
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-primaryHelper p-4 rounded-md w-1/2">
+            <h2 className="text-xl font-bold mb-4">
+              Nieuwe reparatie toevoegen
+            </h2>
+            <form onSubmit={handleSubmit}>
+              {/* Repair data */}
+              <div className="mb-2">
+                <label>Status Repair</label>
+                <select
+                  name="statusRepair"
+                  required
                   className="border rounded-md p-2 w-full"
-                />
+                >
+                  <option value="">Select Status</option>
+                  <option value="Bestellen">Bestellen</option>
+                  <option value="Besteld">Besteld</option>
+                  <option value="Geleverd">Geleverd</option>
+                  <option value="Op de hoogte">Op de hoogte</option>
+                  <option value="Binnen">Binnen</option>
+                  <option value="Reparatie">Reparatie</option>
+                  <option value="Klaar">Klaar</option>
+                  <option value="Opgehaald">Opgehaald</option>
+                </select>
+              </div>
+
+              <div className="mb-2">
+                <label>Issue</label>
                 <input
                   type="text"
-                  name="lastname"
-                  placeholder="achternaam"
+                  name="issue"
+                  required
                   className="border rounded-md p-2 w-full"
                 />
               </div>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  name="mail"
-                  placeholder="e-mailadres"
-                  className="border rounded-md p-2 w-full"
-                />
-                <input
-                  type="text"
-                  name="phonenumber"
-                  placeholder="+32 123 45 67 89"
-                  className="border rounded-md p-2 w-full"
-                />
+
+              {/* Customer data */}
+              <div className="mb-2 flex flex-col gap-2">
+                <label>Klant</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="firstname"
+                    placeholder="voornaam"
+                    className="border rounded-md p-2 w-full"
+                  />
+                  <input
+                    type="text"
+                    name="lastname"
+                    placeholder="achternaam"
+                    className="border rounded-md p-2 w-full"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    name="mail"
+                    placeholder="e-mailadres"
+                    className="border rounded-md p-2 w-full"
+                  />
+                  <input
+                    type="text"
+                    name="phonenumber"
+                    placeholder="+32 123 45 67 89"
+                    className="border rounded-md p-2 w-full"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Device Data */}
-            <div className="mb-2">
-              <label>Device</label>
-              <select
-                name="deviceId"
-                className="border rounded-md p-2 w-full"
-                onChange={handleDeviceChange}
+              {/* Device Data */}
+              <div className="mb-2">
+                <label>Device</label>
+                <select
+                  name="deviceId"
+                  className="border rounded-md p-2 w-full"
+                  onChange={handleDeviceChange}
+                >
+                  <option value="">Select Device</option>
+                  {devices.map((device) => (
+                    <option key={device.id} value={device.id}>
+                      {device.model} {device.modelType}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-2">
+                <label>Parts</label>
+                <select
+                  key={selectedDeviceId}
+                  name="parts"
+                  multiple
+                  className="border rounded-md p-2 w-full"
+                  onChange={handlePartChange}
+                >
+                  {filteredParts.map((part) => (
+                    <option key={part.id} value={part.id}>
+                      {part.name} - €{part.sellingPrice.toFixed(2)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Technician */}
+              <div>
+                <label>Technician</label>
+                <select
+                  name="technicianId"
+                  className="border rounded-md p-2 w-full"
+                >
+                  <option value="">Select Technician</option>
+                  {technicians.map((technician) => (
+                    <option key={technician.id} value={technician.id}>
+                      {technician.firstname} {technician.lastname}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Invoice data */}
+              <div>
+                <div className="mb-2">
+                  <label>Invoice</label>
+                  <p className="text-lg font-bold">
+                    Total: €{totalPrice.toFixed(2)}
+                  </p>
+                  <input type="hidden" name="invoiceTotal" value={totalPrice} />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label>
+                  <input type="checkbox" name="repairable" value="false" /> No
+                  fix
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="bg-accentLight px-4 py-2 rounded-md"
               >
-                <option value="">Select Device</option>
-                {devices.map((device) => (
-                  <option key={device.id} value={device.id}>
-                    {device.model} {device.modelType}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="mb-2">
-              <label>Parts</label>
-              <select
-                key={selectedDeviceId}
-                name="parts"
-                multiple
-                className="border rounded-md p-2 w-full"
-                onChange={handlePartChange}
-              >
-                {filteredParts.map((part) => (
-                  <option key={part.id} value={part.id}>
-                    {part.name} - €{part.sellingPrice.toFixed(2)}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Invoice data */}
-            <div>
-            <div className="mb-2">
-              <label>Invoice</label>
-              <p className="text-lg font-bold">
-                Total: €{totalPrice.toFixed(2)}
-              </p>
-              <input type="hidden" name="invoiceTotal" value={totalPrice} />
-            </div>
-            </div>
-
-            <div className="mb-4">
-              <label>
-                <input type="checkbox" name="repairable" value="false" /> No fix
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              className="bg-accentLight px-4 py-2 rounded-md"
-            >
-              Reparatie toevoegen
-            </button>
-          </form>
+                Reparatie toevoegen
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
       )}
 
       <div className="bg-primaryHelper rounded-md mt-4">
@@ -359,21 +413,21 @@ export default function Repairorders() {
                 <div className="px-4 py-2 w-1/5">
                   {repair.device?.model} {repair.device?.modelType}
                 </div>
+
                 <div className="px-4 py-2 w-1/5">
                   {repair.parts?.map((part) => (
                     <div key={part.id}>
                       <p>
-                        {part.name} {'->'} € {part.sellingPrice}
+                        {part.name} {"->"} € {part.sellingPrice}
                       </p>
                     </div>
                   ))}
                 </div>
-                <div className="px-4 py-2 w-1/5">
-                  {repair.customer?.phonenumber}
-                </div>
-                <div className="px-4 py-2 w-1/5">
-                  €{repair.invoice?.totalAmount}
-                </div>
+
+                <div className="px-4 py-2 w-1/5">{repair.customer?.phonenumber}</div>
+
+                <div className="px-4 py-2 w-1/5">€ {repair.invoice?.totalAmount}</div>
+
                 <div className="px-4 py-2 w-1/5">{repair.statusRepair}</div>
               </Link>
             ))

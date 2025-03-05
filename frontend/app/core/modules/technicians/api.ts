@@ -6,7 +6,7 @@ import API from '../../networking/API.server';
 
 // Type
 
-export async function getCustomers() {
+export async function getTechnicians() {
     const query = qs.stringify({
         populate: "*",
       },
@@ -16,7 +16,7 @@ export async function getCustomers() {
     );
 
     try {
-        const response = await API.get(`customers?${query}`);
+        const response = await API.get(`technicians?${query}`);
         return response.data;
     } catch (error) {
         console.error(error);

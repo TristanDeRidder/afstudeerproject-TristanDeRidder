@@ -76,6 +76,7 @@ export async function createRepairorder(
       parts: repairData.parts,
       customer: repairData.customer, // ID of created customer
       invoice: repairData.invoice, // ID of created invoice
+      technician: repairData.technician, // ID of created technician
     },
   };
 
