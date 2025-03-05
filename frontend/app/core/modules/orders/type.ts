@@ -5,12 +5,12 @@ import { Parts } from "../parts/type";
 
 export type Orders = {
     id: number;
-    OrderStatus: string;
-    Customer: Customers[];
-    Part: Parts[];
-    Device: Devices[];
-    Invoice: Invoices[];
-    created_at: string;
-    updated_at: string;
-    published_at: string;
+    orderStatus: string;
+    customer: Customers[];
+    part: Parts[];
+    device: Devices[];
+    invoice: Invoices[];
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
 }

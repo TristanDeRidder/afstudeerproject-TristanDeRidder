@@ -7,6 +7,7 @@ import { getDevices } from "../core/modules/devices/api";
 import { getParts } from "../core/modules/parts/api";
 import { createCustomer } from "../core/modules/customers/api";
 import { createInvoice } from "../core/modules/invoices/api";
+import { createOrder } from "../core/modules/orders/api";
 
 import type { Repairorders } from "../core/modules/repairorders/type";
 import type { Devices } from "../core/modules/devices/type";
@@ -75,7 +76,20 @@ export async function action({ request }: any) {
 
     if (!invoiceId) throw new Error("Failed to get invoice ID");
 
-    // 3. Add repair order using the retrieved IDs
+
+    // 3. create order
+    if(statusRepair === "Bestellen"){
+      const orderData = {
+        statusOrder: statusRepair,
+        device: deviceId,
+        parts: parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
+        customer: customerId,
+        invoice: invoiceId,
+      };
+      await createOrder(orderData, jwt);
+    }
+
+    // 4. Add repair order using the retrieved IDs
     const repairData = {
       statusRepair,
       issue,

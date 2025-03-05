@@ -66,11 +66,14 @@ export default function Invoices() {
                 className="flex justify-between bg-accentLight mt-2"
               >
                 <div className="px-4 py-2 w-1/4">
-                  {order.id}
+                {/* FIXME: */}
+                  {order.parts.map((part: any) => (
+                    <p key={part.id}>{part.Name}</p>
+                  ))}
                 </div>
 
                 <div className="px-4 py-2 w-1/4">
-                <p>{order.OrderStatus}</p>{" "}
+                <p>{order.orderStatus}</p>{" "}
                 </div>
               </div>
             ))
