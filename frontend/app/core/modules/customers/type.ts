@@ -5,6 +5,7 @@ export type Customers = {
     Firstname: string;
     Lastname: string;
     Mailaddress: string;
+    Phonenumber: string;
     Devices: Devices[];
     created_at: string;
     updated_at: string;

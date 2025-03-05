@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
-import { useLoaderData, useFetcher, json, Link } from "@remix-run/react";
-import {
-  getRepairorders,
-  addRepairorder,
-} from "../core/modules/repairorders/api";
+import { useLoaderData, useFetcher, Link } from "@remix-run/react";
+import { jwtCookie } from "../core/cookies/cookies.server";
+
+import { getRepairorders, createRepairorder} from "../core/modules/repairorders/api";
 import { getDevices } from "../core/modules/devices/api";
 import { getParts } from "../core/modules/parts/api";
+import { createCustomer } from "../core/modules/customers/api";
+import { createInvoice } from "../core/modules/invoices/api";
 
 import type { Repairorders } from "../core/modules/repairorders/type";
 import type { Devices } from "../core/modules/devices/type";
@@ -14,7 +15,6 @@ import type { Parts } from "../core/modules/parts/type";
 import Datepicker from "../components/design/DatePicker/DataPicker";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
 import DashboardCard from "../components/design/Card/DashboardCard";
-import { jwtCookie } from "../core/cookies/cookies.server";
 
 type LoaderData = { 
   repairs: Repairorders[],
@@ -41,28 +41,52 @@ export async function loader() {
 
 export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
-
   const formData = await request.formData();
+
+  // repairData
   const statusRepair = formData.get("statusRepair");
   const issue = formData.get("issue");
   const repairable = formData.get("repairable") === "true";
-  const customerId = formData.get("customerId");
+  // customerData
+  const firstname = formData.get("firstname");
+  const lastname = formData.get("lastname");
+  const mail = formData.get("mail");
+  const phonenumber = formData.get("phonenumber");
+  // device
   const deviceId = formData.get("deviceId");
-  const parts = formData.getAll("parts[]"); // Collect multiple parts
-  const invoiceId = formData.get("invoiceId");
-
-  const repairData = {
-    statusRepair,
-    issue,
-    repairable,
-    customer: customerId ? { connect: { id: customerId } } : null,
-    device: deviceId ? { connect: { id: deviceId } } : null,
-    parts: parts.length > 0 ? parts.map((partId) => ({ id: partId })) : [],
-    invoice: invoiceId ? { connect: { id: invoiceId } } : null,
-  };
+  // parts
+  const parts = formData.getAll("parts");
+  // invoice
+  const invoiceTotal = formData.get("invoiceTotal");
+  const invoiceBool = false;
+  const paid = false;
+  const paymentMethod = "Bancontact";
 
   try {
-    await addRepairorder(repairData, jwt);
+    // 1. Create customer
+    const customer = await createCustomer({ Firstname: firstname, Lastname: lastname, Mailaddress: mail, Phonenumber: phonenumber }, jwt);
+    const customerId = customer?.data?.id;
+
+    if (!customerId) throw new Error("Failed to get customer ID");
+
+    // 2. Create invoice
+    const invoice = await createInvoice({ TotalAmount: invoiceTotal, Invoice: invoiceBool, Paid: paid, invoiceMethod: paymentMethod}, jwt);
+    const invoiceId = invoice?.data?.id;
+
+    if (!invoiceId) throw new Error("Failed to get invoice ID");
+
+    // 3. Add repair order using the retrieved IDs
+    const repairData = {
+      statusRepair,
+      issue,
+      repairable,
+      customer: customerId,
+      device: deviceId,
+      parts: parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
+      invoice: invoiceId,
+    };
+
+    await createRepairorder(repairData, jwt);
     return { success: true };
   } catch (error) {
     console.error("Failed to add repair order:", error);
@@ -106,24 +130,23 @@ export default function Repairorders() {
     setShowOverlay(false);
   };
 
+  // Filter parts based on selected device
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
 
   const filteredParts = useMemo(() => {
-    console.log("Current selected device ID:", selectedDeviceId);
     const filtered = parts.filter(
       (part) => part.device?.id.toString() === selectedDeviceId.toString()
     );
-    console.log("Filtered parts:", filtered);
     return filtered;
   }, [selectedDeviceId, parts]);
   
   
   const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newDeviceId = e.target.value;
-    console.log("Device selected:", newDeviceId);
     setSelectedDeviceId(newDeviceId);
   };
 
+  // Selected parts (for calculating the total price)
   const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
 
   const totalPrice = useMemo(() => {
@@ -173,7 +196,7 @@ export default function Repairorders() {
         <DashboardCard title="Complete" data={completedRepairs.length} />
       </div>
 
-      {/* {showOverlay && ( */}
+      {showOverlay && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-primaryHelper p-4 rounded-md w-1/2">
           <h2 className="text-xl font-bold mb-4">Nieuwe reparatie toevoegen</h2>
@@ -188,7 +211,12 @@ export default function Repairorders() {
               >
                 <option value="">Select Status</option>
                 <option value="Bestellen">Bestellen</option>
+                <option value="Besteld">Besteld</option>
+                <option value="Geleverd">Geleverd</option>
+                <option value="Op de hoogte">Op de hoogte</option>
+                <option value="Binnen">Binnen</option>
                 <option value="Reparatie">Reparatie</option>
+                <option value="Klaar">Klaar</option>
                 <option value="Opgehaald">Opgehaald</option>
               </select>
             </div>
@@ -270,11 +298,15 @@ export default function Repairorders() {
               </select>
             </div>
 
+            {/* Invoice data */}
+            <div>
             <div className="mb-2">
               <label>Invoice</label>
               <p className="text-lg font-bold">
                 Total: €{totalPrice.toFixed(2)}
               </p>
+              <input type="hidden" name="invoiceTotal" value={totalPrice} />
+            </div>
             </div>
 
             <div className="mb-4">
@@ -292,7 +324,7 @@ export default function Repairorders() {
           </form>
         </div>
       </div>
-      {/* )} */}
+      )}
 
       <div className="bg-primaryHelper rounded-md mt-4">
         <div className="flex justify-between font-bold px-4 py-2">

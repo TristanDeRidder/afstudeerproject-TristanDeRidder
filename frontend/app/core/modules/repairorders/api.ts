@@ -39,27 +39,33 @@ export async function getRepairorderByDocumentId(documentId: string) {
 }
 
 
-export async function addRepairorder(
-  statusRepair: string,
-  issue: string,
-  repairable: boolean,
-  authToken: string // Add authToken as a parameter
+export async function createRepairorder(
+  repairData: any,
+  authToken: string
 ): Promise<StrapiResponse<Repairorders>> {
   const data = {
-    data: { StatusRepair: statusRepair, Issue: issue, Repairable: repairable },
+    data: {
+      StatusRepair: repairData.statusRepair,
+      Issue: repairData.issue,
+      Repairable: repairData.repairable,
+      device: repairData.device,
+      parts: repairData.parts,
+      customer: repairData.customer, // ID of created customer
+      invoice: repairData.invoice, // ID of created invoice
+    },
   };
-  
+
   try {
-    console.log(authToken)
+    console.log("Submitting repair order:", JSON.stringify(data, null, 2));
     const response = await API.post("repairorders", data, {
       headers: {
-        Authorization: `Bearer ${authToken}`, // Use the provided token
+        Authorization: `Bearer ${authToken}`,
       },
     });
 
     return response.data;
   } catch (error) {
-    console.error("Failed add response:", error);
+    console.error("Failed to add repair order:", error);
     throw error;
   }
 }

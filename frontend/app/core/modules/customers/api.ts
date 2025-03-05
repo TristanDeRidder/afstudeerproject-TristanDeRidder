@@ -3,6 +3,8 @@ import qs from 'qs';
 
 // Core
 import API from '../../networking/API.server';
+import { StrapiResponse } from '../strapi/type';
+import { Customers } from './type';
 
 // Type
 
@@ -22,4 +24,31 @@ export async function getCustomers() {
         console.error(error);
         throw error;
     }
+}
+
+export async function createCustomer(
+  customerData: any,
+  authToken: string
+):Promise<StrapiResponse<Customers>> {
+  const data = {
+    data: {
+      Firstname: customerData.Firstname,
+      Lastname: customerData.Lastname,
+      Mailaddress: customerData.Mailaddress,
+      Phonenumber: customerData.Phonenumber,
+    },
+  };
+
+  try {
+    const response = await API.post("customers", data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    console.log("customer data", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
