@@ -11,8 +11,10 @@ import { Brand } from "../core/modules/brands/type";
 import { Devices } from "../core/modules/devices/type";
 import { Parts } from "../core/modules/parts/type";
 import ContactBanner from "../components/design/Info/ContactBanner";
+import { getImageById } from "../components/.server/images/getImage";
 
 type LoaderData = {
+  images: any;
   brands: Brand[];
   devices: Devices[];
   parts: Parts[];
@@ -20,6 +22,7 @@ type LoaderData = {
 
 export async function loader() {
   try {
+    const images = await getImageById({ id: "3" });
     const brands = await getBrands();
     const devices = await getDevices();
     const parts = await getParts();
@@ -28,7 +31,14 @@ export async function loader() {
       throw new Error("No data available");
     }
 
-    return { brands: brands.data, devices: devices.data, parts: parts.data };
+    console.log("images", images);
+
+    return {
+      images: images,
+      brands: brands.data,
+      devices: devices.data,
+      parts: parts.data,
+    };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { brands: [], devices: [], parts: [] };
@@ -36,7 +46,7 @@ export async function loader() {
 }
 
 export default function Repair() {
-  const { brands, devices, parts } = useLoaderData<LoaderData>();
+  const { images, brands, devices, parts } = useLoaderData<LoaderData>();
 
   const [step, setStep] = useState(1);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
@@ -48,31 +58,41 @@ export default function Repair() {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const getImageSrc = () => {
-    if (selectedDevice) {
-      return selectedDevice.image?.url;
+    if (selectedDevice?.image?.url) {
+      return selectedDevice.image.url;
     }
-    return selectedBrand?.logo?.url;
+    if (selectedBrand?.logo?.url) {
+      return selectedBrand.logo.url;
+    }
+    return images?.url 
   };
 
   const deviceTypes = Array.from(new Set(devices.map((device) => device.type)));
 
   // Handle search input and filter devices and parts
+  const [notFound, setNotFound] = useState(false);
+
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
     const foundDevice = devices.find(
       (device) =>
-      device.model.toLowerCase().includes(event.target.value.toLowerCase()) ||
-      (device.modelType && device.modelType.toLowerCase().includes(event.target.value.toLowerCase()))
+        device.model.toLowerCase().includes(event.target.value.toLowerCase()) ||
+        (device.modelType &&
+          device.modelType
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase()))
     );
 
-    console.log(foundDevice);
-
     if (foundDevice) {
-      setSelectedDevice(foundDevice); // Automatically select device based on search
-      setStep(4); // Skip the steps and go straight to parts
+      setSelectedDevice(foundDevice);
+      setSelectedBrand(foundDevice.brand);
+      setSelectedType(foundDevice.type);
+      setStep(3);
+      setNotFound(false); // Reset "not found" state
     } else {
-      setSelectedDevice(null); // Reset if no device is found
-      setStep(1); // Show the first step
+      setSelectedDevice(null);
+      setStep(1); // Optionally stay at step 1 or adjust as needed
+      setNotFound(true); // Trigger "not found" message
     }
   };
 
@@ -83,11 +103,16 @@ export default function Repair() {
         <div className="md:w-1/2 p-4">
           <input
             type="text"
-            placeholder="Search for a device..."
+            placeholder="Search for a device or model type..."
             value={searchQuery}
             onChange={handleSearch}
             className="block w-full p-2 mb-4 border rounded"
           />
+          {notFound && (
+            <p className="text-red-500 animate-fade-in">
+              No matching device or model type found.
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 w-full">
@@ -98,7 +123,7 @@ export default function Repair() {
               alt={
                 selectedDevice
                   ? selectedDevice.model
-                  : selectedBrand?.brandName || "Brand Logo"
+                  : selectedBrand?.brandName || images
               }
               className="w-72 h-72 object-contain"
             />
@@ -210,7 +235,7 @@ export default function Repair() {
                           }`}
                           onClick={() => setSelectedDevice(variant)}
                         >
-                          {variant.modelType || "Standard"}
+                          {variant.model} {variant.modelType}
                         </button>
                       ))}
                     </div>
@@ -242,20 +267,28 @@ export default function Repair() {
           {step === 4 && selectedDevice && (
             <div className="md:w-1/2 bg-primary p-4">
               <h2 className="text-xl font-bold">Select a Part</h2>
-              {parts.map((part) => (
-                <button
-                  key={part.documentId}
-                  className={`block p-2 my-2 border rounded w-full text-left ${
-                    selectedDevice?.parts?.find(
-                      (devicePart: any) => devicePart.documentId === part.documentId
-                    )
-                      ? "bg-accent text-white"
-                      : "bg-primaryHelper hover:bg-accent"
-                  }`}
-                >
-                  {part.name} - {part.sellingPrice}
-                </button>
-              ))}
+
+              {parts.filter(
+                (part) =>
+                  part.device?.modelNumber === selectedDevice.modelNumber
+              ).length > 0 ? (
+                parts
+                  .filter(
+                    (part) =>
+                      part.device?.modelNumber === selectedDevice.modelNumber
+                  )
+                  .map((part) => (
+                    <button
+                      key={part.documentId}
+                      className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper hover:bg-accent"
+                    >
+                      {part.name} - {part.sellingPrice}
+                    </button>
+                  ))
+              ) : (
+                <p>No parts available for this device.</p>
+              )}
+
               <div className="flex justify-between items-center mt-4">
                 <button
                   className="py-2 px-4 rounded bg-accentLight"
