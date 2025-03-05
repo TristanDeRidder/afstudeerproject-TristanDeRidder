@@ -21,7 +21,7 @@ export async function getRepairorders() {
         const response = await API.get(`repairorders?${query}`);
         return response.data;
     } catch (error) {
-        console.error(error);
+        console.error("repairoder error", error);
         throw error;
     }
 }

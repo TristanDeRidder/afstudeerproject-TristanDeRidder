@@ -49,20 +49,20 @@ export default function Repair() {
 
   const getImageSrc = () => {
     if (selectedDevice) {
-      return selectedDevice.Image?.url;
+      return selectedDevice.image?.url;
     }
-    return selectedBrand?.Logo?.url;
+    return selectedBrand?.logo?.url;
   };
 
-  const deviceTypes = Array.from(new Set(devices.map((device) => device.Type)));
+  const deviceTypes = Array.from(new Set(devices.map((device) => device.type)));
 
   // Handle search input and filter devices and parts
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
     const foundDevice = devices.find(
       (device) =>
-      device.Model.toLowerCase().includes(event.target.value.toLowerCase()) ||
-      (device.ModelType && device.ModelType.toLowerCase().includes(event.target.value.toLowerCase()))
+      device.model.toLowerCase().includes(event.target.value.toLowerCase()) ||
+      (device.modelType && device.modelType.toLowerCase().includes(event.target.value.toLowerCase()))
     );
 
     console.log(foundDevice);
@@ -97,8 +97,8 @@ export default function Repair() {
               src={getImageSrc()}
               alt={
                 selectedDevice
-                  ? selectedDevice.Name
-                  : selectedBrand?.BrandName || "Brand Logo"
+                  ? selectedDevice.model
+                  : selectedBrand?.brandName || "Brand Logo"
               }
               className="w-72 h-72 object-contain"
             />
@@ -147,7 +147,7 @@ export default function Repair() {
                     setConfirmSelection(true);
                   }}
                 >
-                  {brand.BrandName}
+                  {brand.brandName}
                 </button>
               ))}
               <div className="flex flex-row-reverse justify-end gap-2">
@@ -181,17 +181,17 @@ export default function Repair() {
                   devices
                     .filter(
                       (device) =>
-                        device.brand?.BrandName === selectedBrand.BrandName &&
-                        device.Type === selectedType
+                        device.brand?.brandName === selectedBrand.brandName &&
+                        device.type === selectedType
                     )
-                    .map((device) => device.Model)
+                    .map((device) => device.model)
                 )
               ).map((model) => {
                 const modelVariants = devices.filter(
                   (device) =>
-                    device.Model === model &&
-                    device.brand?.BrandName === selectedBrand.BrandName &&
-                    device.Type === selectedType
+                    device.model === model &&
+                    device.brand?.brandName === selectedBrand.brandName &&
+                    device.type === selectedType
                 );
 
                 return (
@@ -210,7 +210,7 @@ export default function Repair() {
                           }`}
                           onClick={() => setSelectedDevice(variant)}
                         >
-                          {variant.ModelType || "Standard"}
+                          {variant.modelType || "Standard"}
                         </button>
                       ))}
                     </div>
@@ -246,14 +246,14 @@ export default function Repair() {
                 <button
                   key={part.documentId}
                   className={`block p-2 my-2 border rounded w-full text-left ${
-                    selectedDevice?.Parts?.find(
-                      (devicePart) => devicePart.documentId === part.documentId
+                    selectedDevice?.parts?.find(
+                      (devicePart: any) => devicePart.documentId === part.documentId
                     )
                       ? "bg-accent text-white"
                       : "bg-primaryHelper hover:bg-accent"
                   }`}
                 >
-                  {part.Name} - {part.SellingPrice}
+                  {part.name} - {part.sellingPrice}
                 </button>
               ))}
               <div className="flex justify-between items-center mt-4">

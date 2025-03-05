@@ -31,7 +31,7 @@ export async function getTopDevices() {
     const query = qs.stringify({
       populate: {
         device: {
-          populate: "Image",
+          populate: "image",
         },
         parts: true,
         customer: true,
@@ -39,6 +39,8 @@ export async function getTopDevices() {
     });
     const response = await API.get(`/repairorders?${query}`);
     const repairOrders = response.data;
+
+    console.log("repairOrders log", repairOrders);
     
     const deviceCounts: { [key: string]: { count: number, device: any } } = {};
 

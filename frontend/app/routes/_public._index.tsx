@@ -16,45 +16,58 @@ import { Devices } from "../core/modules/devices/type";
 import ContactBanner from "../components/design/Info/ContactBanner";
 import RepairCard from "../components/design/Card/RepairCard";
 import { getImageById } from "../components/.server/images/getImage";
+import { Brand } from "../core/modules/brands/type";
 
 type LoaderData = {
-  brands: any;
+  brands: Brand[];
   topDevices: any;
-  whyCards: any;
+  whyCards: {
+    PageContent: {
+      id: number;
+      Title: string;
+      Text: string;
+      Icon: {
+        url: string;
+      } | null; // in case Icon might be null
+    }[];
+  };
 };
 
 export async function loader() {
-  const brands = await getBrands();
-  const topDevices = await getTopDevices();
-  const whyCards = await getWhyCard();
+  try {
+    const brands = await getBrands();
+    const topDevices = await getTopDevices();
+    const whyCards = await getWhyCard();
+  
+    // Collect all image IDs you need
+    const repairImages = ["20", "21", "22"]; // Replace with real IDs
+  
+    // Fetch all images in parallel
+    const imageResponses = await Promise.all(
+      repairImages.map((id) => getImageById({ id }))
+    );
 
-  console.log("topDevices", topDevices);
-
-  // Collect all image IDs you need
-  const repairImages = ["20", "21", "22"]; // Replace with real IDs
-
-  // Fetch all images in parallel
-  const imageResponses = await Promise.all(
-    repairImages.map((id) => getImageById({ id }))
-  );
-
-  // Create an object mapping IDs to URLs
-  const images = imageResponses.reduce((acc, image) => {
-    acc[image.id] = image.url;
-    return acc;
-  }, {} as Record<string, string>);
-
-  return json({
-    brands: brands.data,
-    topDevices,
-    whyCards: whyCards.data,
-    images,
-  });
+  
+    // Create an object mapping IDs to URLs
+    const images = imageResponses.reduce((acc, image) => {
+      acc[image.id] = image.url;
+      return acc;
+    }, {} as Record<string, string>);
+  
+    return {
+      brands: brands.data,
+      topDevices,
+      whyCards: whyCards.data,
+      images,
+    };
+  } catch (error) {
+    console.error(error);
+    return json({ error: "An error occurred while fetching data" }, 500);
+  }
 }
 
 export default function Index() {
-  const { brands, topDevices, whyCards, images } =
-    useLoaderData() as LoaderData & { images: Record<string, string> };
+  const { brands, topDevices, whyCards, images } = useLoaderData() as LoaderData & { images: Record<string, string> };
 
   return (
     <div className="flex flex-col gap-10">
@@ -102,14 +115,14 @@ export default function Index() {
                   className="bg-primaryHelper p-5 rounded-lg w-full"
                 >
                   <img
-                    src={device.Image?.url}
-                    alt={device.Model}
+                    src={device.image?.url}
+                    alt={device.model}
                     className="w-full h-40 object-cover mt-3"
                   />
                   <h3 className="text-lg font-bold">
-                    {device.Model} {device.ModelType}
+                    {device.model} {device.modelType}
                   </h3>
-                  <p className="text-sm">Status: {device.ModelNumber}</p>
+                  <p className="text-sm">Status: {device.modelNumber}</p>
                 </div>
               ))
             )}
@@ -134,7 +147,7 @@ export default function Index() {
                 id: number;
                 Title: string;
                 Text: string;
-                Icon: string;
+                Icon: { url: string } | null;
               }) => (
                 <div
                   key={card.id}
@@ -144,7 +157,7 @@ export default function Index() {
                     <h4 className="text-xl font-semibold mb-3">{card.Title}</h4>
                     <p className="text-sm">{card.Text}</p>
                   </div>
-                  <img src={card.Icon?.url} alt={card.Title} />
+                  {card.Icon && <img src={card.Icon.url} alt={card.Title} />}
                 </div>
               )
             )
