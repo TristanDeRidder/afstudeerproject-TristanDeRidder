@@ -7,7 +7,7 @@ export type Customers = {
     mailadress: string;
     phonenumber: string;
     devices: Devices[];
-    created_at: string;
-    updated_at: string;
-    published_at: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
 }

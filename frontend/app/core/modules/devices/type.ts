@@ -14,8 +14,8 @@ export type Devices = {
   model: string;
   modelType: string;
   modelNumber: string;
-  image: any
-  created_at: string;
-  updated_at: string;
-  published_at: string;
+  image: any;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
 };

@@ -13,9 +13,9 @@ export type Repairorders = {
     invoice: Invoices;
     customer: Customers;
     parts: Parts[];
-    devices: Devices;
+    device: Devices;
     technician: Technicians[];
     createdAt: string;
-    updated_at: string;
-    published_at: string;
+    updatedAt: string;
+    publishedAt: string;
 }

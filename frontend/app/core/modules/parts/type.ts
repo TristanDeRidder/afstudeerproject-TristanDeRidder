@@ -13,7 +13,7 @@ export type Parts = {
   device: Devices[];
   repairorders: Repairorders[];
   orders: Orders[];
-  created_at: string;
-  updated_at: string;
-  published_at: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
 };
