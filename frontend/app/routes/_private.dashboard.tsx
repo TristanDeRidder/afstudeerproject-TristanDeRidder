@@ -78,7 +78,9 @@ const ChartTooltipContent = ({
 
 export default function Dashboard() {
   const { repairs, invoices } = useLoaderData() as LoaderData;
-  const [selectedDate, setSelectedDate] = useState("");
+  const today = new Date().toISOString().split("T")[0];
+
+  const [selectedDate, setSelectedDate] = useState(today);
     const [showDatePicker, setShowDatePicker] = useState(false);
 
   const filteredRepairs = selectedDate
@@ -89,14 +91,11 @@ export default function Dashboard() {
   const dailyIncome = lastWeekDates.map((date) => {
     const dailyTotal = invoices
       .filter((invoice) => invoice.createdAt.startsWith(date))
-      .reduce((sum, invoice) => sum + (invoice.TotalAmount || 0), 0);
+      .reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0);
 
     return { date, income: dailyTotal };
   });
 
-  const today = new Date().toISOString().split("T")[0];
-
-  console.log("1: repairs", invoices)
 
   return (
     <>
@@ -156,20 +155,20 @@ export default function Dashboard() {
                 key={repair.documentId}
                 to={`/detail?documentId=${repair.documentId}`}
                 className={`rounded-md p-4 grid grid-cols-3 gap-4 list-decimal ${
-                  repair.StatusRepair === "Opgehaald"
+                  repair.statusRepair === "Opgehaald"
                     ? "bg-accent"
                     : "bg-primaryHelper"
                 }`}
               >
                 <div>
-                  {repair.device?.Model} {repair.device?.ModelType}
+                  {repair.device?.model} {repair.device?.modelType}
                 </div>
                 <div>
                   {repair.parts.map((part: any) => (
-                    <div key={part.id}>{part.Name}</div>
+                    <div key={part.id}>{part.name}</div>
                   ))}
                 </div>
-                <div>€{repair.invoice?.TotalAmount}</div>
+                <div>€ {repair.invoice?.totalAmount}</div>
               </Link>
             ))}
           </div>

@@ -10,7 +10,7 @@ export type Parts = {
   purchasePrice: number;
   sellingPrice: number;
   suppliers: Suppliers[];
-  device: Devices[];
+  device: Devices;
   repairorders: Repairorders[];
   orders: Orders[];
   createdAt: string;

@@ -128,12 +128,12 @@ export default function Repairorders() {
 
   const openRepairs = useMemo(
     () =>
-      filteredRepairs.filter((repair) => repair.StatusRepair !== "Opgehaald"),
+      filteredRepairs.filter((repair) => repair.statusRepair !== "Opgehaald"),
     [filteredRepairs]
   );
   const completedRepairs = useMemo(
     () =>
-      filteredRepairs.filter((repair) => repair.StatusRepair === "Opgehaald"),
+      filteredRepairs.filter((repair) => repair.statusRepair === "Opgehaald"),
     [filteredRepairs]
   );
 
@@ -166,7 +166,7 @@ export default function Repairorders() {
   const totalPrice = useMemo(() => {
     return selectedPartIds.reduce((sum, partId) => {
       const part = filteredParts.find((part) => part.id.toString() === partId.toString());
-      return sum + (part?.SellingPrice || 0);
+      return sum + (part?.sellingPrice || 0);
     }, 0);
   }, [selectedPartIds, filteredParts]);
 
@@ -289,7 +289,7 @@ export default function Repairorders() {
                 <option value="">Select Device</option>
                 {devices.map((device) => (
                   <option key={device.id} value={device.id}>
-                    {device.Model} {device.ModelType}
+                    {device.model} {device.modelType}
                   </option>
                 ))}
               </select>
@@ -306,7 +306,7 @@ export default function Repairorders() {
               >
                 {filteredParts.map((part) => (
                   <option key={part.id} value={part.id}>
-                    {part.Name} - €{part.SellingPrice.toFixed(2)}
+                    {part.name} - €{part.sellingPrice.toFixed(2)}
                   </option>
                 ))}
               </select>
@@ -357,22 +357,24 @@ export default function Repairorders() {
                 className="flex justify-between bg-accentLight mt-2"
               >
                 <div className="px-4 py-2 w-1/5">
-                  {repair.device?.Model} {repair.device?.ModelType}
+                  {repair.device?.model} {repair.device?.modelType}
                 </div>
                 <div className="px-4 py-2 w-1/5">
                   {repair.parts?.map((part) => (
                     <div key={part.id}>
-                      {part.Name} {part.Price}
+                      <p>
+                        {part.name} {'->'} € {part.sellingPrice}
+                      </p>
                     </div>
                   ))}
                 </div>
                 <div className="px-4 py-2 w-1/5">
-                  {repair.customer?.Phonenumber}
+                  {repair.customer?.phonenumber}
                 </div>
                 <div className="px-4 py-2 w-1/5">
-                  €{repair.invoice?.TotalAmount}
+                  €{repair.invoice?.totalAmount}
                 </div>
-                <div className="px-4 py-2 w-1/5">{repair.StatusRepair}</div>
+                <div className="px-4 py-2 w-1/5">{repair.statusRepair}</div>
               </Link>
             ))
           ) : (

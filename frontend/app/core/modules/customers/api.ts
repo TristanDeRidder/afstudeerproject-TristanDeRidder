@@ -32,10 +32,10 @@ export async function createCustomer(
 ):Promise<StrapiResponse<Customers>> {
   const data = {
     data: {
-      Firstname: customerData.Firstname,
-      Lastname: customerData.Lastname,
-      Mailaddress: customerData.Mailaddress,
-      Phonenumber: customerData.Phonenumber,
+      firstname: customerData.Firstname,
+      lastname: customerData.Lastname,
+      mailadress: customerData.Mailaddress,
+      phonenumber: customerData.Phonenumber,
     },
   };
 

@@ -1,31 +1,117 @@
 import { useState, useMemo } from "react";
-import { useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import Datepicker from "../components/design/DatePicker/DataPicker";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
-import { getOrders } from "../core/modules/orders/api";
+import { createOrder, getOrders } from "../core/modules/orders/api";
 import { Orders } from "../core/modules/orders/type";
+import { jwtCookie } from "../core/cookies/cookies.server";
+import { getDevices } from "../core/modules/devices/api";
+import { getParts } from "../core/modules/parts/api";
+import { Devices } from "../core/modules/devices/type";
+import { Parts } from "../core/modules/parts/type";
+import { createCustomer } from "../core/modules/customers/api";
+import { createInvoice } from "../core/modules/invoices/api";
 
 type LoaderData = {
   orders: Orders[];
+  devices: Devices[],
+    parts: Parts[]
 };
 
 export async function loader() {
   try {
     const orders = await getOrders();
+    const devices = await getDevices();
+    const parts = await getParts();
 
-    if (!orders?.data) {
-      throw new Error("No data available");
-    }
+    if (!orders?.data) { throw new Error("No data available");}
+    if (!devices?.data) throw new Error("No devices available");
+    if (!parts?.data) throw new Error("No parts available");
 
-    return { orders: orders.data };
+    return { orders: orders.data, devices: devices.data, parts: parts.data };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { orders: [] };
   }
 }
 
+export async function action({request}: any){
+  const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
+  const formData = await request.formData();
+
+  // customerData
+  const firstname = formData.get("firstname");
+  const lastname = formData.get("lastname");
+  const mail = formData.get("mail");
+  const phonenumber = formData.get("phonenumber");
+  
+  // device
+  const deviceId = formData.get("deviceId");
+  
+  // invoiceData
+  const invoiceTotal = formData.get("invoiceTotal");
+  const invoiceBool = false;
+  const paid = false;
+  const paymentMethod = "Bancontact";
+
+  // orderData
+  const statusRepair = formData.get("statusRepair");
+  const parts = formData.getAll("parts");
+
+  try {
+    // 1. Create customer
+    const customer = await createCustomer(
+      {
+        Firstname: firstname,
+        Lastname: lastname,
+        Mailaddress: mail,
+        Phonenumber: phonenumber,
+      },
+      jwt
+    );
+    const customerId = customer?.data?.id;
+
+    if (!customerId) throw new Error("Failed to get customer ID");
+
+    // 2. Create invoice
+    const invoice = await createInvoice(
+      {
+        TotalAmount: invoiceTotal,
+        Invoice: invoiceBool,
+        Paid: paid,
+        invoiceMethod: paymentMethod,
+      },
+      jwt
+    );
+    const invoiceId = invoice?.data?.id;
+
+    if (!invoiceId) throw new Error("Failed to get invoice ID");
+
+    // 3. Create order
+    const orderData = {
+      statusOrder: statusRepair,
+      device: deviceId,
+      parts:
+        parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
+      customer: customerId,
+      invoice: invoiceId,
+    };
+    await createOrder(orderData, jwt);
+    return { success: true };
+  } catch (error) {
+    console.error("Error while creating order:", error);
+    throw error;
+  }
+}
+
 export default function Invoices() {
-  const { orders } = useLoaderData<LoaderData>();
+  const fetcher = useFetcher();
+  const { orders, devices, parts } = useLoaderData() as LoaderData;
+
+  console.log(orders)
+
+  const [showOverlay, setShowOverlay] = useState<boolean>(false);
+
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
@@ -37,6 +123,47 @@ export default function Invoices() {
       return repairDate === selectedDate;
     });
   }, [orders, selectedDate]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    fetcher.submit(formData, { method: "post" });
+    setShowOverlay(false);
+  };
+
+  // Filter parts based on selected device
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
+
+  const filteredParts = useMemo(() => {
+    const filtered = parts.filter(
+      (part) => part.device?.id.toString() === selectedDeviceId.toString()
+    );
+    return filtered;
+  }, [selectedDeviceId, parts]);
+
+  const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newDeviceId = e.target.value;
+    setSelectedDeviceId(newDeviceId);
+  };
+
+  // Selected parts (for calculating the total price)
+  const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
+
+  const totalPrice = useMemo(() => {
+    return selectedPartIds.reduce((sum, partId) => {
+      const part = filteredParts.find(
+        (part) => part.id.toString() === partId.toString()
+      );
+      return sum + (part?.sellingPrice || 0);
+    }, 0);
+  }, [selectedPartIds, filteredParts]);
+
+  const handlePartChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions).map(
+      (opt) => opt.value
+    );
+    setSelectedPartIds(selectedOptions);
+  };
 
   return (
     <div>
@@ -50,12 +177,139 @@ export default function Invoices() {
         />
       </div>
 
+      <button
+        onClick={() => setShowOverlay(true)}
+        className="bg-accentLight px-4 py-2 rounded-md"
+      >
+        +
+      </button>
+
+      {showOverlay && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-primaryHelper p-4 rounded-md w-1/2">
+            <h2 className="text-xl font-bold mb-4">
+              Nieuwe bestelling toevoegen
+            </h2>
+            <form onSubmit={handleSubmit}>
+              {/* Repair data */}
+              <div className="mb-2">
+                <label>Status Bestelling</label>
+                <select
+                  name="statusRepair"
+                  required
+                  className="border rounded-md p-2 w-full"
+                >
+                  <option value="">Select Status</option>
+                  <option value="Bestellen">Bestellen</option>
+                  <option value="Besteld">Besteld</option>
+                  <option value="Geleverd">Geleverd</option>
+                </select>
+              </div>
+
+              {/* Customer data */}
+              <div className="mb-2 flex flex-col gap-2">
+                <label>Klant</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="firstname"
+                    placeholder="voornaam"
+                    className="border rounded-md p-2 w-full"
+                  />
+                  <input
+                    type="text"
+                    name="lastname"
+                    placeholder="achternaam"
+                    className="border rounded-md p-2 w-full"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    name="mail"
+                    placeholder="e-mailadres"
+                    className="border rounded-md p-2 w-full"
+                  />
+                  <input
+                    type="text"
+                    name="phonenumber"
+                    placeholder="+32 123 45 67 89"
+                    className="border rounded-md p-2 w-full"
+                  />
+                </div>
+              </div>
+
+              {/* Device Data */}
+              <div className="mb-2">
+                <label>Device</label>
+                <select
+                  name="deviceId"
+                  className="border rounded-md p-2 w-full"
+                  onChange={handleDeviceChange}
+                >
+                  <option value="">Select Device</option>
+                  {devices.map((device) => (
+                    <option key={device.id} value={device.id}>
+                      {device.model} {device.modelType}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-2">
+                <label>Parts</label>
+                <select
+                  key={selectedDeviceId}
+                  name="parts"
+                  multiple
+                  className="border rounded-md p-2 w-full"
+                  onChange={handlePartChange}
+                >
+                  {filteredParts.map((part) => (
+                    <option key={part.id} value={part.id}>
+                      {part.name} - €{part.sellingPrice}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Invoice data */}
+              <div>
+                <div className="mb-2">
+                  <label>Invoice</label>
+                  <p className="text-lg font-bold">
+                    Total: €{totalPrice.toFixed(2)}
+                  </p>
+                  <input type="hidden" name="invoiceTotal" value={totalPrice} />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label>
+                  <input type="checkbox" name="repairable" value="false" /> No
+                  fix
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="bg-accentLight px-4 py-2 rounded-md"
+              >
+                Reparatie toevoegen
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <div className="bg-primaryHelper rounded-md">
         <div className="flex justify-between font-bold px-4 py-2">
-          <div className="w-1/4">ID</div>
-          <div className="w-1/4">Onderdeel</div>
-          <div className="w-1/4">Status</div>
+          <div className="w-1/5">Datum</div>
+          <div className="w-1/5">Toestel</div>
+          <div className="w-1/5">Onderdeel</div>
+          <div className="w-1/5">Klant</div>
+          <div className="w-1/5">Status</div>
         </div>
 
         <div className="px-4 py-2 rounded-md">
@@ -65,15 +319,30 @@ export default function Invoices() {
                 key={order.id}
                 className="flex justify-between bg-accentLight mt-2"
               >
-                <div className="px-4 py-2 w-1/4">
-                {/* FIXME: */}
-                  {order.parts.map((part: any) => (
-                    <p key={part.id}>{part.Name}</p>
+                <div className="px-4 py-2 w-1/5">
+                  <p>{new Date(order.createdAt).toLocaleDateString()}</p>
+                </div>
+
+                <div className="px-4 py-2 w-1/5">
+                  {order.device.map((device: any) => (
+                    <p key={device.id}>
+                      {device.model} {device.modelType || ""}
+                    </p>
                   ))}
                 </div>
 
-                <div className="px-4 py-2 w-1/4">
-                <p>{order.orderStatus}</p>{" "}
+                <div className="px-4 py-2 w-1/5">
+                  {order.parts.map((part: any) => (
+                    <p key={part.id}>{part.name}</p>
+                  ))}
+                </div>
+
+                <div className="px-4 py-2 w-1/5">
+                  <p>{order.customer.phonenumber}</p>
+                </div>
+
+                <div className="px-4 py-2 w-1/5">
+                  <p>{order.orderStatus}</p>{" "}
                 </div>
               </div>
             ))

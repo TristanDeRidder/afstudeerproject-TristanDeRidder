@@ -29,9 +29,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   return json({
     items: sidebars.data.map((item: any) => ({
-      title: item.PageTitle,
+      title: item.pageTitle,
       url: item.URL,
-      icon: item.PageIcon,
+      icon: item.pageIcon,
     })),
   });
 };

@@ -32,10 +32,10 @@ export async function createInvoice(
 ): Promise<StrapiResponse<Invoices>> {
   const data = {
     data: {
-      TotalAmount: invoiceData.TotalAmount,
-      Paymentmethod: invoiceData.Paymentmethod,
-      Paid: invoiceData.Paid,
-      Invoice: invoiceData.Invoice,
+      totalAmount: invoiceData.TotalAmount,
+      paymentmethod: invoiceData.Paymentmethod,
+      paid: invoiceData.Paid,
+      invoice: invoiceData.Invoice,
     },
   };
 

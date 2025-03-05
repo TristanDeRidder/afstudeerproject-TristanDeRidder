@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLoaderData } from "@remix-run/react";
 import { getDevices } from "../core/modules/devices/api";
-import { Devices } from "../core/modules/devices/type";
+import type { Devices } from "../core/modules/devices/type";
 
 type LoaderData = {
   devices: Devices[];
@@ -34,11 +34,11 @@ export default function Devices() {
       setFilteredDevices(
         devices.filter(
           (device) =>
-            device.Type.toLowerCase().includes(lowerCaseQuery) ||
-            device.brand?.BrandName.toLowerCase().includes(lowerCaseQuery) ||
-            device.Model.toLowerCase().includes(lowerCaseQuery) ||
-            (device.ModelType &&
-              device.ModelType.toLowerCase().includes(lowerCaseQuery))
+            device.type.toLowerCase().includes(lowerCaseQuery) ||
+            device.brand?.brandName.toLowerCase().includes(lowerCaseQuery) ||
+            device.model.toLowerCase().includes(lowerCaseQuery) ||
+            (device.modelType &&
+              device.modelType.toLowerCase().includes(lowerCaseQuery))
         )
       );
     } else {
@@ -71,10 +71,10 @@ export default function Devices() {
             key={device.id}
             className="flex justify-between bg-primaryHelper mt-2"
           >
-            <div className="px-4 py-2 w-1/3">{device.Type}</div>
-            <div className="px-4 py-2 w-1/3">{device.brand?.BrandName}</div>
+            <div className="px-4 py-2 w-1/3">{device.type}</div>
+            <div className="px-4 py-2 w-1/3">{device.brand?.brandName}</div>
             <div className="px-4 py-2 w-1/3">
-              {device.Model} {device.ModelType}
+              {device.model} {device.modelType}
             </div>
           </div>
         ))}

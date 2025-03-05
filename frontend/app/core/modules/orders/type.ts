@@ -6,7 +6,7 @@ import { Parts } from "../parts/type";
 export type Orders = {
     id: number;
     orderStatus: string;
-    customer: Customers[];
+    customer: Customers;
     parts: Parts[];
     device: Devices[];
     invoice: Invoices[];

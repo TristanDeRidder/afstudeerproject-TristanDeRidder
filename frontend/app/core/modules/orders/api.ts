@@ -32,8 +32,8 @@ export async function createOrder(
 ): Promise<StrapiResponse<Orders>> {
   const data = {
     data: {
-      OrderStatus: orderData.statusOrder,
-      devices: orderData.device,
+      orderStatus: orderData.statusOrder,
+      device: orderData.device,
       parts: orderData.parts,
       customer: orderData.customer, // ID of created customer
       invoice: orderData.invoice, // ID of created invoice

@@ -42,7 +42,7 @@ export default function Invoices() {
   // Calculating total income, number of transactions, and number of repaired devices
   const totalIncome = useMemo(() => {
     return filteredRepairs.reduce(
-      (total, repair) => total + (repair.invoice?.TotalAmount || 0),
+      (total, repair) => total + (repair.invoice?.totalAmount || 0),
       0
     );
   }, [filteredRepairs]);
@@ -91,23 +91,23 @@ export default function Invoices() {
                   className="flex justify-between bg-accentLight mt-2"
                 >
                   <div className="px-4 py-2 w-1/4">
-                    {repair.device?.Model} {repair.device?.ModelType}
+                    {repair.device?.model} {repair.device?.modelType}
                   </div>
 
                   <div className="px-4 py-2 w-1/4">
                     {repair.parts?.map((part) => (
                       <div key={part.id}>
-                        {part.Name} {part.Price}
+                        {part.name} {part.purchasePrice}
                       </div>
                     ))}
                   </div>
 
                   <div className="px-4 py-2 w-1/4">
-                    {repair.invoice?.Paymentmethod}
+                    {repair.invoice?.paymentmethod}
                   </div>
 
                   <div className="px-4 py-2 w-1/4">
-                    €{repair.invoice?.TotalAmount}
+                    €{repair.invoice?.totalAmount}
                   </div>
                 </div>
               ))
