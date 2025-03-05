@@ -12,10 +12,10 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "BrandName": {
+    "brandName": {
       "type": "string"
     },
-    "Logo": {
+    "logo": {
       "type": "media",
       "multiple": false,
       "required": false,

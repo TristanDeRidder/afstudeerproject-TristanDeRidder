@@ -12,7 +12,7 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "OrderStatus": {
+    "orderStatus": {
       "type": "enumeration",
       "enum": [
         "Bestellen",
@@ -33,7 +33,7 @@
       "target": "api::part.part",
       "inversedBy": "orders"
     },
-    "devices": {
+    "device": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::device.device",

@@ -4,23 +4,24 @@
   "info": {
     "singularName": "customer",
     "pluralName": "customers",
-    "displayName": "Customer"
+    "displayName": "Customer",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "Firstname": {
+    "firstname": {
       "type": "string"
     },
-    "Lastname": {
+    "lastname": {
       "type": "string"
     },
-    "Mailaddress": {
+    "mailadress": {
       "type": "email"
     },
-    "Phonenumber": {
+    "phonenumber": {
       "type": "biginteger"
     },
     "devices": {

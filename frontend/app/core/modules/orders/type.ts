@@ -7,7 +7,7 @@ export type Orders = {
     id: number;
     orderStatus: string;
     customer: Customers[];
-    part: Parts[];
+    parts: Parts[];
     device: Devices[];
     invoice: Invoices[];
     createdAt: string;

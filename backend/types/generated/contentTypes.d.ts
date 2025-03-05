@@ -409,7 +409,7 @@ export interface ApiBrandBrand extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    BrandName: Schema.Attribute.String;
+    brandName: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -417,7 +417,7 @@ export interface ApiBrandBrand extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::brand.brand'> &
       Schema.Attribute.Private;
-    Logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -527,6 +527,7 @@ export interface ApiContactContact extends Struct.SingleTypeSchema {
 export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
   collectionName: 'customers';
   info: {
+    description: '';
     displayName: 'Customer';
     pluralName: 'customers';
     singularName: 'customer';
@@ -539,16 +540,16 @@ export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     devices: Schema.Attribute.Relation<'manyToMany', 'api::device.device'>;
-    Firstname: Schema.Attribute.String;
-    Lastname: Schema.Attribute.String;
+    firstname: Schema.Attribute.String;
+    lastname: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::customer.customer'
     > &
       Schema.Attribute.Private;
-    Mailaddress: Schema.Attribute.Email;
-    Phonenumber: Schema.Attribute.BigInteger;
+    mailadress: Schema.Attribute.Email;
+    phonenumber: Schema.Attribute.BigInteger;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -576,23 +577,23 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
       'manyToMany',
       'api::customer.customer'
     >;
-    Image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::device.device'
     > &
       Schema.Attribute.Private;
-    Model: Schema.Attribute.String;
-    ModelNumber: Schema.Attribute.String;
-    ModelType: Schema.Attribute.String;
+    model: Schema.Attribute.String;
+    modelNumber: Schema.Attribute.String;
+    modelType: Schema.Attribute.String;
     orders: Schema.Attribute.Relation<'manyToMany', 'api::order.order'>;
     publishedAt: Schema.Attribute.DateTime;
     repairorders: Schema.Attribute.Relation<
       'oneToMany',
       'api::repairorder.repairorder'
     >;
-    Type: Schema.Attribute.Enumeration<
+    type: Schema.Attribute.Enumeration<
       ['Smartphone', 'Tablet', 'Laptop', 'Desktop', 'Console']
     >;
     updatedAt: Schema.Attribute.DateTime;
@@ -613,7 +614,7 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    Answer: Schema.Attribute.Text;
+    answer: Schema.Attribute.Text;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -621,7 +622,7 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::faq.faq'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    Question: Schema.Attribute.String;
+    question: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -631,6 +632,7 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
 export interface ApiInvoiceInvoice extends Struct.CollectionTypeSchema {
   collectionName: 'invoices';
   info: {
+    description: '';
     displayName: 'Invoice';
     pluralName: 'invoices';
     singularName: 'invoice';
@@ -642,7 +644,7 @@ export interface ApiInvoiceInvoice extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    Invoice: Schema.Attribute.Boolean &
+    invoice: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -651,20 +653,20 @@ export interface ApiInvoiceInvoice extends Struct.CollectionTypeSchema {
       'api::invoice.invoice'
     > &
       Schema.Attribute.Private;
-    Paid: Schema.Attribute.Boolean &
+    paid: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<true>;
-    Paymentmethod: Schema.Attribute.Enumeration<
+    paymentmethod: Schema.Attribute.Enumeration<
       ['Bancontact', 'Cash', 'Ecocheque']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'Bancontact'>;
     publishedAt: Schema.Attribute.DateTime;
-    Repairorder: Schema.Attribute.Relation<
+    repairorder: Schema.Attribute.Relation<
       'oneToOne',
       'api::repairorder.repairorder'
     >;
-    TotalAmount: Schema.Attribute.Decimal &
+    totalAmount: Schema.Attribute.Decimal &
       Schema.Attribute.SetMinMax<
         {
           min: 0;
@@ -730,7 +732,7 @@ export interface ApiNavigationNavigation extends Struct.CollectionTypeSchema {
       'api::navigation.navigation'
     > &
       Schema.Attribute.Private;
-    PageTitle: Schema.Attribute.String;
+    pageTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -760,7 +762,7 @@ export interface ApiOpeningHourOpeningHour extends Struct.CollectionTypeSchema {
       'api::opening-hour.opening-hour'
     > &
       Schema.Attribute.Private;
-    Opening: Schema.Attribute.JSON;
+    opening: Schema.Attribute.JSON;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -784,12 +786,12 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
-    devices: Schema.Attribute.Relation<'manyToMany', 'api::device.device'>;
+    device: Schema.Attribute.Relation<'manyToMany', 'api::device.device'>;
     invoice: Schema.Attribute.Relation<'oneToOne', 'api::invoice.invoice'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
-    OrderStatus: Schema.Attribute.Enumeration<
+    orderStatus: Schema.Attribute.Enumeration<
       ['Bestellen', 'Besteld', 'Geleverd']
     > &
       Schema.Attribute.Required &
@@ -821,15 +823,15 @@ export interface ApiPartPart extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::part.part'> &
       Schema.Attribute.Private;
-    Name: Schema.Attribute.String;
+    name: Schema.Attribute.String;
     orders: Schema.Attribute.Relation<'manyToMany', 'api::order.order'>;
     publishedAt: Schema.Attribute.DateTime;
-    PurchasePrice: Schema.Attribute.Decimal;
+    purchasePrice: Schema.Attribute.Decimal;
     repairorders: Schema.Attribute.Relation<
       'manyToMany',
       'api::repairorder.repairorder'
     >;
-    SellingPrice: Schema.Attribute.Decimal;
+    sellingPrice: Schema.Attribute.Decimal;
     suppliers: Schema.Attribute.Relation<
       'manyToMany',
       'api::supplier.supplier'
@@ -889,7 +891,7 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
     customer: Schema.Attribute.Relation<'oneToOne', 'api::customer.customer'>;
     device: Schema.Attribute.Relation<'manyToOne', 'api::device.device'>;
     invoice: Schema.Attribute.Relation<'oneToOne', 'api::invoice.invoice'>;
-    Issue: Schema.Attribute.String;
+    issue: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -898,10 +900,10 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     parts: Schema.Attribute.Relation<'manyToMany', 'api::part.part'>;
     publishedAt: Schema.Attribute.DateTime;
-    Repairable: Schema.Attribute.Boolean &
+    repairable: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<true>;
-    StatusRepair: Schema.Attribute.Enumeration<
+    statusRepair: Schema.Attribute.Enumeration<
       [
         'Bestellen',
         'Besteld',
@@ -946,8 +948,8 @@ export interface ApiSidebarSidebar extends Struct.CollectionTypeSchema {
       'api::sidebar.sidebar'
     > &
       Schema.Attribute.Private;
-    PageIcon: Schema.Attribute.String;
-    PageTitle: Schema.Attribute.String;
+    pageIcon: Schema.Attribute.String;
+    pageTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -959,6 +961,7 @@ export interface ApiSidebarSidebar extends Struct.CollectionTypeSchema {
 export interface ApiSupplierSupplier extends Struct.CollectionTypeSchema {
   collectionName: 'suppliers';
   info: {
+    description: '';
     displayName: 'Supplier';
     pluralName: 'suppliers';
     singularName: 'supplier';
@@ -976,7 +979,7 @@ export interface ApiSupplierSupplier extends Struct.CollectionTypeSchema {
       'api::supplier.supplier'
     > &
       Schema.Attribute.Private;
-    Name: Schema.Attribute.String;
+    name: Schema.Attribute.String;
     parts: Schema.Attribute.Relation<'manyToMany', 'api::part.part'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -1000,8 +1003,8 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    Firstname: Schema.Attribute.String;
-    Lastname: Schema.Attribute.String;
+    firstname: Schema.Attribute.String;
+    lastname: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1010,7 +1013,7 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     Password: Schema.Attribute.Password;
     publishedAt: Schema.Attribute.DateTime;
-    Role: Schema.Attribute.Enumeration<['Head Technician', 'Technician']>;
+    role: Schema.Attribute.Enumeration<['Head Technician', 'Technician']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 
 interface NavLink {
   URL: string;
-  PageTitle: string;
+  pageTitle: string;
 }
 
 export default function Navigation({
@@ -30,13 +30,13 @@ export default function Navigation({
           )}
         </NavLink>
         <div>
-          {navLinks.map(({ URL, PageTitle }) => (
+          {navLinks.map(({ URL, pageTitle }) => (
             <NavLink
               key={URL}
               to={URL}
               className={({ isActive }) =>
                 `transition-colors duration-200 px-4 py-2 rounded-full ${
-                  PageTitle.toLowerCase() === "contact"
+                  pageTitle.toLowerCase() === "contact"
                     ? "bg-accent text-white font-bold rounded-lg px-6 py-4 border hover:bg-bg hover:border-secondary hover:text-text transition-all duration-200 ease-in-out"
                     : isActive
                     ? "text-secondary font-semibold bg-accent"
@@ -44,7 +44,7 @@ export default function Navigation({
                 }`
               }
             >
-              {PageTitle || "Home"}
+              {pageTitle || "Home"}
             </NavLink>
           ))}
         </div>
@@ -73,14 +73,14 @@ export default function Navigation({
           </button>
 
           <div className="flex flex-col gap-6 text-center">
-            {navLinks.map(({ URL, PageTitle }) => (
+            {navLinks.map(({ URL, pageTitle }) => (
               <NavLink
                 key={URL}
                 to={URL}
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
                   `text-2xl font-semibold transition-colors duration-200 ${
-                    PageTitle.toLowerCase() === "contact"
+                    pageTitle.toLowerCase() === "contact"
                       ? "bg-secondary text-white font-bold hover:bg-secondaryLight p-4 rounded-lg"
                       : isActive
                       ? "text-accent"
@@ -88,7 +88,7 @@ export default function Navigation({
                   }`
                 }
               >
-                {PageTitle || "Home"}
+                {pageTitle || "Home"}
               </NavLink>
             ))}
           </div>

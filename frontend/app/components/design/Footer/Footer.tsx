@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 
 interface BrandLink {
   id: string;
-  BrandName: string;
+  brandName: string;
 }
 
 export default function Footer({
@@ -26,7 +26,7 @@ export default function Footer({
             to={`/`}
             className="text-primary hover:text-secondary"
           >
-            {brand.BrandName}
+            {brand.brandName}
           </Link>
         ))}
         <Link to="/repair" className="text-primary hover:text-secondary">

@@ -12,13 +12,13 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Name": {
+    "name": {
       "type": "string"
     },
-    "PurchasePrice": {
+    "purchasePrice": {
       "type": "decimal"
     },
-    "SellingPrice": {
+    "sellingPrice": {
       "type": "decimal"
     },
     "suppliers": {

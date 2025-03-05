@@ -1,9 +1,9 @@
 export type Sidebars = {
     id: number;
     documentId: string;
-    PageTitle: string;
+    pageTitle: string;
     URL: string;
-    PageIcon: string;
+    pageIcon: string;
     created_at: string;
     updated_at: string;
     published_at: string;

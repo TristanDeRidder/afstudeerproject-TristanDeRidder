@@ -12,13 +12,13 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "PageTitle": {
+    "pageTitle": {
       "type": "string"
     },
     "URL": {
       "type": "string"
     },
-    "PageIcon": {
+    "pageIcon": {
       "type": "string"
     }
   }

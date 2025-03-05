@@ -12,16 +12,16 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Firstname": {
+    "firstname": {
       "type": "string"
     },
-    "Lastname": {
+    "lastname": {
       "type": "string"
     },
     "Password": {
       "type": "password"
     },
-    "Role": {
+    "role": {
       "type": "enumeration",
       "enum": [
         "Head Technician",

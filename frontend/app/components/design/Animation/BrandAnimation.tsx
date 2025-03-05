@@ -28,7 +28,7 @@ function Marquee({
             key={index}
             className="bg-accent border rounded-lg p-4 py-6 w-40 text-center"
           >
-            {brand.BrandName}
+            {brand.brandName}
           </div>
         ))}
       </div>

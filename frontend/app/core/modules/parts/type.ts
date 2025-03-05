@@ -1,16 +1,18 @@
 import { Repairorders } from "../repairorders/type";
 import { Devices } from "../devices/type";
 import { Suppliers } from "../suppliers/type";
+import { Orders } from "../orders/type";
 
 export type Parts = {
   id: number;
   documentId: string;
-  Name: string;
-  PurchasePrice: number;
-  SellingPrice: number;
-  Suppliers: Suppliers[];
-  Devices: Devices[];
-  Repairorders: Repairorders[];
+  name: string;
+  purchasePrice: number;
+  sellingPrice: number;
+  suppliers: Suppliers[];
+  device: Devices[];
+  repairorders: Repairorders[];
+  orders: Orders[];
   created_at: string;
   updated_at: string;
   published_at: string;

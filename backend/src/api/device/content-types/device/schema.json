@@ -12,7 +12,7 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "Type": {
+    "type": {
       "type": "enumeration",
       "enum": [
         "Smartphone",
@@ -34,10 +34,10 @@
       "target": "api::repairorder.repairorder",
       "mappedBy": "device"
     },
-    "Model": {
+    "model": {
       "type": "string"
     },
-    "ModelNumber": {
+    "modelNumber": {
       "type": "string"
     },
     "brand": {
@@ -46,24 +46,25 @@
       "target": "api::brand.brand",
       "inversedBy": "devices"
     },
-    "ModelType": {
+    "modelType": {
       "type": "string"
     },
-    "orders": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::order.order",
-      "mappedBy": "devices"
-    },
-    "Image": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::order.order",
+      "mappedBy": "device"
     }
   }
 }

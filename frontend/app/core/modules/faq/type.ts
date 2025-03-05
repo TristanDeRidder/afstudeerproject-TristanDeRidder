@@ -3,6 +3,6 @@ export type Faq = {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-  Question: string;
-  Answer: string;
+  question: string;
+  answer: string;
 };
