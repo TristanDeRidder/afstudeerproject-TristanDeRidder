@@ -81,7 +81,6 @@ export async function createRepairorder(
   };
 
   try {
-    console.log("Submitting repair order:", JSON.stringify(data, null, 2));
     const response = await API.post("repairorders", data, {
       headers: {
         Authorization: `Bearer ${authToken}`,
@@ -108,17 +107,17 @@ export async function updateRepairorder(
       parts: repairData.parts,
       customer: repairData.customer, // ID of created customer
       invoice: repairData.invoice, // ID of created invoice
-      technician: repairData.technician, // ID of created technician
     },
   };
 
   try {
     console.log("Updating repair order:", JSON.stringify(data, null, 2));
-    const response = await API.put(`repairorders/${repairData.id}`, data, {
+    const response = await API.put(`repairorders/${repairData.documentId}`, data, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     });
+    console.log("updated repair order", response.data);
 
     return response.data;
   } catch (error) {

@@ -67,12 +67,12 @@ export async function updateCustomer(
   };
 
   try {
-    const response = await API.put(`customers/${customerData.id}`, data, {
+    const response = await API.put(`customers/${customerData.documentId}`, data, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     });
-    console.log("customer data", response.data);
+
     return response.data;
   } catch (error) {
     console.error(error);

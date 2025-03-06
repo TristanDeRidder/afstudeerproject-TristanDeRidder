@@ -1,15 +1,15 @@
-import { useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 
 // API
 import {
-  createRepairorder,
   getRepairorderByDocumentId,
+  updateRepairorder,
 } from "../core/modules/repairorders/api";
 import { getBrands } from "../core/modules/brands/api";
 import { getDevices } from "../core/modules/devices/api";
 import { getParts } from "../core/modules/parts/api";
-import { createCustomer } from "../core/modules/customers/api";
+import { updateCustomer } from "../core/modules/customers/api";
 
 // Types
 import { Brand } from "../core/modules/brands/type";
@@ -52,6 +52,8 @@ export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
   const formData = await request.formData();
 
+  const repairorder = await getRepairorderByDocumentId(formData.get("documentId"));
+  const RepairDocumentId = repairorder.data.documentId;
   const statusRepair = formData.get("statusRepair");
   const issue = formData.get("issue");
   const noFix = formData.get("noFix") === "on" ? true : false;
@@ -60,30 +62,40 @@ export async function action({ request }: any) {
   const lastname = formData.get("lastname");
   const phonenumber = formData.get("phonenumber");
   const mailadress = formData.get("mailadress");
+  const customerDocumentId = repairorder.data.customer.documentId;
 
-  const part = formData.get("part");
+  const partId = formData.get("partId");
+
+  if (!RepairDocumentId || !customerDocumentId) {
+    return { success: false, error: "No documentId provided in the form" };
+  }
 
   try {
     const customerData = {
+      documentId: customerDocumentId,
       Firstname: firstname,
       Lastname: lastname,
       Phonenumber: phonenumber,
       Mailaddress: mailadress,
     };
 
-    const customer = await createCustomer(customerData, jwt);
+    const customer = await updateCustomer(customerData, jwt);
+
+    const customerId = customer?.data?.id;
+
 
     const repairData = {
+      documentId: RepairDocumentId,
       statusRepair: statusRepair,
       issue: issue,
       repairable: noFix,
-      parts: [{ name: part }],
-      customer: customer.data,
+      parts: [{ id: partId }],
+      customer:  customerId,
       invoice: { totalAmount: 0 },
     };
 
-    const repairorder = await createRepairorder(repairData, jwt);
-    console.log(repairorder);
+
+    await updateRepairorder(repairData, jwt);
 
     return { success: true };
   } catch (error) {
@@ -93,16 +105,10 @@ export async function action({ request }: any) {
 }
 
 export default function Repair() {
-  const { repairorder, error, brand, device, parts } =
-    useLoaderData() as LoaderData;
-  const [isEditing, setIsEditing] = useState(true);
+  const fetcher = useFetcher();
+  const { repairorder, error, parts } = useLoaderData() as LoaderData;
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(repairorder);
-  const [selectedBrand, setSelectedBrand] = useState(
-    formData.device.brand?.brandName || ""
-  );
-
-  console.log("Repair Order:", repairorder);
-  console.log("Form Data Device:", formData.device);
 
   if (error) return <div>Error: {error}</div>;
   if (!repairorder) return <div>Loading repair order...</div>;
@@ -128,52 +134,12 @@ export default function Repair() {
     });
   };
 
-  const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const brandName = e.target.value;
-    setSelectedBrand(brandName);
-    setFormData((prev: any) => ({
-      ...prev,
-      device: {
-        ...prev.device,
-        brand: { brandName: brandName },
-        modelType: "",
-        modelNumber: "",
-      },
-    }));
-  };
-
-  const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("Device change triggered");
-    const selectedDevice = device.find(
-      (d) =>
-        d.modelType === e.target.value && d.brand?.brandName === selectedBrand
-    );
-
-    console.log("Selected Device:", selectedDevice);
-
-    if (selectedDevice) {
-      // Update the form with the correct model number
-      setFormData((prev: any) => ({
-        ...prev,
-        device: {
-          ...prev.device,
-          modelType: e.target.value,
-          modelNumber: selectedDevice.modelNumber || "", // Safely access modelNumber
-        },
-      }));
-    } else {
-      // Handle case when no matching device is found
-      console.error("Device not found for the selected model type.");
-      setFormData((prev: any) => ({
-        ...prev,
-        device: {
-          ...prev.device,
-          modelType: e.target.value,
-          modelNumber: "", // Reset modelNumber if no device is found
-        },
-      }));
-    }
-  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    fetcher.submit(formData, { method: "put" });
+    setIsEditing(false);
+  }
 
   return (
     <div className="">
@@ -190,55 +156,29 @@ export default function Repair() {
       </div>
 
       {isEditing ? (
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <input
+            type="hidden"
+            name="documentId"
+            value={repairorder.documentId}
+          />
           <div className="flex justify-between">
             <div className="flex items-center">
               <div className="bg-primary py-8 px-4 rounded-md border">
                 {repairorder.documentId}
               </div>
               <div className="flex flex-col space-y-2 ml-4">
-                {/* Brand selection */}
-                <label className="flex items-center gap-2">
-                  Merk:
-                  <select
-                    name="brand"
-                    required
-                    className="border rounded-md p-2 w-full"
-                    value={selectedBrand}
-                    onChange={handleBrandChange}
-                  >
-                    {brand.map((brand: any) => (
-                      <option key={brand.id} value={brand.brandName}>
-                        {brand.brandName}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                {/* Model selection, filtered by brand */}
-                <label>
-                  Model:
-                  <select
-                    name="deviceId"
-                    required
-                    className="border rounded-md p-2"
-                    value={formData.device.modelType || ""}
-                    onChange={handleDeviceChange} // Ensure this is properly connected
-                  >
-                    {device
-                      .filter((d: any) => d.brand?.brandName === selectedBrand)
-                      .map((d: any) => (
-                        <option key={d.id} value={d.modelType}>
-                          {d.model} {d.modelType}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-
-                {/* Model number display */}
+                <div>
+                  <strong>Merk: </strong>
+                  {repairorder.device.brand?.brandName}
+                </div>
+                <div>
+                  <strong>Model: </strong>
+                  {repairorder.device.model} {repairorder.device.modelType}
+                </div>
                 <div>
                   <strong>Modelnummer: </strong>
-                  {formData.device.modelNumber || "Selecteer een model"}
+                  {repairorder.device.modelNumber}
                 </div>
               </div>
             </div>
@@ -283,6 +223,7 @@ export default function Repair() {
                   Reparatie:
                   <input
                     type="text"
+                    name="issue"
                     value={formData.issue}
                     onChange={(e) => handleChange(e, "issue")}
                     className="ml-2 border rounded p-2"
@@ -290,7 +231,7 @@ export default function Repair() {
                 </label>
                 <div>
                   <strong>Modelnummer: </strong>
-                  {formData.device.modelNumber || "Selecteer een model"}
+                  {repairorder.device.modelNumber}
                 </div>
                 <label className="flex items-center gap-2">
                   No fix
@@ -307,6 +248,7 @@ export default function Repair() {
                   Voornaam klant:
                   <input
                     type="text"
+                    name="firstname"
                     value={formData.customer.firstname}
                     onChange={(e) => handleChange(e, "customer.firstname")}
                     className="ml-2 border rounded p-2"
@@ -316,6 +258,7 @@ export default function Repair() {
                   Achternaam klant:
                   <input
                     type="text"
+                    name="lastname"
                     value={formData.customer.lastname}
                     onChange={(e) => handleChange(e, "customer.firstname")}
                     className="ml-2 border rounded p-2"
@@ -359,16 +302,30 @@ export default function Repair() {
           <div className="mt-6 p-4 bg-primaryHelper text-lg rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold mt-6">Part Information</h3>
             {formData.parts.map((part: any, index: number) => (
-              <div key={part.id} className="flex  items-center justify-between">
+              <div key={index} className="flex items-center justify-between">
                 <label>
                   Onderdeel:
                   <select
-                    name="part"
+                    name="partId"
                     required
                     className="border rounded-md p-2"
-                    value={part.name}
-                    onChange={(e) => handleChange(e, `parts.${index}.name`)}
+                    value={part?.id || ""}
+                    onChange={(e) => {
+                      const selectedPartId = e.target.value;
+                      handleChange(
+                        {
+                          target: {
+                            name: `parts.${index}.id`,
+                            value: selectedPartId,
+                          },
+                        } as React.ChangeEvent<HTMLInputElement>,
+                        `parts.${index}.id`
+                      );
+                    }}
                   >
+                    <option value="" disabled>
+                      Selecteer een onderdeel
+                    </option>
                     {parts
                       .filter(
                         (part: any) =>
@@ -376,17 +333,17 @@ export default function Repair() {
                           formData.device.modelNumber
                       )
                       .map((part: any) => (
-                        <option key={part.id} value={part.name}>
+                        <option key={part.id} value={part.id}>
                           {part.name}
                         </option>
                       ))}
                   </select>
                 </label>
                 <div>
-                  <strong>Aankoopprijs:</strong> € {part.purchasePrice}
+                  <strong>Aankoopprijs:</strong> € {part.purchasePrice || 0}
                 </div>
                 <div>
-                  <strong>Prijs:</strong> € {part.sellingPrice}
+                  <strong>Prijs:</strong> € {part.sellingPrice || 0}
                 </div>
               </div>
             ))}
