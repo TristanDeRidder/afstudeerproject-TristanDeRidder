@@ -370,7 +370,7 @@ export default function Repairorders() {
                 <div className="mb-2">
                   <label>Invoice</label>
                   <p className="text-lg font-bold">
-                    Total: €{totalPrice.toFixed(2)}
+                    Total: € {totalPrice.toFixed(2)}
                   </p>
                   <input type="hidden" name="invoiceTotal" value={totalPrice} />
                 </div>

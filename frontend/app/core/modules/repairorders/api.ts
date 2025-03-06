@@ -94,3 +94,35 @@ export async function createRepairorder(
     throw error;
   }
 }
+
+export async function updateRepairorder(
+  repairData: any,
+  authToken: string
+): Promise<StrapiResponse<Repairorders>> {
+  const data = {
+    data: {
+      statusRepair: repairData.statusRepair,
+      issue: repairData.issue,
+      repairable: repairData.repairable,
+      device: repairData.device,
+      parts: repairData.parts,
+      customer: repairData.customer, // ID of created customer
+      invoice: repairData.invoice, // ID of created invoice
+      technician: repairData.technician, // ID of created technician
+    },
+  };
+
+  try {
+    console.log("Updating repair order:", JSON.stringify(data, null, 2));
+    const response = await API.put(`repairorders/${repairData.id}`, data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update repair order:", error);
+    throw error;
+  }
+}
