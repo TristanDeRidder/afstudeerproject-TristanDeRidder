@@ -6,6 +6,9 @@ import API from '../../networking/API.server';
 
 // Type
 import { Repairorders } from '../repairorders/type';
+import { StrapiResponse } from '../strapi/type';
+import { Devices } from './type';
+import { data } from '@remix-run/node';
 
 export async function getDevices() {
     const query = qs.stringify({
@@ -70,6 +73,35 @@ export async function getTopDevices() {
     return sortedDevices;
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+}
+
+export async function createDevice(
+  deviceData: any,
+  authToken: string
+): Promise<StrapiResponse<Devices>> {
+  const data = {
+    data: {
+      type: deviceData.type,
+      brand: deviceData.brand,
+      model: deviceData.model,
+      modelType: deviceData.modelType || null,
+      modelNumber: deviceData.modelNumber,
+      image: deviceData.image,
+    },
+  };
+
+  try {
+    const response = await API.post(`devices`, data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error creating device:", error);
     throw error;
   }
 }

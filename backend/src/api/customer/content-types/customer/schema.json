@@ -21,14 +21,14 @@
     "mailadress": {
       "type": "email"
     },
-    "phonenumber": {
-      "type": "biginteger"
-    },
     "devices": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::device.device",
       "mappedBy": "customers"
+    },
+    "phonenumber": {
+      "type": "string"
     }
   }
 }
