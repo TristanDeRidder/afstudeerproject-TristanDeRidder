@@ -2,27 +2,31 @@ import { useState, useEffect } from "react";
 import { useLoaderData, useFetcher } from "@remix-run/react";
 import { getDevices, createDevice } from "../core/modules/devices/api";
 import type { Devices } from "../core/modules/devices/type";
-
 import { X } from "lucide-react";
 import { getBrands } from "../core/modules/brands/api";
 import { Brand } from "../core/modules/brands/type";
 import { jwtCookie } from "../core/cookies/cookies.server";
+import { getSuppliers } from "../core/modules/suppliers/api";
+import { Suppliers } from "../core/modules/suppliers/type";
+import { createPart } from "../core/modules/parts/api";
 
 type LoaderData = {
   devices: Devices[];
   brands: Brand[];
+  suppliers: Suppliers[];
 };
 
 export async function loader() {
   try {
     const devices = await getDevices();
     const brands = await getBrands();
+    const suppliers = await getSuppliers();
 
-    if (!devices?.data || !brands?.data) {
+    if (!devices?.data || !brands?.data || !suppliers?.data) {
       throw new Error("No data available");
     }
 
-    return { devices: devices.data, brands: brands.data };
+    return { devices: devices.data, brands: brands.data, suppliers: suppliers.data };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { devices: [] };
@@ -31,79 +35,92 @@ export async function loader() {
 
 export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
-  const strapiUrl = process.env.STRAPI_API_URL;
-
-  if (!strapiUrl) {
-    console.error("STRAPI_URL is not defined");
-  }
-
   const formData = await request.formData();
+  const actionType = formData.get("actionType");
 
-  const type = formData.get("type");
-  const brand = formData.get("brandId");
-  const model = formData.get("model");
-  const modelType = formData.get("modelType")?.trim() || null;
-  const modelNumber = formData.get("modelNumber");
-  const image = formData.get("image");
+  if (actionType === "addDevice") {
+    // Handle Device creation
+    const type = formData.get("type");
+    const brand = formData.get("brandId");
+    const model = formData.get("model");
+    const modelType = formData.get("modelType")?.trim() || null;
+    const modelNumber = formData.get("modelNumber");
+    const image = formData.get("image");
 
-  console.log("Image received:", image);
-  console.log("Image type:", image?.constructor?.name);
+    try {
+      let imageId = null;
 
-  try {
-    let imageId = null;
-
-    if (image && image instanceof File && image.size > 0) {
-      const imageFormData = new FormData();
-      imageFormData.append("files", image);
-
-      console.log("FormData content:");
-      for (const pair of imageFormData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-
-      const uploadResponse = await fetch(
-        `${process.env.STRAPI_API_URL}/upload`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-          body: imageFormData,
+      if (image && image instanceof File && image.size > 0) {
+        const imageFormData = new FormData();
+        imageFormData.append("files", image);
+        const uploadResponse = await fetch(
+          `${process.env.STRAPI_API_URL}/upload`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+            body: imageFormData,
+          }
+        );
+        const uploadData = await uploadResponse.json();
+        if (uploadResponse.ok && Array.isArray(uploadData)) {
+          imageId = uploadData[0]?.id || null;
         }
-      );
-
-      const uploadData = await uploadResponse.json();
-
-      if (uploadResponse.ok && Array.isArray(uploadData)) {
-        imageId = uploadData[0]?.id || null;
       }
+
+      const deviceData = {
+        type,
+        brand,
+        model,
+        modelType,
+        modelNumber,
+        image: imageId ? { id: imageId } : null,
+      };
+
+      await createDevice(deviceData, jwt);
+      return { success: true };
+    } catch (error) {
+      console.error("Error creating device:", error);
+      return { success: false };
     }
+  } else if (actionType === "addPart") {
+    // Handle Part creation
+    const deviceId = formData.get("deviceId");
+    const partName = formData.get("partName");
+    const sellingPrice = formData.get("sellingPrice");
+    const purchasePrice = formData.get("purchasePrice");
+    const supplierId = formData.get("supplierId");
 
-    const deviceData = {
-      type,
-      brand,
-      model,
-      modelType,
-      modelNumber,
-      image: imageId ? { id: imageId } : null,
-    };
+    try {
+      const partData = {
+        device: deviceId,
+        partName,
+        sellingPrice,
+        purchasePrice,
+        suppliers: supplierId,
+      };
 
-    await createDevice(deviceData, jwt);
-    return { success: true };
-  } catch (error) {
-    console.error("Failed to create device:", error);
+      await createPart(partData, jwt);
+      return { success: true };
+    } catch (error) {
+      console.error("Error creating part:", error);
+      return { success: false };
+    }
+  } else {
     return { success: false };
   }
 }
 
 export default function Devices() {
-  const { devices, brands } = useLoaderData<LoaderData>();
+  const { devices, brands, suppliers } = useLoaderData<LoaderData>();
   const fetcher = useFetcher();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredDevices, setFilteredDevices] = useState(devices);
-  const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [showDeviceOverlay, setShowDeviceOverlay] = useState<boolean>(false);
+  const [showPartOverlay, setShowPartOverlay] = useState<boolean>(false);
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
 
   useEffect(() => {
     if (searchQuery) {
@@ -123,19 +140,21 @@ export default function Devices() {
     }
   }, [searchQuery, devices]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleDeviceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formElement = e.target as HTMLFormElement;
     const formData = new FormData(formElement);
 
-    // Log to verify file is attached
-    for (const [key, value] of formData.entries()) {
-      console.log(
-        `${key}:`,
-        value,
-        `(Type: ${value instanceof File ? "File" : typeof value})`
-      );
-    }
+    fetcher.submit(formData, {
+      method: "post",
+      encType: "multipart/form-data",
+    });
+  };
+
+  const handlePartSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formElement = e.target as HTMLFormElement;
+    const formData = new FormData(formElement);
 
     fetcher.submit(formData, {
       method: "post",
@@ -155,29 +174,37 @@ export default function Devices() {
           className="p-3 rounded-lg border border-gray-300 w-80"
         />
         <button
-          onClick={() => setShowOverlay(true)}
+          onClick={() => setShowDeviceOverlay(true)}
           className="bg-accentLight px-4 py-2 rounded-md"
         >
-          +
+          Add Device
+        </button>
+        <button
+          onClick={() => setShowPartOverlay(true)}
+          className="bg-accentLight px-4 py-2 rounded-md ml-2"
+        >
+          Add Part
         </button>
       </div>
 
-      {showOverlay && (
+      {/* Device Form Overlay */}
+      {showDeviceOverlay && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-primaryHelper p-4 rounded-md w-1/2">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Nieuwe toestel toevoegen</h2>
-              <button onClick={() => setShowOverlay(false)}>
+              <button onClick={() => setShowDeviceOverlay(false)}>
                 <X size={24} />
               </button>
             </div>
 
             {/* Add Device Form */}
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handleDeviceSubmit}
               encType="multipart/form-data"
               className="mb-4 space-y-4"
             >
+              <input type="hidden" name="actionType" value="addDevice" />
               <select
                 name="type"
                 className="p-2 rounded-md border w-full"
@@ -232,6 +259,91 @@ export default function Devices() {
                 className="bg-accentLight p-2 rounded-md text-white w-full"
               >
                 Add Device
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Part Form Overlay */}
+      {showPartOverlay && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-primaryHelper p-4 rounded-md w-1/2">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Nieuwe onderdeel toevoegen</h2>
+              <button onClick={() => setShowPartOverlay(false)}>
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Add Part Form */}
+            <form onSubmit={handlePartSubmit} className="mb-4 space-y-4">
+              <input type="hidden" name="actionType" value="addPart" />
+              <select
+                name="brand"
+                className="p-2 rounded-md border w-full"
+                onChange={(e) => setSelectedBrand(e.target.value)}
+                required
+              >
+                <option value="">Selecteer een merk</option>
+                {brands.map((brand) => (
+                  <option key={brand.id} value={brand.brandName}>
+                    {brand.brandName}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                name="deviceId"
+                className="p-2 rounded-md border w-full"
+                required
+              >
+                <option value="">Selecteer een toestel</option>
+                {filteredDevices
+                  .filter((device) => device.brand?.brandName === selectedBrand)
+                  .map((device) => (
+                    <option key={device.id} value={device.id}>
+                      {device.model} {device.modelType}
+                    </option>
+                  ))}
+              </select>
+
+              <input
+                type="text"
+                name="partName"
+                placeholder="Part Name"
+                className="p-2 rounded-md border w-full"
+                required
+              />
+              <input
+                type="number"
+                name="sellingPrice"
+                placeholder="Verkoop prijs"
+                className="p-2 rounded-md border w-full"
+              />
+              <input
+                type="number"
+                name="purchasePrice"
+                placeholder="Aankoop prijs"
+                className="p-2 rounded-md border w-full"
+              />
+              <select
+                name="supplierId"
+                className="p-2 rounded-md border w-full"
+                required
+              >
+                <option value="">Selecteer een leverancier</option>
+                {suppliers.map((supplier) => (
+                  <option key={supplier.id} value={supplier.id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="bg-accentLight p-2 rounded-md text-white w-full"
+              >
+                Add Part
               </button>
             </form>
           </div>

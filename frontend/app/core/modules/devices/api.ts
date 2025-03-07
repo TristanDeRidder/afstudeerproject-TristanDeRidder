@@ -8,7 +8,6 @@ import API from '../../networking/API.server';
 import { Repairorders } from '../repairorders/type';
 import { StrapiResponse } from '../strapi/type';
 import { Devices } from './type';
-import { data } from '@remix-run/node';
 
 export async function getDevices() {
     const query = qs.stringify({
@@ -99,6 +98,7 @@ export async function createDevice(
       },
     });
 
+    console.log("Part response", response);
     return response.data;
   } catch (error) {
     console.error("Error creating device:", error);
