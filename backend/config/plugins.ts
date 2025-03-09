@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+
 export default ({ env }) => ({
   upload: {
     config: {
@@ -23,7 +25,6 @@ export default ({ env }) => ({
       settings: {
         defaultFrom: "tristanderidder1@gmail.com",
         defaultReplyTo: "tristanderidder1@gmail.com",
-        testAddress: "tristanderidder1@gmail.com",
       },
     },
   },
@@ -35,3 +36,15 @@ export default ({ env }) => ({
     },
   },
 });
+
+console.log("SendGrid API Key:", env("SENDGRID_API_KEY"));
+dotenv.config();
+
+function env(variable: string): string {
+  const value = process.env[variable];
+  if (!value) {
+    throw new Error(`Environment variable ${variable} is not defined`);
+  }
+  return value;
+}
+
