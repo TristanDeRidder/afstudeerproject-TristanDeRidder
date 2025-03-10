@@ -23,7 +23,7 @@ export default function DateFilterButtons({
   return (
       <button
         onClick={() => handleDateChange(DateChange)}
-        className={`border border-accent py-2 px-6 hover:bg-accent transition-colors duration-300 ${
+        className={`border bg-dashboardSidebar py-2 px-6 hover:bg-dashboardPrimaryHelper transition-colors duration-300 ${
           Side === "left" ? "rounded-l-full" : "rounded-r-full"
         }`}
       >

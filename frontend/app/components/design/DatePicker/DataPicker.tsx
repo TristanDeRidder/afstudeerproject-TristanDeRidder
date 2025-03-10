@@ -22,15 +22,15 @@ export default function Datepicker({
         DateChange={2}
         Side="left"
       />
-      <div className="relative border-y border-accent py-2 px-6 hover:bg-accent transition-colors duration-300">
+      <div className="relative border-y bg-dashboardSidebar py-2 px-6 hover:bg-dashboardPrimaryHelper transition-colors duration-300">
         <button onClick={() => setShowDatePicker(!showDatePicker)}>
           {selectedDate
-            ? new Date(selectedDate).toLocaleDateString("en-GB")
+            ? new Date(selectedDate).toLocaleDateString("nl-BE")
             : "Select a date"}
         </button>
 
         {showDatePicker && (
-          <div className="absolute top-full mt-2 bg-secondary border rounded-md shadow-md p-4 z-10">
+          <div className="absolute top-full mt-2 bg-dashboardBg border rounded-md shadow-md p-4 z-10">
             <input
               type="date"
               value={selectedDate}
@@ -38,7 +38,7 @@ export default function Datepicker({
                 setSelectedDate(e.target.value);
                 setShowDatePicker(false);
               }}
-              // className="border rounded p-2 w-full"
+              className="dashboardBg"
             />
           </div>
         )}

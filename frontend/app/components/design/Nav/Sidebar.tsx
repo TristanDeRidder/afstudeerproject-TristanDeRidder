@@ -34,15 +34,15 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
   const location = useLocation();
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen text-dashboardText">
       <div
-        className={`flex flex-col items-center h-full text-text bg-primary transition-all duration-300 relative ${
+        className={`flex flex-col items-center h-full text-dashboardText bg-dashboardSidebar shadow-lg transition-all duration-300 relative ${
           isCollapsed ? "w-16" : "w-40"
         }`}
       >
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 text-text border border-bg hover:bg-bg hover:border hover:border-accent rounded-full absolute -right-8 top-4"
+          className="py-1 px-2 text-dashboardText bg-dashboardSidebar rounded-r-md absolute -right-10 top-10"
         >
           {isCollapsed ? <DoubleRight /> : <DoubleLeft />}
         </button>
@@ -57,12 +57,12 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
             <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z" />
           </svg>
           {!isCollapsed && (
-            <span className="ml-2 text-sm font-bold">The App</span>
+            <span className="ml-2 text-sm font-bold">Fixit</span>
           )}
         </a>
 
-        <div className="w-full px-2">
-          <div className="flex flex-col items-start mt-3 border-t border-gray-700">
+        <div className="w-full mt-5">
+          <div className="flex flex-col items-start border-t border-gray-700">
             {items.map((item) => {
               const IconComponent = iconMap[item.icon] || List;
               const isActive = location.pathname === item.url;
@@ -71,8 +71,10 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
                 <a
                   key={item.title}
                   href={item.url}
-                  className={`flex items-center w-full h-12 px-4 mt-2 rounded transition-all duration-300 ${
-                    isActive ? "bg-accent text-white" : "hover:bg-accent"
+                  className={`flex items-center w-full h-12 px-4 mt-2 transition-all duration-300 ${
+                    isActive
+                      ? "border-l-4 border-dashboardPrimary text-text hover:bg-dashboardPrimaryHelper"
+                      : "hover:bg-dashboardPrimaryHelper hover:text-text"
                   }`}
                 >
                   <img

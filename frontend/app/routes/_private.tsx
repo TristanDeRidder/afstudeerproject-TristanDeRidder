@@ -44,17 +44,17 @@ export default function PrivateLayout() {
   
 
   return (
-    <div className="flex">
-        <Sidebar items={items}/>
-        <main
-          className={
-            location.pathname !== "/"
-              ? "w-screen px-5 lg:px-32 overflow-hidden"
-              : "w-screen overflow-hidden"
-          }
-        >
-          <Outlet />
-        </main>
+    <div className="flex border-y-8 border-r-8 border-dashboardSidebar bg-dashboardSidebar">
+      <Sidebar items={items} />
+      <main
+        className={
+          location.pathname !== "/"
+            ? "w-screen px-5 lg:px-32 overflow-hidden bg-dashboardBg rounded-md"
+            : "w-screen overflow-hidden bg-dashboardBg rounded-md"
+        }
+      >
+        <Outlet />
+      </main>
     </div>
   );
 }
