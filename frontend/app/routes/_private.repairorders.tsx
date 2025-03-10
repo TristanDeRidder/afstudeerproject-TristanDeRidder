@@ -22,7 +22,8 @@ import DashboardCard from "../components/design/Card/DashboardCard";
 import { Technicians } from "../core/modules/technicians/type";
 import { getTechnicians } from "../core/modules/technicians/api";
 
-import { X } from "lucide-react";
+import CloseIcon from "../assets/svg/X_Icon.svg";
+
 
 type LoaderData = {
   repairs: Repairorders[];
@@ -250,14 +251,12 @@ export default function Repairorders() {
       {showOverlay && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-primaryHelper p-4 rounded-md w-1/2">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">
-              Nieuwe reparatie toevoegen
-            </h2>
-            <button onClick={() => setShowOverlay(false)}>
-              <X size={24} />
-            </button>
-          </div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Nieuwe reparatie toevoegen</h2>
+              <button onClick={() => setShowOverlay(false)}>
+                <img src={CloseIcon} alt="Close" />
+              </button>
+            </div>
             <form onSubmit={handleSubmit}>
               {/* Repair data */}
               <div className="mb-2">

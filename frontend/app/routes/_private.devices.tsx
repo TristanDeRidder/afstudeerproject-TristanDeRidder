@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import { useLoaderData, useFetcher } from "@remix-run/react";
+
 import { getDevices, createDevice } from "../core/modules/devices/api";
-import type { Devices } from "../core/modules/devices/type";
-import { X } from "lucide-react";
-import { getBrands } from "../core/modules/brands/api";
-import { Brand } from "../core/modules/brands/type";
-import { jwtCookie } from "../core/cookies/cookies.server";
-import { getSuppliers } from "../core/modules/suppliers/api";
-import { Suppliers } from "../core/modules/suppliers/type";
 import { createPart } from "../core/modules/parts/api";
+import { getBrands } from "../core/modules/brands/api";
+import { getSuppliers } from "../core/modules/suppliers/api";
+
+import type { Devices } from "../core/modules/devices/type";
+import { Brand } from "../core/modules/brands/type";
+import { Suppliers } from "../core/modules/suppliers/type";
+
+import { jwtCookie } from "../core/cookies/cookies.server";
+
+import CloseIcon from "../assets/svg/X_Icon.svg";
+
 
 type LoaderData = {
   devices: Devices[];
@@ -194,7 +199,7 @@ export default function Devices() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Nieuwe toestel toevoegen</h2>
               <button onClick={() => setShowDeviceOverlay(false)}>
-                <X size={24} />
+                <img src={CloseIcon} alt="Close" />
               </button>
             </div>
 
@@ -272,7 +277,7 @@ export default function Devices() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Nieuwe onderdeel toevoegen</h2>
               <button onClick={() => setShowPartOverlay(false)}>
-                <X size={24} />
+                <img src={CloseIcon} alt="Close" />
               </button>
             </div>
 

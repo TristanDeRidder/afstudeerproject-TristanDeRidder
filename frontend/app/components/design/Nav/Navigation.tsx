@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { NavLink } from "@remix-run/react";
-import { Menu, X } from "lucide-react";
+
+import CloseIcon from "../../../assets/svg/X_Icon.svg";
+import MenuIcon from "../../../assets/svg/Menu_Icon.svg"
 
 interface NavLink {
   URL: string;
@@ -57,7 +59,7 @@ export default function Navigation({
           onClick={() => setIsOpen(true)}
           aria-label="Open navigation"
         >
-          <Menu size={28} />
+          <img src={MenuIcon} alt="Menu" />
         </button>
       </div>
 
@@ -69,7 +71,7 @@ export default function Navigation({
             onClick={() => setIsOpen(false)}
             aria-label="Close navigation"
           >
-            <X size={32} />
+            <img src={CloseIcon} alt="Close" />
           </button>
 
           <div className="flex flex-col gap-6 text-center">

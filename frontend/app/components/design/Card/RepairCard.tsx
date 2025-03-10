@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { MoveRight } from "lucide-react";
+import Arrow from "../Icons/Arrow";
 
 export default function RepairCard({title, images, url}: {title: string, images: any, url: string}) {    
     return (
@@ -18,7 +18,7 @@ export default function RepairCard({title, images, url}: {title: string, images:
             />
           )}
           <span className="absolute left-0 bottom-0 bg-primaryHelper rounded-full p-3 text-accent border border-accent rotate-45 group-hover:bg-primaryHelper group-hover:text-accent group-hover:-rotate-45 group-hover:p-' transition-all duration-500 ease-in-out">
-            <MoveRight />
+            <Arrow />
           </span>
         </div>
       </Link>
