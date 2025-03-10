@@ -5,7 +5,6 @@ export default {
         try {
             await strapi.plugins['email'].services.email.send({
                 to: 'mixmaster578@gmail.com',
-                from: 'tristanderidder1@gmail.com',
                 subject: 'New Contact Form Submission',
                 text: `
           Name: ${event.result.name}
