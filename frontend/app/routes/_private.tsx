@@ -1,4 +1,4 @@
-import { AppSidebar } from "../components/design/Nav/Sidebar";
+import { Sidebar } from "../components/design/Nav/Sidebar";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { LoaderFunction, json, redirect } from "@remix-run/node";
 import { getSidebars } from "../core/modules/sidebar/api";
@@ -44,14 +44,17 @@ export default function PrivateLayout() {
   
 
   return (
-      <main
-        className={
-          location.pathname !== "/"
-            ? "w-screen px-5 lg:px-32 overflow-hidden"
-            : "w-screen overflow-hidden"
-        }
-      >
-        <Outlet />
-      </main>
+    <div className="flex">
+        <Sidebar items={items}/>
+        <main
+          className={
+            location.pathname !== "/"
+              ? "w-screen px-5 lg:px-32 overflow-hidden"
+              : "w-screen overflow-hidden"
+          }
+        >
+          <Outlet />
+        </main>
+    </div>
   );
 }
