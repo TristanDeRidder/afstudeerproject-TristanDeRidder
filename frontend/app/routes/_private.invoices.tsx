@@ -55,7 +55,7 @@ export default function Invoices() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 mt-6">
         <DashboardTitle title="Inkomsten" />
         <Datepicker
           selectedDate={selectedDate}
@@ -70,17 +70,19 @@ export default function Invoices() {
         <div className="flex gap-4">
           <DashboardCard title="Totaal" data={`€ ${totalIncome}`} />
           <DashboardCard title="Aantal Transacties" data={totalTransactions} />
-          <DashboardCard title="Aantal Gerepareerde Apparaten" data={totalRepairedDevices}
+          <DashboardCard
+            title="Aantal Gerepareerde Apparaten"
+            data={totalRepairedDevices}
           />
         </div>
 
         {/* Table */}
         <div className="bg-primaryHelper rounded-md">
           <div className="flex justify-between font-bold px-4 py-2">
-            <div className="w-1/4">Model</div>
-            <div className="w-1/4">Onderdeel</div>
-            <div className="w-1/4">Betalingsmethode</div>
-            <div className="w-1/4">Bedrag</div>
+            <div className="px-4 py-2 w-1/4">Model</div>
+            <div className="px-4 py-2 w-1/4">Onderdeel</div>
+            <div className="px-4 py-2 w-1/4">Betalingsmethode</div>
+            <div className="px-4 py-2 w-1/4">Bedrag</div>
           </div>
 
           <div className="px-4 py-2 rounded-md">

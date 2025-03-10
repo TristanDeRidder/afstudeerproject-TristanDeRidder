@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLoaderData, useFetcher, Link } from "@remix-run/react";
 import { jwtCookie } from "../core/cookies/cookies.server";
 
@@ -153,6 +153,7 @@ export default function Repairorders() {
   );
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const filteredRepairs = useMemo(() => {
     if (!selectedDate) return repairs;
@@ -181,6 +182,13 @@ export default function Repairorders() {
     fetcher.submit(formData, { method: "post" });
     setShowOverlay(false);
   };
+
+  useEffect(() => {
+    if (fetcher.data && typeof fetcher.data === 'object' && "success" in fetcher.data && fetcher.data.success) {
+      setSuccessMessage("Reparatie succesvol toegevoegd!");
+      setTimeout(() => setSuccessMessage(null), 3000); // auto-hide after 3 seconds
+    }
+  }, [fetcher.data]);
 
   // Filter parts based on selected device
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
@@ -217,8 +225,8 @@ export default function Repairorders() {
   };
 
   return (
-    <div className="relative">
-      <div className="flex justify-between items-center mb-4">
+    <div>
+      <div className="flex justify-between items-center mb-4 mt-6">
         <DashboardTitle title="Reparaties" />
         <div className="flex gap-4">
           <Datepicker
@@ -227,14 +235,20 @@ export default function Repairorders() {
             showDatePicker={showDatePicker}
             setShowDatePicker={setShowDatePicker}
           />
-          <button
-            onClick={() => setShowOverlay(true)}
-            className="bg-accentLight px-4 py-2 rounded-md"
-          >
-            +
-          </button>
         </div>
       </div>
+
+      <button
+        onClick={() => setShowOverlay(true)}
+        className="absolute bottom-9 left-1/2 transform -translate-x-1/2 bg-dashboardPrimary py-2 px-8 rounded-full hover:bg-dashboardPrimaryHelper transition-all duration-300"
+      >
+        +
+      </button>
+      {successMessage && (
+        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-dashboardSucces text-white p-3 rounded-md shadow-lg">
+          {successMessage}
+        </div>
+      )}
 
       <div className="flex gap-4 mb-4">
         <DashboardCard
@@ -249,7 +263,7 @@ export default function Repairorders() {
       </div>
 
       {showOverlay && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-dashboardText bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-primaryHelper p-4 rounded-md w-1/2">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Nieuwe reparatie toevoegen</h2>
@@ -414,7 +428,7 @@ export default function Repairorders() {
               <Link
                 key={repair.documentId}
                 to={`/detail?documentId=${repair.documentId}`}
-                className="flex justify-between bg-accentLight mt-2"
+                className="flex justify-between bg-accentLight mt-2 rounded-md hover:bg-dashboardPrimary hover:text-dashboardBg transition-all duration-300"
               >
                 <div className="px-4 py-2 w-1/5">
                   {repair.device?.model} {repair.device?.modelType}

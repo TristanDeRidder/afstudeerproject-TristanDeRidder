@@ -143,17 +143,17 @@ export default function Repair() {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold text-secondary">
+      <div className="flex justify-between items-center mb-4 mt-6">
+        <h2 className="text-2xl font-semibold text-dashboardText">
           Repair Order Details
         </h2>
-        <button
-          className="bg-accentLight text-secondary px-4 py-2 rounded-md"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          {isEditing ? "Cancel" : "Edit"}
-        </button>
       </div>
+      <button
+        className="absolute bottom-9 left-1/2 transform -translate-x-1/2 bg-dashboardPrimary py-2 px-8 rounded-full hover:bg-dashboardPrimaryHelper transition-all duration-300"
+        onClick={() => setIsEditing(!isEditing)}
+      >
+        {isEditing ? "Cancel" : "Edit"}
+      </button>
 
       {isEditing ? (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -326,10 +326,11 @@ export default function Repair() {
                     <option value="" disabled>
                       Selecteer een onderdeel
                     </option>
+
                     {parts
                       .filter(
                         (part: any) =>
-                          part.device.modelNumber ===
+                          part.device?.modelNumber ===
                           formData.device.modelNumber
                       )
                       .map((part: any) => (
@@ -360,7 +361,7 @@ export default function Repair() {
         <>
           <div className="flex justify-between">
             <div className="flex items-center">
-              <div className="bg-primary py-8 px-4 rounded-md border">
+              <div className="bg-dashboardSidebar py-8 px-4 rounded-md border">
                 {repairorder.documentId}
               </div>
               <div className="flex flex-col space-y-2 ml-4">
@@ -379,7 +380,7 @@ export default function Repair() {
               </div>
             </div>
 
-            <div className="space-y-2 text-gray-700 mt-6">
+            <div className="space-y-2 text-dashboardText-700 mt-6">
               <div>
                 <strong>Status: </strong>
                 {repairorder.statusRepair}
@@ -396,10 +397,10 @@ export default function Repair() {
           </div>
 
           {/* Device data */}
-          <div className="mt-6 p-4 bg-primaryHelper text-lg rounded-lg shadow-sm">
+          <div className="mt-6 p-4 bg-dashboardSidebar text-lg rounded-lg shadow-sm">
             <h3 className="font-semibold mb-3">Device Information</h3>
             <div className="flex justify-between">
-              <div className="space-y-1 text-gray-700">
+              <div className="space-y-1">
                 <div>
                   <strong>Reparatie:</strong> {repairorder.issue}
                 </div>
@@ -407,7 +408,16 @@ export default function Repair() {
                   <strong>Model:</strong> {repairorder.device.modelNumber}
                 </div>
                 <div>
-                  <strong>No fix:</strong> {repairorder.noFix ? "Ja" : "Nee"}
+                  <strong>Fix:</strong>{" "}
+                  <span
+                    className={
+                      repairorder.noFix
+                        ? "text-dashboardError font-semibold"
+                        : "text-dashboardSucces font-semibold"
+                    }
+                  >
+                    {repairorder.noFix ? "Nee" : "Ja"}
+                  </span>
                 </div>
               </div>
               <div>
@@ -430,7 +440,7 @@ export default function Repair() {
           </div>
 
           {/* Part data */}
-          <div className="mt-6 p-4 bg-primaryHelper text-lg rounded-lg shadow-sm">
+          <div className="mt-6 p-4 bg-dashboardSidebar text-lg rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold mb-3">Part Information</h3>
             {repairorder.parts.map((part: any) => (
               <div key={part.id} className="flex items-center justify-between">

@@ -1,21 +1,26 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import Datepicker from "../components/design/DatePicker/DataPicker";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
+
 import { createOrder, getOrders } from "../core/modules/orders/api";
-import { Orders } from "../core/modules/orders/type";
-import { jwtCookie } from "../core/cookies/cookies.server";
 import { getDevices } from "../core/modules/devices/api";
 import { getParts } from "../core/modules/parts/api";
-import { Devices } from "../core/modules/devices/type";
-import { Parts } from "../core/modules/parts/type";
 import { createCustomer } from "../core/modules/customers/api";
 import { createInvoice } from "../core/modules/invoices/api";
 
+import { Orders } from "../core/modules/orders/type";
+import { Devices } from "../core/modules/devices/type";
+import { Parts } from "../core/modules/parts/type";
+
+import { jwtCookie } from "../core/cookies/cookies.server";
+
+import CloseIcon from "../assets/svg/X_Icon.svg";
+
 type LoaderData = {
   orders: Orders[];
-  devices: Devices[],
-    parts: Parts[]
+  devices: Devices[];
+  parts: Parts[];
 };
 
 export async function loader() {
@@ -24,7 +29,9 @@ export async function loader() {
     const devices = await getDevices();
     const parts = await getParts();
 
-    if (!orders?.data) { throw new Error("No data available");}
+    if (!orders?.data) {
+      throw new Error("No data available");
+    }
     if (!devices?.data) throw new Error("No devices available");
     if (!parts?.data) throw new Error("No parts available");
 
@@ -35,7 +42,7 @@ export async function loader() {
   }
 }
 
-export async function action({request}: any){
+export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
   const formData = await request.formData();
 
@@ -44,10 +51,10 @@ export async function action({request}: any){
   const lastname = formData.get("lastname");
   const mail = formData.get("mail");
   const phonenumber = formData.get("phonenumber");
-  
+
   // device
   const deviceId = formData.get("deviceId");
-  
+
   // invoiceData
   const invoiceTotal = formData.get("invoiceTotal");
   const invoiceBool = false;
@@ -107,8 +114,9 @@ export async function action({request}: any){
 export default function Invoices() {
   const fetcher = useFetcher();
   const { orders, devices, parts } = useLoaderData() as LoaderData;
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  console.log(orders)
+  console.log(orders);
 
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
 
@@ -129,6 +137,18 @@ export default function Invoices() {
     const formData = new FormData(e.target as HTMLFormElement);
     fetcher.submit(formData, { method: "post" });
     setShowOverlay(false);
+
+    useEffect(() => {
+      if (
+        fetcher.data &&
+        typeof fetcher.data === "object" &&
+        "success" in fetcher.data &&
+        fetcher.data.success
+      ) {
+        setSuccessMessage("Bestelling succesvol toegevoegd!");
+        setTimeout(() => setSuccessMessage(null), 3000); // auto-hide after 3 seconds
+      }
+    }, [fetcher.data]);
   };
 
   // Filter parts based on selected device
@@ -167,7 +187,7 @@ export default function Invoices() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 mt-6">
         <DashboardTitle title="Bestellingen" />
         <Datepicker
           selectedDate={selectedDate}
@@ -179,17 +199,27 @@ export default function Invoices() {
 
       <button
         onClick={() => setShowOverlay(true)}
-        className="bg-accentLight px-4 py-2 rounded-md"
+        className="absolute bottom-9 left-1/2 transform -translate-x-1/2 bg-dashboardPrimary py-2 px-8 rounded-full hover:bg-dashboardPrimaryHelper transition-all duration-300"
       >
         +
       </button>
+      {successMessage && (
+        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-dashboardSucces text-white p-3 rounded-md shadow-lg">
+          {successMessage}
+        </div>
+      )}
 
       {showOverlay && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-primaryHelper p-4 rounded-md w-1/2">
-            <h2 className="text-xl font-bold mb-4">
-              Nieuwe bestelling toevoegen
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold mb-4">
+                Nieuwe bestelling toevoegen
+              </h2>
+              <button onClick={() => setShowOverlay(false)}>
+                <img src={CloseIcon} alt="Close" />
+              </button>
+            </div>
             <form onSubmit={handleSubmit}>
               {/* Repair data */}
               <div className="mb-2">
@@ -305,11 +335,11 @@ export default function Invoices() {
       {/* Table */}
       <div className="bg-primaryHelper rounded-md">
         <div className="flex justify-between font-bold px-4 py-2">
-          <div className="w-1/5">Datum</div>
-          <div className="w-1/5">Toestel</div>
-          <div className="w-1/5">Onderdeel</div>
-          <div className="w-1/5">Klant</div>
-          <div className="w-1/5">Status</div>
+          <div className="px-4 py-2 w-1/5">Datum</div>
+          <div className="px-4 py-2 w-1/5">Toestel</div>
+          <div className="px-4 py-2 w-1/5">Onderdeel</div>
+          <div className="px-4 py-2 w-1/5">Klant</div>
+          <div className="px-4 py-2 w-1/5">Status</div>
         </div>
 
         <div className="px-4 py-2 rounded-md">

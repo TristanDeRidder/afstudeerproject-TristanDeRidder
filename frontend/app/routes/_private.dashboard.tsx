@@ -217,7 +217,7 @@ export default function Dashboard() {
                 <Link
                   key={repair.documentId}
                   to={`/detail?documentId=${repair.documentId}`}
-                  className={`rounded-md p-4 grid grid-cols-4 gap-4 list-decimal ${
+                  className={`rounded-md p-4 grid grid-cols-4 gap-4 list-decimal hover:bg-dashboardPrimary hover:text-dashboardBg transition-all duration-300 ${
                     repair.statusRepair === "Opgehaald"
                       ? "bg-dashboardPrimaryHelper"
                       : "bg-dashboardBg"

@@ -29,9 +29,25 @@ const iconMap: { [key: string]: string } = {
   Globe,
 };
 
+const customOrder = [
+  "Home",
+  "Repairorders",
+  "Invoices",
+  "Order",
+  "Devices",
+  "Detail",
+  "Contact",
+  "Website",
+];
+
 export function Sidebar({ items }: { items: SidebarItem[] }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+
+  // Sort items according to the custom order
+  const sortedItems = items.sort((a, b) => {
+    return customOrder.indexOf(a.title) - customOrder.indexOf(b.title);
+  });
 
   return (
     <div className="flex items-center justify-center h-screen text-dashboardText">
@@ -63,7 +79,7 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
 
         <div className="w-full mt-5">
           <div className="flex flex-col items-start border-t border-gray-700">
-            {items.map((item) => {
+            {sortedItems.map((item) => {
               const IconComponent = iconMap[item.icon] || List;
               const isActive = location.pathname === item.url;
 

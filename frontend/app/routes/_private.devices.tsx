@@ -170,7 +170,7 @@ export default function Devices() {
   return (
     <div className="bg-primary p-4">
       {/* Search Bar */}
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-4 mt-6">
         <input
           type="text"
           placeholder="Search for devices..."
@@ -178,15 +178,18 @@ export default function Devices() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="p-3 rounded-lg border border-gray-300 w-80"
         />
+      </div>
+
+      <div className="absolute bottom-9 left-1/2 transform -translate-x-1/2">
         <button
           onClick={() => setShowDeviceOverlay(true)}
-          className="bg-accentLight px-4 py-2 rounded-md"
+          className="bg-dashboardPrimary px-4 py-2 rounded-l-full hover:bg-dashboardPrimaryHelper transition-all duration-300"
         >
           Add Device
         </button>
         <button
           onClick={() => setShowPartOverlay(true)}
-          className="bg-accentLight px-4 py-2 rounded-md ml-2"
+          className="bg-dashboardPrimary px-4 py-2 rounded-r-full hover:bg-dashboardPrimaryHelper transition-all duration-300"
         >
           Add Part
         </button>
@@ -358,23 +361,31 @@ export default function Devices() {
       {/* Device List */}
       <div className="flex justify-between">
         <div className="font-bold px-4 py-2 w-1/3">Type</div>
-        <div className="font-bold px-4 py-2 w-1/3">Brand</div>
+        <div className="font-bold px-4 py-2 w-1/3">Merk</div>
         <div className="font-bold px-4 py-2 w-1/3">Model</div>
       </div>
       <div>
-        {filteredDevices.map((device) => (
-          <div
-            key={device.id}
-            className="flex justify-between bg-primaryHelper mt-2"
-          >
-            <div className="px-4 py-2 w-1/3">{device.type}</div>
-            <div className="px-4 py-2 w-1/3">{device.brand?.brandName}</div>
-            <div className="px-4 py-2 w-1/3">
-              {device.model} {device.modelType}
+        {filteredDevices
+          .sort((a, b) => {
+            if (a.brand?.brandName && b.brand?.brandName) {
+              return a.brand.brandName.localeCompare(b.brand.brandName);
+            }
+            return 0; // In case brandName is undefined, no sorting applied
+          })
+          .map((device) => (
+            <div
+              key={device.id}
+              className="flex justify-between bg-primaryHelper mt-2"
+            >
+              <div className="px-4 py-2 w-1/3">{device.type}</div>
+              <div className="px-4 py-2 w-1/3">{device.brand?.brandName}</div>
+              <div className="px-4 py-2 w-1/3">
+                {device.model} {device.modelType}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
 }
+
