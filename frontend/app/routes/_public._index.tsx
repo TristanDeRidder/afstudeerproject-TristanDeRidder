@@ -71,13 +71,14 @@ export default function Index() {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="px-5 lg:px-32 flex flex-col gap-8">
+      {/* Hero Section */}
+      <div className="px-5 md:px-10 lg:px-32 flex flex-col gap-8">
         <PrimaryTitle
           title="Een snelle herstellingen voor uw Smartphone"
           subtitle=""
         />
 
-        <div className="flex flex-col lg:flex-row justify-center gap-10 bg-primary p-3 lg:p-10 rounded-lg">
+        <div className="flex flex-col md:flex-row justify-center gap-4 bg-primary p-2 rounded-xl md:p-6 lg:p-10 md:rounded-lg md:gap-8 lg:gap-10">
           <RepairCard
             title="Herstel een smartphone"
             images={images["20"]}
@@ -98,7 +99,8 @@ export default function Index() {
 
       <BrandAnimation brands={brands} />
 
-      <div className="px-5 lg:px-32">
+      {/* Top Devices Section */}
+      <div className="px-5 md:px-16 lg:px-32">
         <SecondaryTitle
           title="Veelvoorkomende herstellingen"
           subtitle="Alle merken van smartphones tot tablets, smartwatches tot consoles."
@@ -130,14 +132,15 @@ export default function Index() {
 
           <Link
             to="repair"
-            className="bg-secondary text-white p-3 rounded-lg text-center hover:bg-accent hover:text-text transition-all"
+            className="bg-secondary text-white p-3 rounded-lg text-center hover:bg-accent hover:text-text transition-all w-full md:w-auto"
           >
             Alle reparaties
           </Link>
         </div>
       </div>
 
-      <div className="bg-accentLight p-10 rounded-lg px-5 lg:px-32">
+      {/* Why Choose Fixit Section */}
+      <div className="bg-accentLight p-10 rounded-lg px-5 md:px-16 lg:px-32">
         <SecondaryTitle title="Waarom kiezen voor Fixit?" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-10 pb-5">
@@ -151,13 +154,21 @@ export default function Index() {
               }) => (
                 <div
                   key={card.id}
-                  className="bg-primaryHelper p-6 rounded-lg flex items-start"
+                  className="bg-bg p-6 rounded-lg flex items-start gap-4"
                 >
                   <div>
-                    <h4 className="text-xl font-semibold mb-3">{card.Title}</h4>
-                    <p className="text-sm">{card.Text}</p>
+                    <h4 className="text-lg md:text-xl font-semibold mb-3">
+                      {card.Title}
+                    </h4>
+                    <p className="text-sm md:text-base">{card.Text}</p>
                   </div>
-                  {card.Icon && <img src={card.Icon.url} alt={card.Title} />}
+                  {card.Icon && (
+                    <img
+                      src={card.Icon.url}
+                      alt={card.Title}
+                      className="w-12 h-12"
+                    />
+                  )}
                 </div>
               )
             )

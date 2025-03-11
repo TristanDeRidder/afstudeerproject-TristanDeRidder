@@ -53,7 +53,7 @@ export default function PublicLayout() {
 
 
   return (
-    <div>
+    <>
       <header>
         <Navigation images={images} navLinks={nav} />
       </header>
@@ -66,9 +66,9 @@ export default function PublicLayout() {
       >
         <Outlet />
       </main>
-      <footer className="bg-footer px-5 lg:px-32 py-10 flex justify-between items-start gap-10 mt-10">
+      <footer className="bg-footer px-5 lg:px-32 py-10 flex flex-col md:flex-row justify-between items-start gap-10 mt-10">
         <Footer images={images} BrandLinks={brands} />
       </footer>
-    </div>
+    </>
   );
 }
