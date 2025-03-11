@@ -1,15 +1,17 @@
-export default {
+module.exports = {
+    async beforeCreate(event) {
+        console.log('beforeCreate event:', event.params.data);
+    },
+    
     async afterCreate(event) {
         console.log('afterCreate hook triggered:', event);
 
         try {
             await strapi.plugins['email'].services.email.send({
-                to: 'mixmaster578@gmail.com',
-                subject: 'New Contact Form Submission',
+                to: `${event.result.email}`,
+                subject: `${event.result.subject}`,
                 text: `
-          Name: ${event.result.name}
-          Email: ${event.result.email}
-          Message: ${event.result.message}
+          Message: ${event.result.message || 'N/A'}
         `,
             });
 
@@ -17,5 +19,5 @@ export default {
         } catch (err) {
             console.error('Failed to send email:', err.response ? err.response.body : err.message);
         }
-    }
+    },
 };
