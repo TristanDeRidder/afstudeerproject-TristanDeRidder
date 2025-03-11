@@ -107,19 +107,19 @@ export default function Index() {
         />
 
         <div className="flex flex-col gap-5 items-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {topDevices && topDevices.length === 0 ? (
               <p>Geen apparaten gevonden...</p>
             ) : (
               topDevices?.map((device: Devices) => (
                 <div
                   key={device.documentId}
-                  className="bg-primaryHelper p-5 rounded-lg w-full"
+                  className="bg-primaryHelper p-5 rounded-lg min-w-[45%] sm:min-w-[50%] md:w-full snap-center"
                 >
                   <img
                     src={device.image?.url}
                     alt={device.model}
-                    className="w-full h-40 object-cover mt-3"
+                    className="h-40 object-cover mt-3"
                   />
                   <h3 className="text-lg font-bold">
                     {device.model} {device.modelType}

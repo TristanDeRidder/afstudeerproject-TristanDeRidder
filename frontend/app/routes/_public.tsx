@@ -58,11 +58,7 @@ export default function PublicLayout() {
         <Navigation images={images} navLinks={nav} />
       </header>
       <main
-        className={
-          location.pathname !== "/"
-            ? "px-5 lg:px-32 overflow-hidden"
-            : "overflow-hidden"
-        }
+        className="overflow-hidden"
       >
         <Outlet />
       </main>

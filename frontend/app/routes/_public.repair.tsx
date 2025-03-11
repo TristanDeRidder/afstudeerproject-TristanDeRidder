@@ -97,46 +97,46 @@ export default function Repair() {
   };
 
   return (
-    <div>
-      <div className="p-4 flex flex-col justify-center items-center h-screen">
-        {/* Search Bar */}
-        <div className="md:w-1/2 p-4">
-          <input
-            type="text"
-            placeholder="Search for a device or model type..."
-            value={searchQuery}
-            onChange={handleSearch}
-            className="block w-full p-2 mb-4 border rounded"
+    <div className="px-4 sm:px-8 lg:px-32 py-4 flex flex-col justify-center items-center">
+      {/* Search Bar */}
+      <div className="w-full max-w-md p-4">
+        <input
+          type="text"
+          placeholder="Search for a device or model type..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className="block w-full p-2 mb-4 border rounded"
+        />
+        {notFound && (
+          <p className="text-red-500 animate-fade-in">
+            No matching device or model type found.
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6 w-full max-w-4xl mb-10">
+        {/* Device Image Display */}
+        <div className="flex justify-center items-center w-full lg:w-1/2">
+          <img
+            src={getImageSrc()}
+            alt={
+              selectedDevice
+                ? selectedDevice.model
+                : selectedBrand?.brandName || images
+            }
+            className="w-60 h-60 sm:w-72 sm:h-72 object-contain"
           />
-          {notFound && (
-            <p className="text-red-500 animate-fade-in">
-              No matching device or model type found.
-            </p>
-          )}
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 w-full">
-          {/* Device Image Display */}
-          <div className="none md:flex justify-center items-center mb-6 w-1/2">
-            <img
-              src={getImageSrc()}
-              alt={
-                selectedDevice
-                  ? selectedDevice.model
-                  : selectedBrand?.brandName || images
-              }
-              className="w-72 h-72 object-contain"
-            />
-          </div>
-
-          {/* Step 1: Select a Type */}
+        {/* Step Content */}
+        <div className="w-full lg:w-1/2 space-y-6">
           {step === 1 && (
-            <div className="md:w-1/2 bg-primary p-4 rounded-md">
+            <div className="bg-primary p-4 rounded-md">
               <h2 className="text-xl font-bold">Select a Type</h2>
               {deviceTypes.map((type) => (
                 <button
                   key={type}
-                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper"
+                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper hover:bg-accent"
                   onClick={() => {
                     setSelectedType(type);
                     setConfirmSelection(true);
@@ -147,7 +147,7 @@ export default function Repair() {
               ))}
               {confirmSelection && (
                 <button
-                  className="mt-4 p-2 border rounded-lg bg-accent text-text"
+                  className="mt-4 p-2 w-full border rounded-lg bg-accent text-white"
                   onClick={() => {
                     setStep(2);
                     setConfirmSelection(false);
@@ -159,14 +159,13 @@ export default function Repair() {
             </div>
           )}
 
-          {/* Step 2: Select a Brand */}
           {step === 2 && selectedType && (
-            <div className="md:w-1/2 bg-primary p-4">
+            <div className="bg-primary p-4 rounded-md">
               <h2 className="text-xl font-bold">Select a Brand</h2>
               {brands.map((brand) => (
                 <button
                   key={brand.documentId}
-                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper"
+                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper hover:bg-accent"
                   onClick={() => {
                     setSelectedBrand(brand);
                     setConfirmSelection(true);
@@ -175,10 +174,16 @@ export default function Repair() {
                   {brand.brandName}
                 </button>
               ))}
-              <div className="flex flex-row-reverse justify-end gap-2">
+              <div className="flex justify-between mt-4">
+                <button
+                  className="p-2 border rounded-lg bg-accentLight"
+                  onClick={() => setStep(1)}
+                >
+                  Back
+                </button>
                 {confirmSelection && (
                   <button
-                    className="mt-4 p-2 border rounded-lg bg-accent text-text"
+                    className="p-2 border rounded-lg bg-accent text-white"
                     onClick={() => {
                       setStep(3);
                       setConfirmSelection(false);
@@ -187,19 +192,12 @@ export default function Repair() {
                     Confirm Selection
                   </button>
                 )}
-                <button
-                  className="mt-4 py-2 px-4 rounded bg-accentLight"
-                  onClick={() => setStep(1)}
-                >
-                  Back
-                </button>
               </div>
             </div>
           )}
 
-          {/* Step 3: Select a Model */}
           {step === 3 && selectedBrand && (
-            <div className="md:w-1/2 bg-primary p-4">
+            <div className="bg-primary p-4 rounded-md">
               <h2 className="text-xl font-bold mb-4">Select a Model</h2>
               {Array.from(
                 new Set(
@@ -211,21 +209,20 @@ export default function Repair() {
                     )
                     .map((device) => device.model)
                 )
-              ).map((model) => {
-                const modelVariants = devices.filter(
-                  (device) =>
-                    device.model === model &&
-                    device.brand?.brandName === selectedBrand.brandName &&
-                    device.type === selectedType
-                );
-
-                return (
-                  <details key={model} className="border rounded mb-2">
-                    <summary className="p-2 bg-primaryHelper cursor-pointer">
-                      {model}
-                    </summary>
-                    <div className="p-2">
-                      {modelVariants.map((variant) => (
+              ).map((model) => (
+                <details key={model} className="border rounded mb-2">
+                  <summary className="p-2 bg-primaryHelper cursor-pointer">
+                    {model}
+                  </summary>
+                  <div className="p-2">
+                    {devices
+                      .filter(
+                        (device) =>
+                          device.model === model &&
+                          device.brand?.brandName === selectedBrand.brandName &&
+                          device.type === selectedType
+                      )
+                      .map((variant) => (
                         <button
                           key={variant.documentId}
                           className={`block w-full p-2 my-1 border rounded text-left ${
@@ -238,22 +235,19 @@ export default function Repair() {
                           {variant.model} {variant.modelType}
                         </button>
                       ))}
-                    </div>
-                  </details>
-                );
-              })}
-
-              {/* Confirm Selection */}
-              <div className="flex flex-row gap-2">
+                  </div>
+                </details>
+              ))}
+              <div className="flex justify-between mt-4">
                 <button
-                  className="py-2 px-4 rounded bg-accentLight"
+                  className="p-2 border rounded-lg bg-accentLight"
                   onClick={() => setStep(2)}
                 >
                   Back
                 </button>
                 {selectedDevice && (
                   <button
-                    className="p-2 border rounded-lg bg-accent text-text"
+                    className="p-2 border rounded-lg bg-accent text-white"
                     onClick={() => setStep(4)}
                   >
                     Confirm Selection
@@ -263,11 +257,9 @@ export default function Repair() {
             </div>
           )}
 
-          {/* Step 4: Select a Part */}
           {step === 4 && selectedDevice && (
-            <div className="md:w-1/2 bg-primary p-4">
-              <h2 className="text-xl font-bold">Select a Part</h2>
-
+            <div className="bg-primary p-4 rounded-md">
+              <h2 className="text-xl font-bold mb-4">Select a Part</h2>
               {parts.filter(
                 (part) =>
                   part.device?.modelNumber === selectedDevice.modelNumber
@@ -288,10 +280,9 @@ export default function Repair() {
               ) : (
                 <p>No parts available for this device.</p>
               )}
-
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex justify-between mt-4">
                 <button
-                  className="py-2 px-4 rounded bg-accentLight"
+                  className="p-2 border rounded-lg bg-accentLight"
                   onClick={() => setStep(3)}
                 >
                   Back
@@ -301,6 +292,7 @@ export default function Repair() {
           )}
         </div>
       </div>
+
       <ContactBanner />
     </div>
   );
