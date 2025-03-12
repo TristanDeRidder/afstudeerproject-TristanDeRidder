@@ -19,6 +19,8 @@ export async function loader({ request }: { request: Request }) {
 
   const repairorders = await getRepairorderByDocumentId(documentId);
 
+  console.log(repairorders.data);
+
   return {
     repairorder: repairorders.data,
   }; 
@@ -32,18 +34,18 @@ export default function Repair() {
   if (!repairorder) return <div>Loading repair order...</div>;
 
   return (
-    <>
+    <div className="px-5 md:px-10 lg:px-32">
       <PrimaryTitle title="Repair Status" />
-      <div className="bg-primary p-6 rounded-lg  border border-gray-200 mt-4">
+      <div className="bg-primary p-6 rounded-lg border border-gray-200 mt-4 w-full max-w-4xl mx-auto">
         <h2 className="text-2xl font-semibold text-secondary mb-4">
           Repair Order Details
         </h2>
 
         {/* Repair Order Info */}
-        <div className="space-y-2 text-gray-700">
-          <div>
-            <strong>Status:</strong>{" "}
-            <span className="px-2 py-1 rounded bg-accentLight text-secondary font-medium">
+        <div className="space-y-2 text-gray-700 text-sm sm:text-base">
+          <div className="flex flex-wrap items-center gap-2">
+            <strong>Status:</strong>
+            <span className="px-3 py-1 rounded bg-accentLight text-secondary font-medium">
               {repairorder.StatusRepair}
             </span>
           </div>
@@ -58,7 +60,7 @@ export default function Repair() {
             <h3 className="text-xl font-semibold text-secondary mb-3">
               Device Information
             </h3>
-            <div className="space-y-1 text-gray-700">
+            <div className="space-y-2 text-gray-700 text-sm sm:text-base">
               <div>
                 <strong>Name:</strong> {repairorder.device.Name}
               </div>
@@ -71,34 +73,11 @@ export default function Repair() {
             </div>
           </div>
         ) : (
-          <div className="mt-6 text-gray-500">
+          <div className="mt-6 text-gray-500 text-sm sm:text-base">
             No device information available.
           </div>
         )}
-
-        {/* Invoice Information */}
-        {/* {repairorder.invoice ? (
-    <div className="mt-6 p-4 bg-primaryHelper rounded-lg shadow-sm">
-      <h3 className="text-xl font-semibold text-secondary mb-3">Invoice Information</h3>
-      <div className="space-y-1 text-gray-700">
-        <div>
-          <strong>Total Amount:</strong> €{repairorder.invoice.TotalAmount}
-        </div>
-        <div>
-          <strong>Paid:</strong>{" "}
-          <span className={`px-2 py-1 rounded ${repairorder.invoice.Paid ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"}`}>
-            {repairorder.invoice.Paid ? "Yes" : "No"}
-          </span>
-        </div>
-        <div>
-          <strong>Payment Method:</strong> {repairorder.invoice.Paymentmethod}
-        </div>
       </div>
     </div>
-  ) : (
-    <div className="mt-6 text-gray-500">No invoice available.</div>
-  )} */}
-      </div>
-    </>
   );
 }
