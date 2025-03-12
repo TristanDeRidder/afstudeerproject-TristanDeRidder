@@ -7,8 +7,13 @@ import API from '../../../networking/API.server';
 // Type
 
 export async function getAboutPage() {
-    const query = qs.stringify({
-        populate: "*",
+    const query = qs.stringify(
+      {
+        populate: {
+          PageContent: {
+            populate: "*",
+          },
+        },
       },
       {
         encodeValuesOnly: true,

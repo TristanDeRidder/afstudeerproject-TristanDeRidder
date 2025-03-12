@@ -26,7 +26,7 @@ export default function About() {
   const { about } = useLoaderData() as LoaderData;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32">
       {about.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
@@ -42,24 +42,66 @@ export default function About() {
           case "blocks.rich-text-image":
             return (
               <section key={block.id} className="space-y-2">
-                <h2 className="text-2xl font-semibold">{block.Title}</h2>
-                <div className="text-gray-700">
-                  {block.Text.map((paragraph: any, index: number) => (
-                    <p key={index}>
-                      {paragraph.children.map((child: any, i: number) => (
-                        <span key={i}>{child.text}</span>
-                      ))}
-                    </p>
-                  ))}
+                <div className="flex flex-col md:flex-row gap-4">
+                  <h2 className="text-2xl font-semibold">{block.Title}</h2>
+                  <div className="text-gray-700">
+                    {block.Text.map((paragraph: any, index: number) => (
+                      <p key={index}>
+                        {paragraph.children.map((child: any, i: number) => (
+                          <span key={i}>{child.text}</span>
+                        ))}
+                      </p>
+                    ))}
+                  </div>
+                  {block.Image && (
+                    <img
+                      src={block.Image.url}
+                      alt={block.Image.alternativeText}
+                      className="w-full md:w-1/2"
+                    />
+                  )}
                 </div>
               </section>
             );
 
           case "blocks.why":
             return (
-              <div key={block.id} className="p-4 border rounded-lg bg-gray-100">
-                <p className="text-lg font-semibold">Waarom kiezen voor ons?</p>
-              </div>
+              <section key={block.id} className="space-y-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-center">
+                  Waarom kiezen voor ons?
+                </h2>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {/* First Card */}
+                  <div className="p-6 border rounded-lg bg-gray-100 shadow-sm">
+                    <h3 className="text-lg font-semibold mb-2">
+                      {block.FirstCard.Title}
+                    </h3>
+                    <p className="text-sm text-gray-700">
+                      {block.FirstCard.Text}
+                    </p>
+                  </div>
+
+                  {/* Second Card */}
+                  <div className="p-6 border rounded-lg bg-gray-100 shadow-sm">
+                    <h3 className="text-lg font-semibold mb-2">
+                      {block.SecondCard.Title}
+                    </h3>
+                    <p className="text-sm text-gray-700">
+                      {block.SecondCard.Text}
+                    </p>
+                  </div>
+
+                  {/* Third Card */}
+                  <div className="p-6 border rounded-lg bg-gray-100 shadow-sm">
+                    <h3 className="text-lg font-semibold mb-2">
+                      {block.ThirdCard.Title}
+                    </h3>
+                    <p className="text-sm text-gray-700">
+                      {block.ThirdCard.Text}
+                    </p>
+                  </div>
+                </div>
+              </section>
             );
 
           default:
