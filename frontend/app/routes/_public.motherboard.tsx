@@ -37,7 +37,7 @@ export default function Motherboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32">
       {motherboard.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
@@ -54,7 +54,7 @@ export default function Motherboard() {
             return (
               <section
                 key={block.id}
-                className="p-4 border rounded-lg bg-gray-100"
+                className="p-4"
               >
                 {block.Title && (
                   <h2 className="text-xl font-semibold">{block.Title}</h2>

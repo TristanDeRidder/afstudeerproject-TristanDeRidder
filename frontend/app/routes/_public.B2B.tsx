@@ -34,7 +34,7 @@ export default function B2B() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32">
       {business.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":

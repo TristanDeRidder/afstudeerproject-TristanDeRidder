@@ -34,7 +34,7 @@ export default function Protection() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32">
       {protection.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
@@ -51,7 +51,7 @@ export default function Protection() {
             return (
               <section
                 key={block.id}
-                className="p-4 border rounded-lg bg-gray-100"
+                className="p-4"
               >
                 {block.content?.map((paragraph: any, index: number) => (
                   <p key={index} className="text-gray-700">

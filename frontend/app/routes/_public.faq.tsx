@@ -28,7 +28,7 @@ export default function Faq() {
   const { faqs } = useLoaderData() as LoaderData;
 
   return (
-    <div className="flex flex-col gap-14 bg-white">
+    <div className="px-5 md:px-10 lg:px-32 flex flex-col gap-14 bg-white">
       <PrimaryTitle title="FAQ" />
       <Accordion items={faqs} />
     </div>

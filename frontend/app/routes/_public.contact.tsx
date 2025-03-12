@@ -122,7 +122,7 @@ export default function Contact() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32">
       {contact.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
@@ -136,14 +136,16 @@ export default function Contact() {
             return (
               <section
                 key={block.id}
-                className="p-4 border rounded-lg bg-primaryHelper"
+                className="p-6 border rounded-lg bg-primaryHelper shadow-sm"
               >
-                <h2 className="text-xl font-semibold mb-2">Openingstijden</h2>
-                <ul className="space-y-1">
+                <h2 className="text-2xl font-semibold mb-4 text-center">
+                  Openingstijden
+                </h2>
+                <ul className="space-y-2">
                   {Object.entries(block.Open).map(
                     ([day, hours]: [string, any]) => (
-                      <li key={day} className="flex justify-between">
-                        <span className="capitalize">{day}</span>
+                      <li key={day} className="flex justify-between text-lg">
+                        <span className="capitalize font-medium">{day}</span>
                         {hours.open && hours.close ? (
                           <span>
                             {hours.open} - {hours.close}
@@ -160,9 +162,9 @@ export default function Contact() {
 
           case "blocks.i-frame":
             return (
-              <section key={block.id}>
-                <h2 className="text-xl font-semibold mb-2 p-4">Locatie</h2>
-                <div className="w-full h-80 mb-6">
+              <section key={block.id} className="space-y-4">
+                <h2 className="text-2xl font-semibold text-center">Locatie</h2>
+                <div className="w-full h-64 md:h-80 rounded-lg overflow-hidden shadow-md">
                   <iframe
                     src={block.iFrame}
                     width="100%"
@@ -181,86 +183,96 @@ export default function Contact() {
       })}
 
       {/* Contact Form */}
-      <SecondaryTitle title="Neem contact op" />
-      {error && (
-        <p className="p-4 border border-red rounded-[5px] mb-4 text-red">
-          {error}
-        </p>
-      )}
-      {success && (
-        <p className="p-4 border rounded-[5px] mb-4 font-medium">{success}</p>
-      )}
-      <form
-        method="post"
-        ref={formRef}
-        onSubmit={handleSubmit}
-        className="space-y-4"
-      >
-        <div className="flex gap-4 ">
-          <div>
-            <label className="block text-sm font-medium">Voornaam*</label>
-            <input
-              type="text"
-              name="firstname"
-              value={formData.firstname}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Achternaam*</label>
-            <input
-              type="text"
-              name="lastname"
-              value={formData.lastname}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="flex gap-4">
-          <div>
-            <label className="block text-sm font-medium">E-mail*</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Telefoonnummer</label>
-            <input
-              type="text"
-              name="phonenumber"
-              value={formData.phonenumber}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Bericht*</label>
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            rows={4}
-            className="w-full p-2 border rounded"
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          className="w-full p-2 bg-secondary text-white rounded-full"
+      <section className="space-y-6">
+        <SecondaryTitle title="Neem contact op" />
+        {error && (
+          <p className="p-4 border border-red-500 text-red-600 rounded-lg">
+            {error}
+          </p>
+        )}
+        {success && (
+          <p className="p-4 border border-green-500 text-green-600 rounded-lg">
+            {success}
+          </p>
+        )}
+        <form
+          method="post"
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="space-y-4 bg-white p-6 rounded-lg shadow-md"
         >
-          Verstuur
-        </button>
-      </form>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Voornaam*
+              </label>
+              <input
+                type="text"
+                name="firstname"
+                value={formData.firstname}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-lg"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Achternaam*
+              </label>
+              <input
+                type="text"
+                name="lastname"
+                value={formData.lastname}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-lg"
+              />
+            </div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">E-mail*</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-lg"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Telefoonnummer
+              </label>
+              <input
+                type="text"
+                name="phonenumber"
+                value={formData.phonenumber}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Bericht*</label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+              rows={4}
+              className="w-full p-3 border rounded-lg"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            className="w-full p-3 bg-secondary text-white rounded-full hover:bg-secondaryDark transition"
+          >
+            Verstuur
+          </button>
+        </form>
+      </section>
     </div>
   );
 }
