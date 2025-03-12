@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLoaderData, useFetcher, Link } from "@remix-run/react";
 import { jwtCookie } from "../core/cookies/cookies.server";
+import sgMail from "@sendgrid/mail";
 
 import {
   getRepairorders,
@@ -23,7 +24,6 @@ import { Technicians } from "../core/modules/technicians/type";
 import { getTechnicians } from "../core/modules/technicians/api";
 
 import CloseIcon from "../assets/svg/X_Icon.svg";
-
 
 type LoaderData = {
   repairs: Repairorders[];
@@ -59,16 +59,16 @@ export async function action({ request }: any) {
   const statusRepair = formData.get("statusRepair");
   const issue = formData.get("issue");
   const repairable = formData.get("repairable") === "true";
-  
+
   // customerData
   const firstname = formData.get("firstname");
   const lastname = formData.get("lastname");
   const mail = formData.get("mail");
   const phonenumber = formData.get("phonenumber");
-  
+
   // device
   const deviceId = formData.get("deviceId");
-  
+
   // parts
   const parts = formData.getAll("parts");
 
@@ -124,26 +124,45 @@ export async function action({ request }: any) {
     }
 
     // 4. Add repair order using the retrieved IDs
-    const repairData = {
-      statusRepair,
-      issue,
-      repairable,
-      customer: customerId,
-      device: deviceId,
-      parts:
-        parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
-      invoice: invoiceId,
-      technician: technicianId,
+    const repair = await createRepairorder(
+      {
+        statusRepair,
+        issue,
+        repairable,
+        customer: customerId,
+        device: deviceId,
+        parts:
+          parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
+        invoice: invoiceId,
+        technician: technicianId,
+      },
+      jwt
+    );
+
+    // 5. Send email to customer after repair is created
+    const msg = {
+      to: `${mail}`, // customer email
+      from: "tristanderidder1@gmail.com", // your SendGrid verified email
+      subject: "Reparatie bij Fixit Aalst",
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333;">
+          <p>Beste ${firstname} ${lastname},</p>
+          <p>Uw reparatie is ontvangen en wordt zo snel mogelijk behandeld.</p>
+          <p>U kan de status van uw reparatie volgen via <a href="http://localhost:5173/status?documentId=${repair.data.documentId}">deze link</a></p>
+          <p>Met vriendelijke groeten,</p>
+          <p>Fixit Aalst</p>
+        </div>
+      `,
     };
 
-    await createRepairorder(repairData, jwt);
+    await sgMail.send(msg);
+
     return { success: true };
   } catch (error) {
     console.error("Failed to add repair order:", error);
     return { success: false };
   }
 }
-
 export default function Repairorders() {
   const fetcher = useFetcher();
   const { repairs, devices, parts, technicians } = useLoaderData() as LoaderData;
@@ -154,6 +173,21 @@ export default function Repairorders() {
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      // This code runs only on the server
+      if (process.env.SENDGRID_API_KEY) {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        console.log(
+          "SENDGRID_API_KEY is defined",
+          process.env.SENDGRID_API_KEY
+        );
+      } else {
+        throw new Error("SENDGRID_API_KEY is not defined");
+      }
+    }
+  }, []);
 
   const filteredRepairs = useMemo(() => {
     if (!selectedDate) return repairs;

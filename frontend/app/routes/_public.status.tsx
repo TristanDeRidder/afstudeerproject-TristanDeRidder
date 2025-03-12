@@ -46,11 +46,11 @@ export default function Repair() {
           <div className="flex flex-wrap items-center gap-2">
             <strong>Status:</strong>
             <span className="px-3 py-1 rounded bg-accentLight text-secondary font-medium">
-              {repairorder.StatusRepair}
+              {repairorder.statusRepair}
             </span>
           </div>
           <div>
-            <strong>Probleem:</strong> {repairorder.Issue}
+            <strong>Probleem:</strong> {repairorder.issue}
           </div>
         </div>
 
@@ -62,13 +62,13 @@ export default function Repair() {
             </h3>
             <div className="space-y-2 text-gray-700 text-sm sm:text-base">
               <div>
-                <strong>Name:</strong> {repairorder.device.Name}
+                <strong>Name:</strong> {repairorder.device.model} {repairorder.device.modelType}
               </div>
               <div>
-                <strong>Model:</strong> {repairorder.device.ModelNumber}
+                <strong>Model:</strong> {repairorder.device.modelNumber}
               </div>
               <div>
-                <strong>Type:</strong> {repairorder.device.Type}
+                <strong>Type:</strong> {repairorder.device.type}
               </div>
             </div>
           </div>
