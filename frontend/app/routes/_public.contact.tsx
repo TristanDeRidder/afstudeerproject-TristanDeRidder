@@ -1,14 +1,24 @@
 import { useActionData, useLoaderData } from "@remix-run/react";
-import { getContactPage } from "../core/modules/SingleTypes/contact/api";
-import { addContactForm } from "../core/modules/contactForm/api";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { useRef, useState } from "react";
+import sgMail from "@sendgrid/mail";
+
+import { getContactPage } from "../core/modules/SingleTypes/contact/api";
+import { addContactForm } from "../core/modules/contactForm/api";
+
 import PrimaryTitle from "../components/design/Title/PrimaryTitle";
 import SecondaryTitle from "../components/design/Title/SecondaryTitle";
 
 type LoaderData = {
   contact: any;
 };
+
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+} else {
+  throw new Error("SENDGRID_API_KEY is not defined");
+}
+
 
 export async function loader() {
   try {
@@ -36,21 +46,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       email: formData.get("email") || "",
       phonenumber: formData.get("phonenumber") || "",
       message: formData.get("message") || "",
+      subject: formData.get("subject") || "",
     };
-    const { firstname, lastname, email, phonenumber, message } = data;
+    const { firstname, lastname, email, phonenumber, message, subject } = data;
 
-    if (!firstname || !lastname || !email || !message) {
+    // Validate the form fields
+    if (!firstname || !lastname || !email || !message || !subject) {
       return { error: "Alle verplichte velden moeten ingevuld worden." };
     }
 
+    // Save the contact form data (optional)
     const messageResponse = await addContactForm(
       firstname,
       lastname,
       email,
       phonenumber,
-      message
+      message,
+      subject
     );
-
 
     if (!messageResponse.data) {
       return {
@@ -58,8 +71,28 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       };
     }
 
+    // Send the email via SendGrid
+    const msg = {
+      to: "mixmaster578@gmail.com", // Change to your recipient email
+      from: "tristanderidder1@gmail.com", // Change to your verified sender email
+      subject: `Nieuw bericht: ${subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333;">
+          <p><strong>Van:</strong> ${firstname} ${lastname}</p>
+          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p><strong>Telefoonnummer:</strong> ${phonenumber}</p>
+          <p><strong>Bericht:</strong></p>
+          <p style="background-color: #f9f9f9; padding: 10px; border: 1px solid #93C5FD;">${message}</p>
+        </div>
+      `,
+    };
+
+    // Send the email and check the response
+    await sgMail.send(msg);
+
     return { success: "Het bericht is succesvol verzonden." };
   } catch (error) {
+    console.error("Fout bij het verzenden van het bericht:", error);
     return {
       error: "Er is een fout opgetreden bij het verzenden van het bericht.",
     };
@@ -81,6 +114,7 @@ export default function Contact() {
     email: "",
     phonenumber: "",
     message: "",
+    subject: "",
   });
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -253,6 +287,17 @@ export default function Contact() {
                 className="w-full p-3 border rounded-lg"
               />
             </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Onderwerp*</label>
+            <input
+              type="text"
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border rounded-lg"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Bericht*</label>
