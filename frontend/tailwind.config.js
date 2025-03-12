@@ -10,8 +10,8 @@ export default {
   		colors: {
   			bg: '#FFF',
   			text: '#333',
-				primary: '#f9f9f9',
-				primaryHelper: '#f5f5f7',
+			primary: '#f9f9f9',
+			primaryHelper: '#f5f5f7',
   			secondary: '#004F73',
   			accent: '#B8CAF6',
   			accentLight: '#F1F5FD',

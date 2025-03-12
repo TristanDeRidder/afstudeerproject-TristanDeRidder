@@ -70,15 +70,15 @@ export default function Index() {
   const { brands, topDevices, whyCards, images } = useLoaderData() as LoaderData & { images: Record<string, string> };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 2xl:gap-16">
       {/* Hero Section */}
-      <div className="px-5 md:px-10 lg:px-32 flex flex-col gap-8">
+      <div className="px-5 md:px-10 lg:px-32 xl:px-40 2xl:px-56 flex flex-col gap-8 2xl:gap-12">
         <PrimaryTitle
           title="Een snelle herstellingen voor uw Smartphone"
           subtitle=""
         />
 
-        <div className="flex flex-col md:flex-row justify-center gap-4 bg-primary p-2 rounded-xl md:p-6 lg:p-10 md:rounded-lg md:gap-8 lg:gap-10">
+        <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-20 bg-primary px-2 py-2 md:px-6 md:py-4 lg:px-10 xl:px-16 2xl:px-24 rounded-3xl md:rounded-lg max-w-[2560px] mx-auto">
           <RepairCard
             title="Herstel een smartphone"
             images={images["20"]}
@@ -100,31 +100,33 @@ export default function Index() {
       <BrandAnimation brands={brands} />
 
       {/* Top Devices Section */}
-      <div className="px-5 md:px-16 lg:px-32">
+      <div className="px-5 md:px-16 lg:px-32 xl:px-40 2xl:px-56">
         <SecondaryTitle
           title="Veelvoorkomende herstellingen"
           subtitle="Alle merken van smartphones tot tablets, smartwatches tot consoles."
         />
 
-        <div className="flex flex-col gap-5 items-center">
-          <div className="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col gap-5 2xl:gap-10 items-center">
+          <div className="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 2xl:gap-12">
             {topDevices && topDevices.length === 0 ? (
               <p>Geen apparaten gevonden...</p>
             ) : (
               topDevices?.map((device: Devices) => (
                 <div
                   key={device.documentId}
-                  className="bg-primaryHelper p-5 rounded-lg min-w-[45%] sm:min-w-[50%] md:w-full snap-center"
+                  className="bg-primaryHelper p-5 2xl:p-8 rounded-lg min-w-[45%] sm:min-w-[50%] md:w-full snap-center"
                 >
                   <img
                     src={device.image?.url}
                     alt={device.model}
-                    className="h-40 object-cover mt-3"
+                    className="h-40 2xl:h-56 object-cover mt-3"
                   />
-                  <h3 className="text-lg font-bold">
+                  <h3 className="text-lg md:text-xl 2xl:text-2xl font-bold">
                     {device.model} {device.modelType}
                   </h3>
-                  <p className="text-sm">Status: {device.modelNumber}</p>
+                  <p className="text-sm md:text-base">
+                    Status: {device.modelNumber}
+                  </p>
                 </div>
               ))
             )}
@@ -132,7 +134,7 @@ export default function Index() {
 
           <Link
             to="repair"
-            className="bg-secondary text-white p-3 rounded-lg text-center hover:bg-accent hover:text-text transition-all w-full md:w-auto"
+            className="bg-secondary text-white p-3 2xl:p-5 rounded-lg text-center hover:bg-accent hover:text-text transition-all w-full md:w-auto"
           >
             Alle reparaties
           </Link>
@@ -140,10 +142,10 @@ export default function Index() {
       </div>
 
       {/* Why Choose Fixit Section */}
-      <div className="bg-accentLight p-10 rounded-lg px-5 md:px-16 lg:px-32">
+      <div className="bg-accentLight p-10 xl:p-16 2xl:p-20 rounded-lg px-5 md:px-16 lg:px-32 xl:px-40 2xl:px-56">
         <SecondaryTitle title="Waarom kiezen voor Fixit?" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-10 pb-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 2xl:gap-12 mt-10 pb-5">
           {whyCards && whyCards.PageContent.length > 0 ? (
             whyCards.PageContent.map(
               (card: {
@@ -154,19 +156,21 @@ export default function Index() {
               }) => (
                 <div
                   key={card.id}
-                  className="bg-bg p-6 rounded-lg flex items-start gap-4"
+                  className="bg-bg p-6 2xl:p-10 rounded-lg flex items-start gap-4 2xl:gap-8"
                 >
                   <div>
-                    <h4 className="text-lg md:text-xl font-semibold mb-3">
+                    <h4 className="text-lg md:text-xl 2xl:text-2xl font-semibold mb-3">
                       {card.Title}
                     </h4>
-                    <p className="text-sm md:text-base">{card.Text}</p>
+                    <p className="text-sm md:text-base 2xl:text-lg">
+                      {card.Text}
+                    </p>
                   </div>
                   {card.Icon && (
                     <img
                       src={card.Icon.url}
                       alt={card.Title}
-                      className="w-12 h-12"
+                      className="w-12 h-12 2xl:w-16 2xl:h-16"
                     />
                   )}
                 </div>

@@ -5,9 +5,9 @@ export default function Arrow() {
         width="24"
         height="24"
         viewBox="0 0 24 24"
-        fill="#B8CAF6"
+        fill="#f5f5f7"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
