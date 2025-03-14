@@ -173,7 +173,7 @@ export default function Devices() {
       <div className="flex justify-center mb-4 mt-6">
         <input
           type="text"
-          placeholder="Search for devices..."
+          placeholder="Zoek naar een toestel"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="p-3 rounded-lg border border-gray-300 w-80"
@@ -185,13 +185,13 @@ export default function Devices() {
           onClick={() => setShowDeviceOverlay(true)}
           className="bg-dashboardPrimary px-4 py-2 rounded-l-full hover:bg-dashboardPrimaryHelper transition-all duration-300"
         >
-          Add Device
+          Nieuw Toestel
         </button>
         <button
           onClick={() => setShowPartOverlay(true)}
           className="bg-dashboardPrimary px-4 py-2 rounded-r-full hover:bg-dashboardPrimaryHelper transition-all duration-300"
         >
-          Add Part
+          Nieuw Onderdeel
         </button>
       </div>
 

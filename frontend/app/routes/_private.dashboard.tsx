@@ -62,14 +62,14 @@ const ChartTooltipContent = ({
   return (
     <div className="bg-dashboardSidebar p-2 rounded-md shadow-md">
       <p>
-        <strong>Date:</strong>{" "}
+        <strong>Datum:</strong>{" "}
         {new Date(payload[0].payload.date).toLocaleDateString("nl-BE", {
           day: "2-digit",
           month: "2-digit",
         })}
       </p>
       <p>
-        <strong>Income:</strong> €{payload[0].value}
+        <strong>Inkomsten:</strong> €{payload[0].value}
       </p>
     </div>
   );

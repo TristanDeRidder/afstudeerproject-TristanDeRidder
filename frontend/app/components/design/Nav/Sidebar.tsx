@@ -31,10 +31,10 @@ const iconMap: { [key: string]: string } = {
 
 const customOrder = [
   "Home",
-  "Repairorders",
-  "Invoices",
-  "Order",
-  "Devices",
+  "Reparaties",
+  "Betalingen",
+  "Bestellingen",
+  "Toestellen",
   "Detail",
   "Contact",
   "Website",

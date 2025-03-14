@@ -293,7 +293,7 @@ export default function Repairorders() {
           title="Totaal Reparaties"
           data={filteredRepairs.length}
         />
-        <DashboardCard title="Complete" data={completedRepairs.length} />
+        <DashboardCard title="Voltooide Reperaties" data={completedRepairs.length} />
       </div>
 
       {showOverlay && (
@@ -308,13 +308,13 @@ export default function Repairorders() {
             <form onSubmit={handleSubmit}>
               {/* Repair data */}
               <div className="mb-2">
-                <label>Status Repair</label>
+                <label>Status Reparatie</label>
                 <select
                   name="statusRepair"
                   required
                   className="border rounded-md p-2 w-full"
                 >
-                  <option value="">Select Status</option>
+                  <option value="">Selecteer Status</option>
                   <option value="Bestellen">Bestellen</option>
                   <option value="Besteld">Besteld</option>
                   <option value="Geleverd">Geleverd</option>
@@ -327,7 +327,7 @@ export default function Repairorders() {
               </div>
 
               <div className="mb-2">
-                <label>Issue</label>
+                <label>Probleem</label>
                 <input
                   type="text"
                   name="issue"
@@ -371,13 +371,13 @@ export default function Repairorders() {
 
               {/* Device Data */}
               <div className="mb-2">
-                <label>Device</label>
+                <label>Toestel</label>
                 <select
                   name="deviceId"
                   className="border rounded-md p-2 w-full"
                   onChange={handleDeviceChange}
                 >
-                  <option value="">Select Device</option>
+                  <option value="">Selecteer een toestel</option>
                   {devices.map((device) => (
                     <option key={device.id} value={device.id}>
                       {device.model} {device.modelType}
@@ -387,7 +387,7 @@ export default function Repairorders() {
               </div>
 
               <div className="mb-2">
-                <label>Parts</label>
+                <label>Onderdelen</label>
                 <select
                   key={selectedDeviceId}
                   name="parts"
@@ -405,12 +405,12 @@ export default function Repairorders() {
 
               {/* Technician */}
               <div>
-                <label>Technician</label>
+                <label>Technieker</label>
                 <select
                   name="technicianId"
                   className="border rounded-md p-2 w-full"
                 >
-                  <option value="">Select Technician</option>
+                  <option value="">Selecteer een technieker</option>
                   {technicians.map((technician) => (
                     <option key={technician.id} value={technician.id}>
                       {technician.firstname} {technician.lastname}
@@ -422,9 +422,8 @@ export default function Repairorders() {
               {/* Invoice data */}
               <div>
                 <div className="mb-2">
-                  <label>Invoice</label>
                   <p className="text-lg font-bold">
-                    Total: € {totalPrice.toFixed(2)}
+                    Totaal: € {totalPrice.toFixed(2)}
                   </p>
                   <input type="hidden" name="invoiceTotal" value={totalPrice} />
                 </div>

@@ -271,13 +271,13 @@ export default function Invoices() {
 
               {/* Device Data */}
               <div className="mb-2">
-                <label>Device</label>
+                <label>Toestel</label>
                 <select
                   name="deviceId"
                   className="border rounded-md p-2 w-full"
                   onChange={handleDeviceChange}
                 >
-                  <option value="">Select Device</option>
+                  <option value="">Selecteer Toestel</option>
                   {devices.map((device) => (
                     <option key={device.id} value={device.id}>
                       {device.model} {device.modelType}
@@ -287,7 +287,7 @@ export default function Invoices() {
               </div>
 
               <div className="mb-2">
-                <label>Parts</label>
+                <label>Onderdelen</label>
                 <select
                   key={selectedDeviceId}
                   name="parts"
@@ -306,9 +306,8 @@ export default function Invoices() {
               {/* Invoice data */}
               <div>
                 <div className="mb-2">
-                  <label>Invoice</label>
                   <p className="text-lg font-bold">
-                    Total: €{totalPrice.toFixed(2)}
+                    Totaal: €{totalPrice.toFixed(2)}
                   </p>
                   <input type="hidden" name="invoiceTotal" value={totalPrice} />
                 </div>
