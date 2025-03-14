@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import DateFilterButtons from "./DateFilterButtons";
 
 type DatepickerProps = {
@@ -13,13 +14,14 @@ export default function Datepicker({
   showDatePicker,
   setShowDatePicker,
 }: DatepickerProps) {
+
   return (
     <div className="flex items-center">
       <DateFilterButtons
+        SelectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
-        setShowDatePicker={() => {}}
-        buttonName="Eergisteren"
-        DateChange={2}
+        buttonName="-1 dag"
+        DateChange={-1}
         Side="left"
       />
       <div className="relative border-y bg-dashboardSidebar py-2 px-6 hover:bg-dashboardPrimaryHelper transition-colors duration-300">
@@ -44,9 +46,9 @@ export default function Datepicker({
         )}
       </div>
       <DateFilterButtons
+        SelectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
-        setShowDatePicker={() => {}}
-        buttonName="Gisteren"
+        buttonName="+1 dag"
         DateChange={1}
         Side="right"
       />

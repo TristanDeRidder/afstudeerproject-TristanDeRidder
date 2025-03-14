@@ -301,7 +301,7 @@ export default function Repair() {
                       key={part.documentId}
                       className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper hover:bg-accent"
                     >
-                      {part.name} - {part.sellingPrice}
+                      {part.name} - € {part.sellingPrice}
                     </button>
                   ))
               ) : (

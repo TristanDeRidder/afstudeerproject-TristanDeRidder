@@ -49,8 +49,8 @@ export default function PrivateLayout() {
       <main
         className={
           location.pathname !== "/"
-            ? "w-screen px-5 lg:px-32 overflow-hidden bg-dashboardBg rounded-md"
-            : "w-screen overflow-hidden bg-dashboardBg rounded-md"
+            ? "w-screen px-5 lg:px-32 overflow-hidden bg-dashboardBg rounded-md relative"
+            : "w-screen overflow-hidden bg-dashboardBg rounded-md relative"
         }
       >
         <Outlet />

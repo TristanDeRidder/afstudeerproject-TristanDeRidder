@@ -9,7 +9,7 @@ import { getParts } from "../core/modules/parts/api";
 import { createCustomer } from "../core/modules/customers/api";
 import { createInvoice } from "../core/modules/invoices/api";
 
-import { Orders } from "../core/modules/orders/type";
+import type { Orders } from "../core/modules/orders/type";
 import { Devices } from "../core/modules/devices/type";
 import { Parts } from "../core/modules/parts/type";
 
@@ -111,18 +111,17 @@ export async function action({ request }: any) {
   }
 }
 
-export default function Invoices() {
+export default function Orders() {
   const fetcher = useFetcher();
   const { orders, devices, parts } = useLoaderData() as LoaderData;
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  console.log(orders);
 
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
 
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
+
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
   const filteredOrders = useMemo(() => {
@@ -187,7 +186,7 @@ export default function Invoices() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 mt-6">
+      <div className="flex justify-between items-end mb-4 mt-6">
         <DashboardTitle title="Bestellingen" />
         <Datepicker
           selectedDate={selectedDate}
@@ -229,7 +228,6 @@ export default function Invoices() {
                   required
                   className="border rounded-md p-2 w-full"
                 >
-                  <option value="">Select Status</option>
                   <option value="Bestellen">Bestellen</option>
                   <option value="Besteld">Besteld</option>
                   <option value="Geleverd">Geleverd</option>
@@ -263,8 +261,9 @@ export default function Invoices() {
                   <input
                     type="text"
                     name="phonenumber"
-                    placeholder="+32 123 45 67 89"
+                    placeholder="0412345678"
                     className="border rounded-md p-2 w-full"
+                    required
                   />
                 </div>
               </div>

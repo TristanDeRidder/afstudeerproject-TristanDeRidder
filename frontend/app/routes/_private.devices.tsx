@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLoaderData, useFetcher } from "@remix-run/react";
+import DashboardTitle from "../components/design/Title/DashboardTitle";
 
 import { getDevices, createDevice } from "../core/modules/devices/api";
 import { createPart } from "../core/modules/parts/api";
@@ -169,8 +170,10 @@ export default function Devices() {
 
   return (
     <div className="bg-primary p-4">
+      <DashboardTitle title="Toestellen" />
+
       {/* Search Bar */}
-      <div className="flex justify-center mb-4 mt-6">
+      <div className="flex mb-4 mt-6">
         <input
           type="text"
           placeholder="Zoek naar een toestel"
@@ -364,7 +367,7 @@ export default function Devices() {
         <div className="font-bold px-4 py-2 w-1/3">Merk</div>
         <div className="font-bold px-4 py-2 w-1/3">Model</div>
       </div>
-      <div>
+      <div className="overflow-y-auto h-[40rem]">
         {filteredDevices
           .sort((a, b) => {
             if (a.brand?.brandName && b.brand?.brandName) {

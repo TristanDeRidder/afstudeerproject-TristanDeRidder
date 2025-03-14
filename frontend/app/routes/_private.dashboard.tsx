@@ -146,7 +146,7 @@ export default function Dashboard() {
   return (
     <>
       {/* Datepicker and filter buttons */}
-      <div className="flex justify-between items-center mb-4 mt-6">
+      <div className="flex justify-between items-end mb-4 mt-6">
         <DashboardTitle title="Dashboard" />
         <DatePicker
           selectedDate={selectedDate}

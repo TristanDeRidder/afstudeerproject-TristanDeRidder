@@ -11,8 +11,8 @@ interface NavLink {
 
 const customOrder = [
   "Herstellingen",
-  "Status",
   "Over",
+  "FAQ",
   "Contact",
 ];
 
@@ -43,7 +43,7 @@ export default function Navigation({
             />
           )}
         </NavLink>
-        <div>
+        <div className="flex gap-4 items-center">
           {sortedNavLinks.map(({ URL, pageTitle }) => (
             <NavLink
               key={URL}

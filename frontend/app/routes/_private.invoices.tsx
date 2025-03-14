@@ -27,6 +27,7 @@ export async function loader() {
 
 export default function Invoices() {
   const { repairs } = useLoaderData<LoaderData>();
+  
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
@@ -55,7 +56,7 @@ export default function Invoices() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 mt-6">
+      <div className="flex justify-between items-end mb-4 mt-6">
         <DashboardTitle title="Inkomsten" />
         <Datepicker
           selectedDate={selectedDate}
@@ -109,7 +110,7 @@ export default function Invoices() {
                   </div>
 
                   <div className="px-4 py-2 w-1/4">
-                    €{repair.invoice?.totalAmount}
+                    € {repair.invoice?.totalAmount}
                   </div>
                 </div>
               ))

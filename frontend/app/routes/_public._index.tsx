@@ -109,17 +109,17 @@ export default function Index() {
           <RepairCard
             title="Herstel een smartphone"
             images={images["20"]}
-            url="repair"
+            url="herstelling"
           />
           <RepairCard
             title="Herstel een tablet"
             images={images["21"]}
-            url="repair"
+            url="herstelling"
           />
           <RepairCard
             title="Herstel een laptop"
             images={images["22"]}
-            url="repair"
+            url="herstelling"
           />
         </div>
       </div>
@@ -141,12 +141,12 @@ export default function Index() {
               topDevices?.map((device: Devices) => (
                 <div
                   key={device.documentId}
-                  className="bg-primaryHelper flex flex-col gap-2 p-5 2xl:p-6 rounded-lg min-w-[70%] sm:min-w-[50%] md:w-full snap-center"
+                  className="border border-primaryHelper flex flex-col gap-2 p-5 2xl:p-6 rounded-lg min-w-[70%] sm:min-w-[50%] md:w-full snap-center"
                 >
                   <img
                     src={device.image?.url}
                     alt={device.model}
-                    className="h-40 2xl:h-52 object-cover mt-3"
+                    className="h-40 2xl:h-52 object-contain mt-3"
                   />
                   <h3 className="text-lg md:text-xl 2xl:text-2xl font-bold">
                     {device.model} {device.modelType}
@@ -160,7 +160,7 @@ export default function Index() {
           </div>
 
           <Link
-            to="repair"
+            to="herstelling"
             className="bg-secondary text-white p-3 2xl:p-5 rounded-lg text-center hover:bg-accent hover:text-text transition-all w-full md:w-auto"
           >
             Alle reparaties

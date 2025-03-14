@@ -208,9 +208,18 @@ export default function Contact() {
                     ([day, hours]: [string, any]) => (
                       <li key={day} className="flex justify-between text-lg">
                         <span className="capitalize font-medium">{day}</span>
-                        {hours.open && hours.close ? (
+                        {hours.length > 0 ? (
                           <span>
-                            {hours.open} - {hours.close}
+                            {hours.map((hour: any, index: number) => {
+                              const open = hour.opening || hour.open;
+                              const close = hour.closing || hour.close;
+                              return (
+                                <span key={index}>
+                                  {open} - {close}
+                                  {index < hours.length - 1 ? " / " : ""}
+                                </span>
+                              );
+                            })}
                           </span>
                         ) : (
                           <span className="text-gray-500">Gesloten</span>

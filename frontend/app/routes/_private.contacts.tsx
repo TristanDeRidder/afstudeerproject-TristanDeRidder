@@ -27,7 +27,7 @@ export default function Contact() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-end mb-4 mt-9">
         <DashboardTitle title="Contacten" />
       </div>
 

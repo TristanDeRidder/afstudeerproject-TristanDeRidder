@@ -143,7 +143,7 @@ export default function Repair() {
 
   return (
     <div className="">
-      <div className="flex justify-between items-center mb-4 mt-6">
+      <div className="flex justify-between items-center mb-4 mt-9">
         <h2 className="text-2xl font-semibold text-dashboardText">
           Repair Order Details
         </h2>

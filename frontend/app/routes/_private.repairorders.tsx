@@ -260,7 +260,7 @@ export default function Repairorders() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 mt-6">
+      <div className="flex justify-between items-end mb-4 mt-6">
         <DashboardTitle title="Reparaties" />
         <div className="flex gap-4">
           <Datepicker
@@ -293,7 +293,10 @@ export default function Repairorders() {
           title="Totaal Reparaties"
           data={filteredRepairs.length}
         />
-        <DashboardCard title="Voltooide Reperaties" data={completedRepairs.length} />
+        <DashboardCard
+          title="Voltooide Reperaties"
+          data={completedRepairs.length}
+        />
       </div>
 
       {showOverlay && (

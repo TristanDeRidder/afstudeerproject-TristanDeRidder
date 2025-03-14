@@ -32,7 +32,7 @@ const iconMap: { [key: string]: string } = {
 const customOrder = [
   "Home",
   "Reparaties",
-  "Betalingen",
+  "Inkomsten",
   "Bestellingen",
   "Toestellen",
   "Detail",
@@ -52,13 +52,13 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
   return (
     <div className="flex items-center justify-center h-[98vh] text-dashboardText">
       <div
-        className={`flex flex-col items-center justify-between h-full text-dashboardText bg-dashboardSidebar transition-all duration-300 relative ${
+        className={`flex flex-col items-center justify-between h-full text-dashboardText bg-dashboardSidebar transition-all duration-300 relative z-10 ${
           isCollapsed ? "w-16" : "w-40"
         }`}
       >
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="py-1 px-2 text-dashboardText bg-dashboardSidebar rounded-r-md absolute -right-10 top-10"
+          className="py-1 px-2 text-dashboardText bg-dashboardSidebar rounded-r-md absolute -right-10 top-8"
         >
           {isCollapsed ? <DoubleRight /> : <DoubleLeft />}
         </button>
