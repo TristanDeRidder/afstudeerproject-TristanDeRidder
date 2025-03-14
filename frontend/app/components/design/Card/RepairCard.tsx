@@ -12,21 +12,21 @@ export default function RepairCard({
   return (
     <Link
       to={url}
-      className="group text-3xl font-bold bg-primaryHelper p-4 md:p-6 lg:p-10 xl:p-12 2xl:p-16 rounded-xl flex flex-col justify-between items-start md:items-center gap-2 md:gap-6 lg:gap-10 2xl:gap-14 border border-primaryHelper hover:bg-accentLight hover:border-accent transition-all duration-500 ease-in-out overflow-hidden"
+      className="group text-2xl sm:text-3xl font-bold bg-primaryHelper p-4 md:p-6 lg:p-8 xl:p-10 rounded-xl flex flex-col justify-between items-start md:items-center gap-4 md:gap-6 lg:gap-8 xl:gap-10 border border-primaryHelper hover:bg-accentLight hover:border-accent transition-all duration-500 ease-in-out overflow-hidden max-w-screen-lg"
     >
-      <div className="w-48 md:w-64 lg:w-72 xl:w-80 2xl:w-96 text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl">
+      <div className="w-40 sm:w-48 md:w-56 lg:w-64 xl:w-72 text-xl sm:text-2xl md:text-3xl lg:text-4xl">
         {title}
       </div>
 
-      <div className="relative h-28 md:h-36 lg:h-48 xl:h-56 2xl:h-72 w-64 md:w-72 lg:w-80 xl:w-96 flex items-center">
+      <div className="relative h-24 sm:h-28 md:h-32 lg:h-40 xl:h-48 w-56 sm:w-64 md:w-72 lg:w-80 xl:w-96 flex items-center">
         {images && (
           <img
             src={images}
             alt={title}
-            className="absolute -right-40 md:-right-28 lg:-right-24 2xl:-right-20 w-72 md:w-96 max-w-none h-auto -rotate-12"
+            className="absolute -right-32 md:-right-24 lg:-right-20 xl:-right-16 w-64 sm:w-72 md:w-80 max-w-none h-auto -rotate-12"
           />
         )}
-        <span className="absolute left-0 bottom-0 2xl:-left-8 bg-primaryHelper rounded-full p-4 2xl:p-6 text-text border border-text rotate-45 group-hover:bg-accentLight group-hover:-rotate-45 transition-all duration-500 ease-in-out">
+        <span className="absolute left-8 bottom-0 bg-primaryHelper rounded-full p-4 text-text border border-text rotate-45 group-hover:bg-accentLight group-hover:-rotate-45 transition-all duration-500 ease-in-out">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

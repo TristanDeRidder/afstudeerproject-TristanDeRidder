@@ -1,4 +1,4 @@
-import { useActionData, useLoaderData } from "@remix-run/react";
+import { MetaFunction, useActionData, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { useRef, useState } from "react";
 import sgMail from "@sendgrid/mail";
@@ -18,6 +18,33 @@ if (process.env.SENDGRID_API_KEY) {
 } else {
   throw new Error("SENDGRID_API_KEY is not defined");
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Contact | Fixit Aalst" },
+    {
+      name: "description",
+      content:
+        "Fixit Aalst is gespecialiseerd in het herstellen van smartphones, tablets en laptops van merken zoals Apple, Samsung, Huawei, en OnePlus.",
+    },
+    {
+      name: "keywords",
+      content:
+        "Fixit Aalst, smartphone herstelling, tablet reparatie, laptop herstel, Apple, Samsung, Huawei, OnePlus",
+    },
+    { name: "robots", content: "index, follow" },
+    { name: "viewport", content: "width=device-width, initial-scale=1.0" },
+    {
+      property: "og:title",
+      content: "Fixit Aalst | Smartphone, Tablet & Laptop Herstellingen",
+    },
+    {
+      property: "og:description",
+      content:
+        "Fixit Aalst biedt snelle en betrouwbare herstellingen voor smartphones, tablets en laptops.",
+    },
+  ];
+};
 
 
 export async function loader() {

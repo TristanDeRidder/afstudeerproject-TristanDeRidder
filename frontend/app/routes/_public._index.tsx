@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { useLoaderData, Link } from "@remix-run/react";
+import { useLoaderData, Link, MetaFunction } from "@remix-run/react";
 
 // Components
 import SecondaryTitle from "../components/design/Title/SecondaryTitle";
@@ -31,6 +31,33 @@ type LoaderData = {
       } | null; // in case Icon might be null
     }[];
   };
+};
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Fixit Aalst | Smartphone, Tablet & Laptop Herstellingen" },
+    {
+      name: "description",
+      content:
+        "Fixit Aalst is gespecialiseerd in het herstellen van smartphones, tablets en laptops van merken zoals Apple, Samsung, Huawei, en OnePlus.",
+    },
+    {
+      name: "keywords",
+      content:
+        "Fixit Aalst, smartphone herstelling, tablet reparatie, laptop herstel, Apple, Samsung, Huawei, OnePlus",
+    },
+    { name: "robots", content: "index, follow" },
+    { name: "viewport", content: "width=device-width, initial-scale=1.0" },
+    {
+      property: "og:title",
+      content: "Fixit Aalst | Smartphone, Tablet & Laptop Herstellingen",
+    },
+    {
+      property: "og:description",
+      content:
+        "Fixit Aalst biedt snelle en betrouwbare herstellingen voor smartphones, tablets en laptops.",
+    },
+  ];
 };
 
 export async function loader() {
@@ -78,7 +105,7 @@ export default function Index() {
           subtitle=""
         />
 
-        <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-20 bg-primary px-2 py-2 md:px-6 md:py-4 lg:px-10 xl:px-16 2xl:px-24 rounded-3xl md:rounded-lg max-w-[2560px] mx-auto">
+        <div className="flex flex-col md:flex-row justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 bg-primary px-4 py-4 md:px-8 lg:px-12 xl:px-16 rounded-3xl md:rounded-lg mx-auto max-w-screen-xl overflow-hidden">
           <RepairCard
             title="Herstel een smartphone"
             images={images["20"]}
