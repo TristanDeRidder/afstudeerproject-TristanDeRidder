@@ -2,12 +2,19 @@ import { useState } from "react";
 import { NavLink } from "@remix-run/react";
 
 import CloseIcon from "../../../assets/svg/X_Icon.svg";
-import MenuIcon from "../../../assets/svg/Menu_Icon.svg"
+import MenuIcon from "../../../assets/svg/Menu_Icon.svg";
 
 interface NavLink {
   URL: string;
   pageTitle: string;
 }
+
+const customOrder = [
+  "Herstellingen",
+  "Status",
+  "Over",
+  "Contact",
+];
 
 export default function Navigation({
   images,
@@ -17,6 +24,11 @@ export default function Navigation({
   navLinks: NavLink[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Sort navLinks according to custom order
+  const sortedNavLinks = navLinks.sort((a, b) => {
+    return customOrder.indexOf(a.pageTitle) - customOrder.indexOf(b.pageTitle);
+  });
 
   return (
     <nav className="relative bg-white p-4 pb-9 md:pb-12">
@@ -32,7 +44,7 @@ export default function Navigation({
           )}
         </NavLink>
         <div>
-          {navLinks.map(({ URL, pageTitle }) => (
+          {sortedNavLinks.map(({ URL, pageTitle }) => (
             <NavLink
               key={URL}
               to={URL}
@@ -75,7 +87,7 @@ export default function Navigation({
           </button>
 
           <div className="flex flex-col gap-6 text-center">
-            {navLinks.map(({ URL, pageTitle }) => (
+            {sortedNavLinks.map(({ URL, pageTitle }) => (
               <NavLink
                 key={URL}
                 to={URL}

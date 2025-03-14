@@ -129,14 +129,14 @@ export default function Repair() {
       <div className="w-full max-w-md p-4">
         <input
           type="text"
-          placeholder="Search for a device or model type..."
+          placeholder="Zoek naar een toestel"
           value={searchQuery}
           onChange={handleSearch}
           className="block w-full p-2 mb-4 border rounded"
         />
         {notFound && (
           <p className="text-red-500 animate-fade-in">
-            No matching device or model type found.
+            Geen toestel gevonden met deze naam.
           </p>
         )}
       </div>
@@ -159,7 +159,7 @@ export default function Repair() {
         <div className="w-full lg:w-1/2 space-y-6">
           {step === 1 && (
             <div className="bg-primary p-4 rounded-md">
-              <h2 className="text-xl font-bold">Select a Type</h2>
+              <h2 className="text-xl font-bold">Selecteer een type van toestel</h2>
               {deviceTypes.map((type) => (
                 <button
                   key={type}
@@ -180,7 +180,7 @@ export default function Repair() {
                     setConfirmSelection(false);
                   }}
                 >
-                  Confirm Selection
+                  Bevestig
                 </button>
               )}
             </div>
@@ -188,7 +188,7 @@ export default function Repair() {
 
           {step === 2 && selectedType && (
             <div className="bg-primary p-4 rounded-md">
-              <h2 className="text-xl font-bold">Select a Brand</h2>
+              <h2 className="text-xl font-bold">Selecteer een merk</h2>
               {brands.map((brand) => (
                 <button
                   key={brand.documentId}
@@ -206,7 +206,7 @@ export default function Repair() {
                   className="p-2 border rounded-lg bg-accentLight"
                   onClick={() => setStep(1)}
                 >
-                  Back
+                  Terug
                 </button>
                 {confirmSelection && (
                   <button
@@ -216,7 +216,7 @@ export default function Repair() {
                       setConfirmSelection(false);
                     }}
                   >
-                    Confirm Selection
+                    Bevestig
                   </button>
                 )}
               </div>
@@ -225,7 +225,7 @@ export default function Repair() {
 
           {step === 3 && selectedBrand && (
             <div className="bg-primary p-4 rounded-md">
-              <h2 className="text-xl font-bold mb-4">Select a Model</h2>
+              <h2 className="text-xl font-bold mb-4">Selecteer een model</h2>
               {Array.from(
                 new Set(
                   devices
@@ -270,14 +270,14 @@ export default function Repair() {
                   className="p-2 border rounded-lg bg-accentLight"
                   onClick={() => setStep(2)}
                 >
-                  Back
+                  Terug
                 </button>
                 {selectedDevice && (
                   <button
                     className="p-2 border rounded-lg bg-accent text-white"
                     onClick={() => setStep(4)}
                   >
-                    Confirm Selection
+                    Bevestig
                   </button>
                 )}
               </div>
@@ -286,7 +286,7 @@ export default function Repair() {
 
           {step === 4 && selectedDevice && (
             <div className="bg-primary p-4 rounded-md">
-              <h2 className="text-xl font-bold mb-4">Select a Part</h2>
+              <h2 className="text-xl font-bold mb-4">Selecteer een onderdeel</h2>
               {parts.filter(
                 (part) =>
                   part.device?.modelNumber === selectedDevice.modelNumber
@@ -305,14 +305,14 @@ export default function Repair() {
                     </button>
                   ))
               ) : (
-                <p>No parts available for this device.</p>
+                <p>Geen onderdelen voor dit model</p>
               )}
               <div className="flex justify-between mt-4">
                 <button
                   className="p-2 border rounded-lg bg-accentLight"
                   onClick={() => setStep(3)}
                 >
-                  Back
+                  Terug
                 </button>
               </div>
             </div>

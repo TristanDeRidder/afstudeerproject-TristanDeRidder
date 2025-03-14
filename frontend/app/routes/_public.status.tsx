@@ -41,7 +41,7 @@ export async function loader({ request }: { request: Request }) {
   const documentId = url.searchParams.get("documentId");
 
   if (!documentId) {
-    return { repairorder: null, error: "No documentId provided" };
+    return { repairorder: null, error: "Geen documentId meegegeven" };
   }
 
   const repairorders = await getRepairorderByDocumentId(documentId);
@@ -65,7 +65,7 @@ export default function Repair() {
       <PrimaryTitle title="Repair Status" />
       <div className="bg-primary p-6 rounded-lg border border-gray-200 mt-4 w-full max-w-4xl mx-auto">
         <h2 className="text-2xl font-semibold text-secondary mb-4">
-          Repair Order Details
+          Reparatie Details
         </h2>
 
         {/* Repair Order Info */}
@@ -89,7 +89,7 @@ export default function Repair() {
             </h3>
             <div className="space-y-2 text-gray-700 text-sm sm:text-base">
               <div>
-                <strong>Name:</strong> {repairorder.device.model} {repairorder.device.modelType}
+                <strong>Toestem:</strong> {repairorder.device.model} {repairorder.device.modelType}
               </div>
               <div>
                 <strong>Model:</strong> {repairorder.device.modelNumber}
@@ -101,7 +101,7 @@ export default function Repair() {
           </div>
         ) : (
           <div className="mt-6 text-gray-500 text-sm sm:text-base">
-            No device information available.
+            Geen informatie beschikbaar
           </div>
         )}
       </div>

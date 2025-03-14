@@ -141,18 +141,18 @@ export default function Index() {
               topDevices?.map((device: Devices) => (
                 <div
                   key={device.documentId}
-                  className="bg-primaryHelper p-5 2xl:p-8 rounded-lg min-w-[45%] sm:min-w-[50%] md:w-full snap-center"
+                  className="bg-primaryHelper flex flex-col gap-2 p-5 2xl:p-6 rounded-lg min-w-[70%] sm:min-w-[50%] md:w-full snap-center"
                 >
                   <img
                     src={device.image?.url}
                     alt={device.model}
-                    className="h-40 2xl:h-56 object-cover mt-3"
+                    className="h-40 2xl:h-52 object-cover mt-3"
                   />
                   <h3 className="text-lg md:text-xl 2xl:text-2xl font-bold">
                     {device.model} {device.modelType}
                   </h3>
                   <p className="text-sm md:text-base">
-                    Status: {device.modelNumber}
+                    modelnummer: {device.modelNumber}
                   </p>
                 </div>
               ))
