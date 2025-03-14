@@ -50,9 +50,9 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
   });
 
   return (
-    <div className="flex items-center justify-center h-screen text-dashboardText">
+    <div className="flex items-center justify-center h-[98vh] text-dashboardText">
       <div
-        className={`flex flex-col items-center h-full text-dashboardText bg-dashboardSidebar shadow-lg transition-all duration-300 relative ${
+        className={`flex flex-col items-center justify-between h-full text-dashboardText bg-dashboardSidebar transition-all duration-300 relative ${
           isCollapsed ? "w-16" : "w-40"
         }`}
       >
@@ -62,6 +62,7 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
         >
           {isCollapsed ? <DoubleRight /> : <DoubleLeft />}
         </button>
+          <div className="w-full">
 
         <a className="flex items-center w-full px-3 mt-3" href="#">
           <svg
@@ -107,7 +108,17 @@ export function Sidebar({ items }: { items: SidebarItem[] }) {
               );
             })}
           </div>
+
         </div>
+          </div>
+          <form method="post" action="/logout" className="w-full">
+            <button
+              type="submit"
+              className="w-full text-center px-4 py-2 text-red-500 hover:bg-red-700 hover:text-white"
+            >
+              Logout
+            </button>
+          </form>
       </div>
     </div>
   );
