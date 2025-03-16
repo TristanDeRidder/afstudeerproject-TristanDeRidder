@@ -58,8 +58,6 @@ export async function loader() {
       throw new Error("No data available");
     }
 
-    console.log("images", images);
-
     return {
       images: images,
       brands: brands.data,
@@ -95,6 +93,8 @@ export default function Repair() {
   };
 
   const deviceTypes = Array.from(new Set(devices.map((device) => device.type)));
+
+  console.log(deviceTypes)
 
   // Handle search input and filter devices and parts
   const [notFound, setNotFound] = useState(false);

@@ -9,22 +9,27 @@ import { Repairorders } from '../repairorders/type';
 import { StrapiResponse } from '../strapi/type';
 import { Devices } from './type';
 
-export async function getDevices() {
-    const query = qs.stringify({
-        populate: "*",
+export async function getDevices(page = 1, pageSize = 100) {
+  const query = qs.stringify(
+    {
+      populate: "*",
+      pagination: {
+        page,
+        pageSize,
       },
-      {
-        encodeValuesOnly: true,
-      }
-    );
-
-    try {
-        const response = await API.get(`devices?${query}`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
+    },
+    {
+      encodeValuesOnly: true,
     }
+  );
+
+  try {
+    const response = await API.get(`devices?${query}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function getTopDevices() {
