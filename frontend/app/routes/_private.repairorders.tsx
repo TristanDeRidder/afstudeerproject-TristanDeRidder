@@ -40,11 +40,11 @@ export async function loader() {
     const technicians = await getTechnicians();
 
     if (!repairs?.data) throw new Error("No data available");
-    if (!devices?.data) throw new Error("No devices available");
+    if (!devices.length) throw new Error("No devices available");
     if (!parts?.data) throw new Error("No parts available");
     if (!technicians?.data) throw new Error("No technicians available");
 
-    return { repairs: repairs.data, devices: devices.data, parts: parts.data, technicians: technicians.data };
+    return { repairs: repairs.data, devices, parts: parts.data, technicians: technicians.data };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { repairs: [], devices: [], parts: [] };

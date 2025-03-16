@@ -9,27 +9,39 @@ import { Repairorders } from '../repairorders/type';
 import { StrapiResponse } from '../strapi/type';
 import { Devices } from './type';
 
-export async function getDevices(page = 1, pageSize = 100) {
-  const query = qs.stringify(
-    {
-      populate: "*",
-      pagination: {
-        page,
-        pageSize,
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    }
-  );
+export async function getDevices(pageSize = 100) {
+  let page = 1;
+  let totalPages = 1;
+  let allDevices: Devices[] = [];
 
-  try {
-    const response = await API.get(`devices?${query}`);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
+  while (page <= totalPages) {
+    const query = qs.stringify(
+      {
+        populate: "*",
+        pagination: {
+          page,
+          pageSize,
+        },
+      },
+      {
+        encodeValuesOnly: true,
+      }
+    );
+
+    try {
+      const response = await API.get(`devices?${query}`);
+      const { data, meta } = response.data;
+
+      allDevices = [...allDevices, ...data]; // Append new data
+      totalPages = meta.pagination.pageCount; // Get total pages from response
+      page++; // Increment page number
+    } catch (error) {
+      console.error("Error fetching devices:", error);
+      throw error;
+    }
   }
+
+  return allDevices;
 }
 
 export async function getTopDevices() {

@@ -32,10 +32,10 @@ export async function loader() {
     if (!orders?.data) {
       throw new Error("No data available");
     }
-    if (!devices?.data) throw new Error("No devices available");
+    if (!devices.length) throw new Error("No devices available");
     if (!parts?.data) throw new Error("No parts available");
 
-    return { orders: orders.data, devices: devices.data, parts: parts.data };
+    return { orders: orders.data, devices, parts: parts.data };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { orders: [] };

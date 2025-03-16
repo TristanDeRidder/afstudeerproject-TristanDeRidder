@@ -827,6 +827,9 @@ export interface ApiPartPart extends Struct.CollectionTypeSchema {
     orders: Schema.Attribute.Relation<'manyToMany', 'api::order.order'>;
     publishedAt: Schema.Attribute.DateTime;
     purchasePrice: Schema.Attribute.Decimal;
+    quality: Schema.Attribute.Enumeration<
+      ['Origineel', 'Refurbished', 'Pulled']
+    >;
     repairorders: Schema.Attribute.Relation<
       'manyToMany',
       'api::repairorder.repairorder'

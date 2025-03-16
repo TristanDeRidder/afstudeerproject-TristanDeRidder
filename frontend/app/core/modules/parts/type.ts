@@ -9,6 +9,7 @@ export type Parts = {
   name: string;
   purchasePrice: number;
   sellingPrice: number;
+  quality: string;
   suppliers: Suppliers[];
   device: Devices;
   repairorders: Repairorders[];

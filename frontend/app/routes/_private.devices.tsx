@@ -28,11 +28,11 @@ export async function loader() {
     const brands = await getBrands();
     const suppliers = await getSuppliers();
 
-    if (!devices?.data || !brands?.data || !suppliers?.data) {
+    if (!devices.length || !brands?.data || !suppliers?.data) {
       throw new Error("No data available");
     }
 
-    return { devices: devices.data, brands: brands.data, suppliers: suppliers.data };
+    return { devices, brands: brands.data, suppliers: suppliers.data };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { devices: [] };
@@ -97,6 +97,7 @@ export async function action({ request }: any) {
     const sellingPrice = formData.get("sellingPrice");
     const purchasePrice = formData.get("purchasePrice");
     const supplierId = formData.get("supplierId");
+    const quality = formData.get("quality");
 
     try {
       const partData = {
@@ -105,6 +106,7 @@ export async function action({ request }: any) {
         sellingPrice,
         purchasePrice,
         suppliers: supplierId,
+        quality,
       };
 
       await createPart(partData, jwt);
@@ -349,6 +351,16 @@ export default function Devices() {
                     {supplier.name}
                   </option>
                 ))}
+              </select>
+              <select
+                name="quality"
+                className="p-2 rounded-md border w-full"
+                required
+              >
+                <option value="">Selecteer een kwaliteit</option>
+                <option value="Origineel">Origineel</option>
+                <option value="Pulled">Pulled</option>
+                <option value="Refurbished">Refurbished</option>
               </select>
               <button
                 type="submit"

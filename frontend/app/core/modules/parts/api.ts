@@ -37,6 +37,7 @@ export async function createPart(
     purchasePrice: partData.purchasePrice,
     sellingPrice: partData.sellingPrice,
     suppliers: partData.suppliers,
+    quality: partData.quality,
     }
   };
   try {

@@ -51,17 +51,17 @@ export async function loader() {
   try {
     const images = await getImageById({ id: "3" });
     const brands = await getBrands();
-    const devices = await getDevices();
+    const devices = await getDevices(); // Now returns an array instead of { data: [...] }
     const parts = await getParts();
 
-    if (!brands?.data || !devices?.data || !parts?.data) {
+    if (!brands?.data || !devices.length || !parts?.data) {
       throw new Error("No data available");
     }
 
     return {
-      images: images,
+      images,
       brands: brands.data,
-      devices: devices.data,
+      devices, // Already an array, no need for `devices.data`
       parts: parts.data,
     };
   } catch (error) {
@@ -93,8 +93,6 @@ export default function Repair() {
   };
 
   const deviceTypes = Array.from(new Set(devices.map((device) => device.type)));
-
-  console.log(deviceTypes)
 
   // Handle search input and filter devices and parts
   const [notFound, setNotFound] = useState(false);

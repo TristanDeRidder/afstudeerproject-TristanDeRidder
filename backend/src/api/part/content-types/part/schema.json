@@ -43,6 +43,14 @@
       "relation": "manyToMany",
       "target": "api::order.order",
       "mappedBy": "parts"
+    },
+    "quality": {
+      "type": "enumeration",
+      "enum": [
+        "Origineel",
+        "Refurbished",
+        "Pulled"
+      ]
     }
   }
 }
