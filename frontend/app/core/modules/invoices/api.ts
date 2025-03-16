@@ -26,6 +26,14 @@ export async function getInvoices() {
     }
 }
 
+/**
+ * Creates a new invoice using the provided invoice data and authorization token.
+ *
+ * @param invoiceData - The data for the invoice to be created.
+ * @param authToken - The authorization token for the API request.
+ * @returns A promise that resolves to the response data containing the created invoice.
+ * @throws Will throw an error if the API request fails.
+ */
 export async function createInvoice(
   invoiceData: any,
   authToken: string

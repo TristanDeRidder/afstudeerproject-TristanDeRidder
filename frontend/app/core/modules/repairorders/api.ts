@@ -63,6 +63,22 @@ export async function getRepairorderByDocumentId(documentId: string) {
 }
 
 
+/**
+ * Creates a new repair order.
+ *
+ * @param repairData - The data for the repair order.
+ * @param repairData.statusRepair - The status of the repair.
+ * @param repairData.issue - The issue description.
+ * @param repairData.repairable - Indicates if the item is repairable.
+ * @param repairData.device - The device being repaired.
+ * @param repairData.parts - The parts required for the repair.
+ * @param repairData.customer - The ID of the customer.
+ * @param repairData.invoice - The ID of the invoice.
+ * @param repairData.technician - The ID of the technician.
+ * @param authToken - The authentication token.
+ * @returns A promise that resolves to the created repair order.
+ * @throws Will throw an error if the repair order creation fails.
+ */
 export async function createRepairorder(
   repairData: any,
   authToken: string
@@ -94,6 +110,22 @@ export async function createRepairorder(
   }
 }
 
+/**
+ * Updates a repair order with the provided repair data.
+ *
+ * @param repairData - The data to update the repair order with.
+ * @param repairData.statusRepair - The status of the repair.
+ * @param repairData.issue - The issue description.
+ * @param repairData.repairable - Indicates if the item is repairable.
+ * @param repairData.device - The device information.
+ * @param repairData.parts - The parts information.
+ * @param repairData.customer - The ID of the customer.
+ * @param repairData.invoice - The ID of the invoice.
+ * @param repairData.documentId - The ID of the repair order document.
+ * @param authToken - The authentication token for authorization.
+ * @returns A promise that resolves to the updated repair order data.
+ * @throws Will throw an error if the update operation fails.
+ */
 export async function updateRepairorder(
   repairData: any,
   authToken: string

@@ -150,7 +150,7 @@ export default function Orders() {
     }, [fetcher.data]);
   };
 
-  // Filter parts based on selected device
+  /* Filter parts based on selected device */
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
 
   const filteredParts = useMemo(() => {
@@ -165,7 +165,7 @@ export default function Orders() {
     setSelectedDeviceId(newDeviceId);
   };
 
-  // Selected parts (for calculating the total price)
+  /* Selected parts (for calculating the total price) */
   const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
 
   const totalPrice = useMemo(() => {
@@ -208,6 +208,7 @@ export default function Orders() {
         </div>
       )}
 
+      {/* Add Order */}
       {showOverlay && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-primaryHelper p-4 rounded-md w-1/2">

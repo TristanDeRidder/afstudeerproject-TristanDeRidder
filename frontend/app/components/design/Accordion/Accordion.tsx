@@ -4,6 +4,15 @@ type AccordionProps = {
     items: { question: string; answer: string }[];
 };
 
+/**
+ * Accordion component that displays a list of items with expandable content.
+ * 
+ * @param {AccordionProps} props - The properties for the Accordion component.
+ * @param {Array<{ question: string, answer: string }>} props.items - The list of items to display in the accordion.
+ * 
+ * @returns {JSX.Element} The rendered Accordion component.
+ * 
+ */
 export default function Accordion({ items }: AccordionProps) {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 

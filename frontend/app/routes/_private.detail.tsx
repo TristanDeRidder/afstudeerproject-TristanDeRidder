@@ -43,11 +43,30 @@ export async function loader({ request }: { request: Request }) {
   return {
     repairorder: repairorders.data,
     brand: brand.data,
-    device: device.data,
+    device,
     parts: parts.data,
   };
 }
 
+/**
+ * Handles the action for updating a repair order and customer information.
+ *
+ * @param {Object} params - The parameters for the action.
+ * @param {Request} params.request - The request object containing headers and form data.
+ * @returns {Promise<Object>} The result of the action, indicating success or failure.
+ *
+ * @throws Will throw an error if the update operations fail.
+ *
+ * The function performs the following steps:
+ * 1. Parses the JWT from the request cookies.
+ * 2. Extracts form data from the request.
+ * 3. Retrieves the repair order by document ID.
+ * 4. Extracts and validates necessary fields from the form data.
+ * 5. Updates the customer information.
+ * 6. Updates the repair order with the new data.
+ * 7. Returns a success response if all operations succeed.
+ * 8. Logs and returns a failure response if any operation fails.
+ */
 export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
   const formData = await request.formData();
@@ -155,6 +174,7 @@ export default function Repair() {
         {isEditing ? "Cancel" : "Edit"}
       </button>
 
+      {/* Update Form */}
       {isEditing ? (
         <form onSubmit={handleSubmit} className="space-y-6">
           <input

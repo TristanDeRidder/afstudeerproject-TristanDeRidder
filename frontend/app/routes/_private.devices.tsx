@@ -21,7 +21,7 @@ type LoaderData = {
   brands: Brand[];
   suppliers: Suppliers[];
 };
-
+ 
 export async function loader() {
   try {
     const devices = await getDevices();
@@ -39,6 +39,26 @@ export async function loader() {
   }
 }
 
+/**
+ * Handles the action for adding a device or a part based on the actionType from the form data.
+ *
+ * @param {Object} params - The parameters object.
+ * @param {Request} params.request - The request object containing headers and form data.
+ * @returns {Promise<Object>} - A promise that resolves to an object indicating the success status of the action.
+ *
+ * The function performs the following actions based on the actionType:
+ * - "addDevice": Handles the creation of a device.
+ *   - Extracts device details from the form data.
+ *   - If an image is provided, uploads the image and retrieves its ID.
+ *   - Creates a device with the provided details and the uploaded image ID.
+ * - "addPart": Handles the creation of a part.
+ *   - Extracts part details from the form data.
+ *   - Creates a part with the provided details.
+ *
+ * If the actionType is not recognized, the function returns a success status of false.
+ *
+ * @throws {Error} - If there is an error during the creation of a device or part, the error is logged and the function returns a success status of false.
+ */
 export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
   const formData = await request.formData();
@@ -91,7 +111,6 @@ export async function action({ request }: any) {
       return { success: false };
     }
   } else if (actionType === "addPart") {
-    // Handle Part creation
     const deviceId = formData.get("deviceId");
     const partName = formData.get("partName");
     const sellingPrice = formData.get("sellingPrice");
@@ -200,7 +219,7 @@ export default function Devices() {
         </button>
       </div>
 
-      {/* Device Form Overlay */}
+      {/* Add Device Form */}
       {showDeviceOverlay && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-primaryHelper p-4 rounded-md w-1/2">
@@ -278,7 +297,7 @@ export default function Devices() {
         </div>
       )}
 
-      {/* Part Form Overlay */}
+      {/* Add Part Form */}
       {showPartOverlay && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-primaryHelper p-4 rounded-md w-1/2">

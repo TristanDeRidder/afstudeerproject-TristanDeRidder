@@ -9,11 +9,22 @@ import { Repairorders } from '../repairorders/type';
 import { StrapiResponse } from '../strapi/type';
 import { Devices } from './type';
 
+/**
+ * Fetches a list of devices from the API with pagination.
+ *
+ * @param {number} [pageSize=100] - The number of devices to fetch per page.
+ * @returns {Promise<Devices[]>} A promise that resolves to an array of devices.
+ * @throws Will throw an error if the API request fails.
+ */
 export async function getDevices(pageSize = 100) {
   let page = 1;
   let totalPages = 1;
   let allDevices: Devices[] = [];
 
+  /**
+   * Loop through all pages of devices until we have fetched all devices.
+   * The API returns a maximum of 100 devices per page.
+  */
   while (page <= totalPages) {
     const query = qs.stringify(
       {
@@ -32,9 +43,9 @@ export async function getDevices(pageSize = 100) {
       const response = await API.get(`devices?${query}`);
       const { data, meta } = response.data;
 
-      allDevices = [...allDevices, ...data]; // Append new data
-      totalPages = meta.pagination.pageCount; // Get total pages from response
-      page++; // Increment page number
+      allDevices = [...allDevices, ...data];
+      totalPages = meta.pagination.pageCount;
+      page++;
     } catch (error) {
       console.error("Error fetching devices:", error);
       throw error;

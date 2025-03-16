@@ -39,6 +39,11 @@ export async function loader() {
   }
 }
 
+/**
+ * Generates an array of date strings representing the last 7 days, including today.
+ *
+ * @returns {string[]} An array of date strings in the format 'YYYY-MM-DD' for the last 7 days.
+ */
 function getLastWeekDates() {
   const dates = [];
   const today = new Date();
@@ -50,6 +55,14 @@ function getLastWeekDates() {
   return dates;
 }
 
+/**
+ * Component to render custom tooltip content for a chart.
+ *
+ * @param {Object} props - The properties object.
+ * @param {boolean} [props.active] - Indicates if the tooltip is active.
+ * @param {Array} [props.payload] - The data payload for the tooltip.
+ * @returns {JSX.Element | null} The custom tooltip content or null if not active or no payload.
+ */
 const ChartTooltipContent = ({
   active,
   payload,
@@ -104,7 +117,7 @@ export default function Dashboard() {
     0
   );
 
-  // Helper function to get dates for the previous week
+  /* Helper function to get dates for the previous week */
   function getPreviousWeekDates() {
     const dates = [];
     const today = new Date();
@@ -116,7 +129,7 @@ export default function Dashboard() {
     return dates;
   }
 
-  // Calculate income for last week and the week before
+  /* Calculate income for last week and the week before */
   const lastWeekTotal = dailyIncome.reduce((sum, day) => sum + day.income, 0);
 
   const previousWeekDates = getPreviousWeekDates();
@@ -133,12 +146,12 @@ export default function Dashboard() {
     0
   );
 
-  // Calculate the percentage difference
+  /* Calculate the percentage difference */
   const percentageChange = previousWeekTotal
     ? ((lastWeekTotal - previousWeekTotal) / previousWeekTotal) * 100
     : 0;
 
-  // Format with + or - sign
+  /* Format with + or - sign */
   const formattedPercentage = `${
     percentageChange >= 0 ? "+" : ""
   }${percentageChange.toFixed(2)}%`;

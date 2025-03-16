@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import DateFilterButtons from "./DateFilterButtons";
 
 type DatepickerProps = {
@@ -8,6 +7,17 @@ type DatepickerProps = {
   setShowDatePicker: (show: boolean) => void;
 };
 
+/**
+ * Datepicker component that allows users to select a date and navigate between dates.
+ *
+ * @param {Object} props - The properties object.
+ * @param {string} props.selectedDate - The currently selected date.
+ * @param {Function} props.setSelectedDate - Function to update the selected date.
+ * @param {boolean} props.showDatePicker - Boolean to control the visibility of the date picker.
+ * @param {Function} props.setShowDatePicker - Function to toggle the visibility of the date picker.
+ *
+ * @returns {JSX.Element} The rendered Datepicker component.
+ */
 export default function Datepicker({
   selectedDate,
   setSelectedDate,

@@ -82,7 +82,7 @@ export async function action({ request }: any) {
   const technicianId = formData.get("technicianId");
 
   try {
-    // 1. Create customer
+    // Create customer
     const customer = await createCustomer(
       {
         Firstname: firstname,
@@ -96,7 +96,7 @@ export async function action({ request }: any) {
 
     if (!customerId) throw new Error("Failed to get customer ID");
 
-    // 2. Create invoice
+    // Create invoice
     const invoice = await createInvoice(
       {
         TotalAmount: invoiceTotal,
@@ -110,7 +110,7 @@ export async function action({ request }: any) {
 
     if (!invoiceId) throw new Error("Failed to get invoice ID");
 
-    // 3. create order
+    // Create order
     if (statusRepair === "Bestellen") {
       const orderData = {
         statusOrder: statusRepair,
@@ -123,7 +123,7 @@ export async function action({ request }: any) {
       await createOrder(orderData, jwt);
     }
 
-    // 4. Add repair order using the retrieved IDs
+    // Add repair order using the retrieved IDs
     const repair = await createRepairorder(
       {
         statusRepair,
@@ -139,7 +139,7 @@ export async function action({ request }: any) {
       jwt
     );
 
-    // 5. Send email to customer after repair is created
+    // Send email to customer after repair is created
     const msg = {
       to: `${mail}`, // customer email
       from: "tristanderidder1@gmail.com", // your SendGrid verified email

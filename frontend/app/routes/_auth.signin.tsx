@@ -4,6 +4,22 @@ import { useActionData, Form } from "@remix-run/react";
 import { loginAPI } from "../core/networking/API.server";
 import { jwtCookie } from "../core/cookies/cookies.server";
 
+/**
+ * Handles the sign-in action for the authentication route.
+ *
+ * @param {Object} context - The context object containing the request.
+ * @param {Request} context.request - The request object containing form data.
+ * @returns {Promise<Response>} - A promise that resolves to a response object.
+ *
+ * @throws {Error} - Throws an error if the form data is invalid or if the login API fails.
+ *
+ * The function performs the following steps:
+ * 1. Extracts form data from the request.
+ * 2. Validates the form data to ensure both identifier and password are strings.
+ * 3. Calls the login API with the provided identifier and password.
+ * 4. Redirects to the dashboard on successful login, setting a JWT cookie.
+ * 5. Returns an error response if any step fails.
+ */
 export const action: ActionFunction = async ({ request }) => {
   try {
     const formData = await request.formData();

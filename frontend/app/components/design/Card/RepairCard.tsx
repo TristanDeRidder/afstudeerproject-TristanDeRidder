@@ -1,5 +1,16 @@
 import { Link } from "@remix-run/react";
 
+/**
+ * A functional component that renders a card with a title, image, and link.
+ * The card has responsive styles and animations for hover effects.
+ *
+ * @param {Object} props - The properties object.
+ * @param {string} props.title - The title of the card.
+ * @param {any} props.images - The image or images to be displayed on the card.
+ * @param {string} props.url - The URL to navigate to when the card is clicked.
+ *
+ * @returns {JSX.Element} The rendered card component.
+ */
 export default function RepairCard({
   title,
   images,

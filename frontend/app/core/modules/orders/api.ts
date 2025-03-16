@@ -26,6 +26,19 @@ export async function getOrders() {
     }
 }
 
+/**
+ * Creates a new order in the system.
+ *
+ * @param orderData - The data of the order to be created.
+ * @param orderData.statusOrder - The status of the order.
+ * @param orderData.device - The device associated with the order.
+ * @param orderData.parts - The parts associated with the order.
+ * @param orderData.customer - The ID of the customer associated with the order.
+ * @param orderData.invoice - The ID of the invoice associated with the order.
+ * @param authToken - The authentication token for the API request.
+ * @returns A promise that resolves to the created order's response.
+ * @throws Will throw an error if the order creation fails.
+ */
 export async function createOrder(
   orderData: any,
   authToken: string

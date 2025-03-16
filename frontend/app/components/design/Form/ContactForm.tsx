@@ -4,6 +4,24 @@ import { useState } from "react";
 
 import type { ActionFunction } from "@remix-run/node";
 
+/**
+ * Handles the form submission action for the contact form.
+ * 
+ * @param {Object} params - The parameters object.
+ * @param {Request} params.request - The request object containing form data.
+ * 
+ * @returns {Promise<Response>} The response object indicating the result of the action.
+ * 
+ * The function performs the following steps:
+ * 1. Extracts form data (name, email, message, and reCAPTCHA token) from the request.
+ * 2. Verifies the reCAPTCHA token with Google's reCAPTCHA API.
+ * 3. If reCAPTCHA verification fails, returns a JSON response with an error message and status 400.
+ * 4. If reCAPTCHA verification succeeds, attempts to send an email using Nodemailer.
+ * 5. If email sending is successful, returns a JSON response indicating success.
+ * 6. If email sending fails, returns a JSON response with an error message and status 500.
+ * 
+ * @throws {Error} If there is an issue with sending the email.
+ */
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const name = formData.get("name");
@@ -27,7 +45,6 @@ export const action: ActionFunction = async ({ request }) => {
     return json({ error: "Captcha-verificatie mislukt." }, { status: 400 });
   }
 
-  // Stuur e-mail
   try {
     const transporter = require("nodemailer").createTransport({
       host: process.env.SMTP_HOST,
@@ -59,7 +76,6 @@ type ActionData = {
 export default function ContactForm() {
   const actionData = useActionData<ActionData>();
   const navigation = useNavigation();
-  const [captchaLoaded, setCaptchaLoaded] = useState(false);
 
   return (
     <Form method="post">
@@ -76,9 +92,6 @@ export default function ContactForm() {
         <textarea name="message" required />
       </label>
 
-      {/* Google reCAPTCHA */}
-      <div className="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY" />
-
       {actionData?.error && <p style={{ color: "red" }}>{actionData.error}</p>}
       {actionData?.success && (
         <p style={{ color: "green" }}>{actionData.success}</p>
@@ -87,13 +100,6 @@ export default function ContactForm() {
       <button type="submit" disabled={navigation.state === "submitting"}>
         {navigation.state === "submitting" ? "Verzenden..." : "Verstuur"}
       </button>
-
-      <script
-        src="https://www.google.com/recaptcha/api.js"
-        async
-        defer
-        onLoad={() => setCaptchaLoaded(true)}
-      />
     </Form>
   );
 }
