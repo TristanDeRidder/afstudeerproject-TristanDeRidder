@@ -55,6 +55,26 @@ export async function getDevices(pageSize = 100) {
   return allDevices;
 }
 
+/**
+ * Fetches a single device from the API by its document ID.
+ *
+ * @param {string} documentId - The document ID of the device to fetch.
+ * @returns {Promise<Devices>} A promise that resolves to the device.
+ * @throws Will throw an error if the API request fails.
+ */
+export async function getDeviceById(documentId: string) {
+  const query = qs.stringify({
+    populate: "*"
+  });
+  try {
+    const response = await API.get(`devices/${documentId}?${query}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching device:", error);
+    throw error;
+  }
+}
+
 export async function getTopDevices() {
   try {
     // Haal alle repairorders op
@@ -70,8 +90,7 @@ export async function getTopDevices() {
     const response = await API.get(`/repairorders?${query}`);
     const repairOrders = response.data;
 
-    console.log("repairOrders log", repairOrders);
-    
+     
     const deviceCounts: { [key: string]: { count: number, device: any } } = {};
 
     // Tel hoe vaak elk toestel voorkomt

@@ -101,7 +101,7 @@ export default function Index() {
       {/* Hero Section */}
       <div className="px-5 md:px-10 lg:px-32 xl:px-40 2xl:px-56 flex flex-col gap-8 2xl:gap-12">
         <PrimaryTitle
-          title="Een snelle herstellingen voor uw Smartphone"
+          title="Een snelle herstelling voor uw toestel"
           subtitle=""
         />
 
@@ -173,17 +173,17 @@ export default function Index() {
         <SecondaryTitle title="Waarom kiezen voor Fixit?" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 2xl:gap-12 mt-10 pb-5">
-          {whyCards && whyCards.PageContent.length > 0 ? (
+            {whyCards && whyCards.PageContent.length > 0 ? (
             whyCards.PageContent.map(
               (card: {
-                id: number;
-                Title: string;
-                Text: string;
-                Icon: { url: string } | null;
+              id: number;
+              Title: string;
+              Text: string;
+              Icon: { url: string } | null;
               }) => (
-                <div
-                  key={card.id}
-                  className="bg-bg p-6 2xl:p-10 rounded-lg flex items-start gap-4 2xl:gap-8"
+              <div
+                key={card.id}
+                  className="bg-bg p-6 2xl:p-10 rounded-lg flex items-center gap-4 2xl:gap-8"
                 >
                   <div>
                     <h4 className="text-lg md:text-xl 2xl:text-2xl font-semibold mb-3">
@@ -197,7 +197,7 @@ export default function Index() {
                     <img
                       src={card.Icon.url}
                       alt={card.Title}
-                      className="w-12 h-12 2xl:w-16 2xl:h-16"
+                      className="w-12 2xl:w-20"
                     />
                   )}
                 </div>

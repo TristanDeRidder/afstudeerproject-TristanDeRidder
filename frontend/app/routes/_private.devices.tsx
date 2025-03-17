@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLoaderData, useFetcher } from "@remix-run/react";
+import { useLoaderData, useFetcher, Link, Outlet } from "@remix-run/react";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
 
 import { getDevices, createDevice } from "../core/modules/devices/api";
@@ -159,7 +159,9 @@ export default function Devices() {
             device.brand?.brandName.toLowerCase().includes(lowerCaseQuery) ||
             device.model.toLowerCase().includes(lowerCaseQuery) ||
             (device.modelType &&
-              device.modelType.toLowerCase().includes(lowerCaseQuery))
+              device.modelType.toLowerCase().includes(lowerCaseQuery)) ||
+            (device.modelNumber &&
+              device.modelNumber.toLowerCase().includes(lowerCaseQuery))
         )
       );
     } else {
@@ -197,10 +199,10 @@ export default function Devices() {
       <div className="flex mb-4 mt-6">
         <input
           type="text"
-          placeholder="Zoek naar een toestel"
+          placeholder="Zoek naar een toestel, modelnummer, merk, ..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-3 rounded-lg border border-gray-300 w-80"
+          className="p-3 rounded-lg border border-gray-300 w-[30rem]"
         />
       </div>
 
@@ -407,8 +409,9 @@ export default function Devices() {
             return 0; // In case brandName is undefined, no sorting applied
           })
           .map((device) => (
-            <div
-              key={device.id}
+            <Link
+              to={`/devices/${device.documentId}`}
+              key={device.documentId}
               className="flex justify-between bg-primaryHelper mt-2"
             >
               <div className="px-4 py-2 w-1/3">{device.type}</div>
@@ -416,7 +419,7 @@ export default function Devices() {
               <div className="px-4 py-2 w-1/3">
                 {device.model} {device.modelType}
               </div>
-            </div>
+            </Link>
           ))}
       </div>
     </div>

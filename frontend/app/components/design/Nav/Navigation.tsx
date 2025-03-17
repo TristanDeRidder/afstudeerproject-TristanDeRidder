@@ -12,6 +12,7 @@ interface NavLink {
 const customOrder = [
   "Herstellingen",
   "Over",
+  "Klantenservice",
   "FAQ",
   "Contact",
 ];
@@ -31,7 +32,7 @@ export default function Navigation({
   });
 
   return (
-    <nav className="relative bg-white p-4 pb-9 md:pb-12">
+    <nav className="relative bg-bg p-4 mb-9 md:mb-12">
       {/* Desktop navigation */}
       <div className="hidden md:flex justify-between gap-6 items-center px-5 lg:px-32">
         <NavLink to="/" className="flex items-center gap-4">
@@ -39,7 +40,7 @@ export default function Navigation({
             <img
               src={images.url}
               alt={images.name}
-              className="h-28 w-auto mr-4"
+              className="h-40 w-auto mr-4"
             />
           )}
         </NavLink>
@@ -49,12 +50,12 @@ export default function Navigation({
               key={URL}
               to={URL}
               className={({ isActive }) =>
-                `transition-colors duration-200 px-4 py-2 rounded-full ${
+                `transition-colors duration-200 px-4 py-2 rounded-full text-lg ${
                   pageTitle.toLowerCase() === "contact"
                     ? "bg-accent text-white font-bold rounded-lg px-6 py-4 border hover:bg-bg hover:border-secondary hover:text-text transition-all duration-200 ease-in-out"
                     : isActive
                     ? "text-secondary font-semibold bg-accent"
-                    : "text-text hover:text-accentLight"
+                    : "text-text hover:text-accent"
                 }`
               }
             >
