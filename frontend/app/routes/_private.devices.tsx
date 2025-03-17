@@ -192,7 +192,7 @@ export default function Devices() {
   };
 
   return (
-    <div className="bg-primary p-4">
+    <div className="bg-dashboardSidebar p-4">
       <DashboardTitle title="Toestellen" />
 
       {/* Search Bar */}

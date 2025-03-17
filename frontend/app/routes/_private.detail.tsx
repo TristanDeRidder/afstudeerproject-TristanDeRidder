@@ -184,7 +184,7 @@ export default function Repair() {
           />
           <div className="flex justify-between">
             <div className="flex items-center">
-              <div className="bg-primary py-8 px-4 rounded-md border">
+              <div className="bg-dashboardSidebar py-8 px-4 rounded-md border">
                 {repairorder.documentId}
               </div>
               <div className="flex flex-col space-y-2 ml-4">
@@ -235,7 +235,7 @@ export default function Repair() {
           </div>
 
           {/* Device data */}
-          <div className="mt-6 p-4 bg-primaryHelper text-lg rounded-lg shadow-sm">
+          <div className="mt-6 p-4 bg-dashboardSidebar text-lg rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold mt-6">Device Information</h3>
             <div className="flex justify-between">
               <div className="flex flex-col">
@@ -319,7 +319,7 @@ export default function Repair() {
           </div>
 
           {/* Part data */}
-          <div className="mt-6 p-4 bg-primaryHelper text-lg rounded-lg shadow-sm">
+          <div className="mt-6 p-4 bg-dashboardSidebar text-lg rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold mt-6">Part Information</h3>
             {formData.parts.map((part: any, index: number) => (
               <div key={index} className="flex items-center justify-between">

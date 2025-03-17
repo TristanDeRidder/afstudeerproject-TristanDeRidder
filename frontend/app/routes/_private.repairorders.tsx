@@ -432,32 +432,32 @@ export default function Repairorders() {
                     Totaal: € {totalPrice.toFixed(2)}
                   </p>
                   <div className="flex gap-2 items-center">
-                  <label>Korting</label>
-                <input
-                  className="w-20 border rounded-md p-2"
-                  onChange={(e) => setDiscount(+e.target.value)}
-                  type="number"
-                  name="discount"
-                  defaultValue={0}
-                  placeholder="0"
-                />
-                  <input
-                    type="hidden"
-                    name="invoiceTotal"
-                    value={totalPriceWithDiscount}
-                  />
+                    <label>Korting</label>
+                    <input
+                      className="w-20 border rounded-md p-2"
+                      onChange={(e) => setDiscount(+e.target.value)}
+                      type="number"
+                      name="discount"
+                      defaultValue={0}
+                      placeholder="0"
+                    />
+                    <input
+                      type="hidden"
+                      name="invoiceTotal"
+                      value={totalPriceWithDiscount}
+                    />
                   </div>
                 </div>
-              <div className="flex gap-4 items-center mb-4">
-                <p className="text-lg font-bold">
-                  Totaal met korting: € {totalPriceWithDiscount.toFixed(2)}
-                </p>
-                <label>
-                  <input type="checkbox" name="invoiceBool" value="false" /> Factuur
-                </label>
+                <div className="flex gap-4 items-center mb-4">
+                  <p className="text-lg font-bold">
+                    Totaal met korting: € {totalPriceWithDiscount.toFixed(2)}
+                  </p>
+                  <label>
+                    <input type="checkbox" name="invoiceBool" value="false" />{" "}
+                    Factuur
+                  </label>
+                </div>
               </div>
-              </div>
-
 
               <button
                 type="submit"
@@ -470,7 +470,7 @@ export default function Repairorders() {
         </div>
       )}
 
-      <div className="bg-primaryHelper rounded-md mt-4">
+      <div className="bg-dashboardSidebar rounded-md mt-4">
         <div className="flex justify-between font-bold px-4 py-2">
           <div className="px-4 py-2 w-1/5">Model</div>
           <div className="px-4 py-2 w-1/5">Onderdeel</div>

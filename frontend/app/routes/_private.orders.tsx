@@ -373,7 +373,7 @@ export default function Orders() {
       )}
 
       {/* Table */}
-      <div className="bg-primaryHelper rounded-md">
+      <div className="bg-dashboardSidebar rounded-md">
         <div className="flex justify-between font-bold px-4 py-2">
           <div className="px-4 py-2 w-1/5">Datum</div>
           <div className="px-4 py-2 w-1/5">Toestel</div>
@@ -413,13 +413,21 @@ export default function Orders() {
 
                 <div className="px-4 py-2 w-1/5 flex items-center relative">
                   {editingId === order.id ? (
-                    <form method="post" className="flex" onSubmit={handleUpdateSubmit}>
+                    <form
+                      method="post"
+                      className="flex"
+                      onSubmit={handleUpdateSubmit}
+                    >
                       <input
                         type="hidden"
                         name="actionType"
                         value="updateOrder"
                       />
-                      <input type="hidden" name="documentId" value={order.documentId} />
+                      <input
+                        type="hidden"
+                        name="documentId"
+                        value={order.documentId}
+                      />
                       <select
                         name="orderStatus"
                         className="border rounded px-2 py-1"

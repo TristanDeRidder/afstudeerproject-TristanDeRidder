@@ -98,7 +98,7 @@ export default function Invoices() {
           />
         </div>
 
-        <div className="bg-primaryHelper rounded-md ">
+        <div className="bg-dashboardSidebar rounded-md ">
           <div className="flex justify-between font-bold px-4 py-2">
             <div className="px-4 py-2 w-1/5">Model</div>
             <div className="px-4 py-2 w-1/5">Onderdeel</div>
