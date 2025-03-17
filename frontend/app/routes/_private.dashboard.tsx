@@ -40,59 +40,33 @@ export async function loader() {
 }
 
 /**
- * Generates an array of date strings representing the last 7 days, including today.
- *
- * @returns {string[]} An array of date strings in the format 'YYYY-MM-DD' for the last 7 days.
+ * Returns an array of dates for a full week (Monday to Sunday) based on a given reference date.
+ * @param {Date} referenceDate The date to calculate the week from.
+ * @returns {string[]} Array of date strings in the format 'YYYY-MM-DD'.
  */
-function getLastWeekDates() {
+function getWeekDates(referenceDate: Date) {
   const dates = [];
-  const today = new Date();
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(today.getDate() - i);
+  const startOfWeek = new Date(referenceDate);
+  const dayOfWeek = startOfWeek.getDay();
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust so Monday is the start
+  startOfWeek.setDate(startOfWeek.getDate() + diff);
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(startOfWeek);
+    date.setDate(startOfWeek.getDate() + i);
     dates.push(date.toISOString().split("T")[0]);
   }
   return dates;
 }
 
-/**
- * Component to render custom tooltip content for a chart.
- *
- * @param {Object} props - The properties object.
- * @param {boolean} [props.active] - Indicates if the tooltip is active.
- * @param {Array} [props.payload] - The data payload for the tooltip.
- * @returns {JSX.Element | null} The custom tooltip content or null if not active or no payload.
- */
-const ChartTooltipContent = ({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: any[];
-}) => {
-  if (!active || !payload || !payload.length) return null;
-
-  return (
-    <div className="bg-dashboardSidebar p-2 rounded-md shadow-md">
-      <p>
-        <strong>Datum:</strong>{" "}
-        {new Date(payload[0].payload.date).toLocaleDateString("nl-BE", {
-          day: "2-digit",
-          month: "2-digit",
-        })}
-      </p>
-      <p>
-        <strong>Inkomsten:</strong> €{payload[0].value}
-      </p>
-    </div>
-  );
-};
 
 export default function Dashboard() {
   const { repairs, invoices } = useLoaderData() as LoaderData;
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
 
-  const [selectedDate, setSelectedDate] = useState(today);
+  const [selectedDate, setSelectedDate] = useState(
+    today.toISOString().split("T")[0]
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const filteredRepairs = selectedDate
@@ -103,8 +77,12 @@ export default function Dashboard() {
     return total + (repair.parts?.length || 0);
   }, 0);
 
-  const lastWeekDates = getLastWeekDates();
-  const dailyIncome = lastWeekDates.map((date) => {
+  const currentWeekDates = getWeekDates(today);
+  const previousWeekDates = getWeekDates(
+    new Date(today.setDate(today.getDate() - 7))
+  );
+
+  const currentWeekIncome = currentWeekDates.map((date) => {
     const dailyTotal = invoices
       .filter((invoice) => invoice.createdAt.startsWith(date))
       .reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0);
@@ -112,35 +90,17 @@ export default function Dashboard() {
     return { date, income: dailyTotal };
   });
 
-  const totalAmountLastWeek = dailyIncome.reduce(
-    (sum, day) => sum + day.income,
-    0
-  );
-
-  /* Helper function to get dates for the previous week */
-  function getPreviousWeekDates() {
-    const dates = [];
-    const today = new Date();
-    for (let i = 13; i >= 7; i--) {
-      const date = new Date();
-      date.setDate(today.getDate() - i);
-      dates.push(date.toISOString().split("T")[0]);
-    }
-    return dates;
-  }
-
-  /* Calculate income for last week and the week before */
-  const lastWeekTotal = dailyIncome.reduce((sum, day) => sum + day.income, 0);
-
-  const previousWeekDates = getPreviousWeekDates();
   const previousWeekIncome = previousWeekDates.map((date) => {
     const dailyTotal = invoices
       .filter((invoice) => invoice.createdAt.startsWith(date))
       .reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0);
-
     return dailyTotal;
   });
 
+  const lastWeekTotal = currentWeekIncome.reduce(
+    (sum, day) => sum + day.income,
+    0
+  );
   const previousWeekTotal = previousWeekIncome.reduce(
     (sum, income) => sum + income,
     0
@@ -192,7 +152,7 @@ export default function Dashboard() {
           <div className="bg-dashboardSidebar rounded-lg p-4 w-1/2">
             <DashboardSecondaryTitle title="Inkomsten" />
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={dailyIncome}>
+              <BarChart data={currentWeekIncome}>
                 <XAxis
                   dataKey="date"
                   tickLine={false}
@@ -205,12 +165,16 @@ export default function Dashboard() {
                     })
                   }
                 />
-                <Tooltip content={<ChartTooltipContent />} />
+                <Tooltip />
                 <Bar dataKey="income" fill="#93C5FD" radius={4}>
-                  {dailyIncome.map((entry) => (
+                  {currentWeekIncome.map((entry) => (
                     <Cell
                       key={`cell-${entry.date}`}
-                      fill={entry.date === today ? "#3B82F6" : "#93C5FD"}
+                      fill={
+                        entry.date === today.toISOString().split("T")[0]
+                          ? "#3B82F6"
+                          : "#93C5FD"
+                      }
                     />
                   ))}
                 </Bar>
