@@ -58,7 +58,7 @@ export async function action({ request }: any) {
   // repairData
   const statusRepair = formData.get("statusRepair");
   const issue = formData.get("issue");
-  const repairable = formData.get("repairable") === "true";
+  const repairable = true;
 
   // customerData
   const firstname = formData.get("firstname");
@@ -74,7 +74,7 @@ export async function action({ request }: any) {
 
   // invoice
   const invoiceTotal = formData.get("invoiceTotal");
-  const invoiceBool = false;
+  const invoiceBool = formData.get("invoiceBool");
   const paid = false;
   const paymentMethod = "Bancontact";
 
@@ -173,6 +173,9 @@ export default function Repairorders() {
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [discount, setDiscount] = useState<number>(0);
+  const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
+
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -197,7 +200,6 @@ export default function Repairorders() {
     });
   }, [selectedDate, repairs]);
 
-  console.log(filteredRepairs);
 
   const openRepairs = useMemo(
     () =>
@@ -239,9 +241,7 @@ export default function Repairorders() {
     setSelectedDeviceId(newDeviceId);
   };
 
-  // Selected parts (for calculating the total price)
-  const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
-
+  
   const totalPrice = useMemo(() => {
     return selectedPartIds.reduce((sum, partId) => {
       const part = filteredParts.find(
@@ -250,6 +250,9 @@ export default function Repairorders() {
       return sum + (part?.sellingPrice || 0);
     }, 0);
   }, [selectedPartIds, filteredParts]);
+
+  // calculate total price minus discount
+  const totalPriceWithDiscount = totalPrice - discount;
 
   const handlePartChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(e.target.selectedOptions).map(
@@ -423,21 +426,38 @@ export default function Repairorders() {
               </div>
 
               {/* Invoice data */}
-              <div>
-                <div className="mb-2">
+              <div className="mb-2 flex flex-col gap-4">
+                <div>
                   <p className="text-lg font-bold">
                     Totaal: € {totalPrice.toFixed(2)}
                   </p>
-                  <input type="hidden" name="invoiceTotal" value={totalPrice} />
+                  <div className="flex gap-2 items-center">
+                  <label>Korting</label>
+                <input
+                  className="w-20 border rounded-md p-2"
+                  onChange={(e) => setDiscount(+e.target.value)}
+                  type="number"
+                  name="discount"
+                  defaultValue={0}
+                  placeholder="0"
+                />
+                  <input
+                    type="hidden"
+                    name="invoiceTotal"
+                    value={totalPriceWithDiscount}
+                  />
+                  </div>
                 </div>
-              </div>
-
-              <div className="mb-4">
+              <div className="flex gap-4 items-center mb-4">
+                <p className="text-lg font-bold">
+                  Totaal met korting: € {totalPriceWithDiscount.toFixed(2)}
+                </p>
                 <label>
-                  <input type="checkbox" name="repairable" value="false" /> No
-                  fix
+                  <input type="checkbox" name="invoiceBool" value="false" /> Factuur
                 </label>
               </div>
+              </div>
+
 
               <button
                 type="submit"

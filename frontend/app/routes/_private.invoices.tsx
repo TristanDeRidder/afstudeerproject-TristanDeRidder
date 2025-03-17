@@ -100,31 +100,39 @@ export default function Invoices() {
 
         <div className="bg-primaryHelper rounded-md ">
           <div className="flex justify-between font-bold px-4 py-2">
-            <div className="px-4 py-2 w-1/4">Model</div>
-            <div className="px-4 py-2 w-1/4">Onderdeel</div>
-            <div className="px-4 py-2 w-1/4">Betalingsmethode</div>
-            <div className="px-4 py-2 w-1/4">Bedrag</div>
+            <div className="px-4 py-2 w-1/5">Model</div>
+            <div className="px-4 py-2 w-1/5">Onderdeel</div>
+            <div className="px-4 py-2 w-1/5">Betalingsmethode</div>
+            <div className="px-4 py-2 w-1/5">Bedrag</div>
+            <div className="px-4 py-2 w-1/5">Factuur</div>
           </div>
           <div className="px-4 py-2 rounded-md h-[35rem] overflow-y-scroll">
             {filteredRepairs.length > 0 ? (
               filteredRepairs.map((repair) => (
                 <div
                   key={repair.id}
-                  className="flex justify-between bg-accentLight mt-2"
+                  className={`flex justify-between mt-2 ${
+                    repair.invoice?.invoice === true
+                      ? "bg-accent"
+                      : "bg-accentLight"
+                  }`}
                 >
-                  <div className="px-4 py-2 w-1/4">
+                  <div className="px-4 py-2 w-1/5">
                     {repair.device?.model} {repair.device?.modelType}
                   </div>
-                  <div className="px-4 py-2 w-1/4">
+                  <div className="px-4 py-2 w-1/5">
                     {repair.parts?.map((part) => (
                       <div key={part.id}>{part.name}</div>
                     ))}
                   </div>
-                  <div className="px-4 py-2 w-1/4">
+                  <div className="px-4 py-2 w-1/5">
                     {repair.invoice?.paymentmethod}
                   </div>
-                  <div className="px-4 py-2 w-1/4">
+                  <div className="px-4 py-2 w-1/5">
                     € {repair.invoice?.totalAmount}
+                  </div>
+                  <div className="px-4 py-2 w-1/5">
+                    {repair.invoice?.invoice === true ? "Ja" : "Nee"}
                   </div>
                 </div>
               ))
