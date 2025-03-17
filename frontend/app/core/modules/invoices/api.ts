@@ -8,22 +8,36 @@ import { Invoices } from './type';
 
 // Type
 
-export async function getInvoices() {
-    const query = qs.stringify({
-        populate: "*",
-      },
-      {
-        encodeValuesOnly: true,
-      }
-    );
+export async function getInvoices(pageSize = 100) {
+    let page = 1;
+    let totalPages = 1;
+    let allInvoices: Invoices[] = [];
 
-    try {
-        const response = await API.get(`invoices?${query}`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
+    while (page <= totalPages) {
+        const query = qs.stringify({
+            populate: '*',
+            pagination: {
+                page,
+                pageSize,
+            },
+        }, {
+            encodeValuesOnly: true,
+        });
+
+        try {
+            const response = await API.get(`invoices?${query}`);
+            const { data, meta } = response.data;
+
+            allInvoices = [...allInvoices, ...data];
+            totalPages = meta.pagination.pageCount;
+            page++;
+        } catch (error) {
+            console.error('invoice error', error);
+            throw error;
+        }
     }
+    
+    return allInvoices;
 }
 
 /**

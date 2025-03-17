@@ -44,7 +44,7 @@ export async function loader({ request }: { request: Request }) {
     repairorder: repairorders.data,
     brand: brand.data,
     device,
-    parts: parts.data,
+    parts,
   };
 }
 

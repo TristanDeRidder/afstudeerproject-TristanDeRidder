@@ -9,20 +9,36 @@ import { ContactForm } from './type';
 import { StrapiResponse } from '../strapi/type';
 
 
-export async function getContactForms() {
-    const query = qs.stringify({
-        populate: '*',
-    }, { 
-        encodeValuesOnly: true,
-    });
+export async function getContactForms(pageSize = 100) {
+    let page = 1;
+    let totalPages = 1;
+    let allContactForms: ContactForm[] = [];
 
-    try {
-        const response = await API.get(`contact-forms?${query}`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
+    while (page <= totalPages) {
+        const query = qs.stringify({
+            populate: '*',
+            pagination: {
+                page,
+                pageSize,
+            },
+        }, {
+            encodeValuesOnly: true,
+        });
+
+        try {
+            const response = await API.get(`contact-forms?${query}`);
+            const { data, meta } = response.data;
+
+            allContactForms = [...allContactForms, ...data];
+            totalPages = meta.pagination.pageCount;
+            page++;
+        } catch (error) {
+            console.error('contact-form error', error);
+            throw error;
+        }
     }
+    
+    return allContactForms;
 }
 
 /**

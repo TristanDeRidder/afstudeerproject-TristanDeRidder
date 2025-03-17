@@ -9,13 +9,13 @@ type LoaderData = {
 
 export async function loader() {
   try {
-    const contacts = await getContactForms();
+    const contact = await getContactForms();
 
-    if (!contacts?.data) {
+    if (!contact.length) {
       throw new Error("No data available");
     }
 
-    return { contact: contacts.data };
+    return { contact };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { contact: [] };

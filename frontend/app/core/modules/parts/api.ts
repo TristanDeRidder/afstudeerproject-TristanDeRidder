@@ -1,17 +1,26 @@
 // Module
-import qs from 'qs';
+import qs from "qs";
 
 // Core
-import API from '../../networking/API.server';
-import { StrapiResponse } from '../strapi/type';
-import { Parts } from './type';
-import { data } from '@remix-run/node';
+import API from "../../networking/API.server";
 
 // Type
+import { StrapiResponse } from "../strapi/type";
+import { Parts } from "./type";
 
-export async function getParts() {
-    const query = qs.stringify({
+export async function getParts(pageSize = 100) {
+  let page = 1;
+  let totalPages = 1;
+  let allParts: Parts[] = [];
+
+  while (page <= totalPages) {
+    const query = qs.stringify(
+      {
         populate: "*",
+        pagination: {
+          page,
+          pageSize,
+        },
       },
       {
         encodeValuesOnly: true,
@@ -19,12 +28,19 @@ export async function getParts() {
     );
 
     try {
-        const response = await API.get(`parts?${query}`);
-        return response.data;
+      const response = await API.get(`parts?${query}`);
+      const { data, meta } = response.data;
+
+      allParts = [...allParts, ...data];
+      totalPages = meta.pagination.pageCount;
+      page++;
     } catch (error) {
-        console.error(error);
-        throw error;
+      console.error("Error fetching parts",error);
+      throw error;
     }
+  }
+
+  return allParts;
 }
 
 /**
@@ -46,20 +62,19 @@ export async function createPart(
 ): Promise<StrapiResponse<Parts>> {
   const data = {
     data: {
-    name: partData.partName,
-    purchasePrice: partData.purchasePrice,
-    sellingPrice: partData.sellingPrice,
-    suppliers: partData.suppliers,
-    quality: partData.quality,
-    }
+      name: partData.partName,
+      purchasePrice: partData.purchasePrice,
+      sellingPrice: partData.sellingPrice,
+      suppliers: partData.suppliers,
+      quality: partData.quality,
+    },
   };
   try {
-    const response = await API.post( 'parts', data,{
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      }
-    );
+    const response = await API.post("parts", data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(error);

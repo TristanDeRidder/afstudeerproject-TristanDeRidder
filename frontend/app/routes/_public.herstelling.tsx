@@ -54,7 +54,7 @@ export async function loader() {
     const devices = await getDevices(); // Now returns an array instead of { data: [...] }
     const parts = await getParts();
 
-    if (!brands?.data || !devices.length || !parts?.data) {
+    if (!brands?.data || !devices.length || !parts.length) {
       throw new Error("No data available");
     }
 
@@ -62,7 +62,7 @@ export async function loader() {
       images,
       brands: brands.data,
       devices, // Already an array, no need for `devices.data`
-      parts: parts.data,
+      parts,
     };
   } catch (error) {
     console.error("Error while fetching data:", error);

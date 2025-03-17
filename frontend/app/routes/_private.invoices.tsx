@@ -14,11 +14,11 @@ export async function loader() {
   try {
     const repairs = await getRepairorders();
 
-    if (!repairs?.data) {
+    if (!repairs.length) {
       throw new Error("No data available");
     }
 
-    return { repairs: repairs.data };
+    return { repairs };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { repairs: [] };

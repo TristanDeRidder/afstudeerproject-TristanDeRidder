@@ -1,16 +1,26 @@
 // Module
-import qs from 'qs';
+import qs from "qs";
 
 // Core
-import API from '../../networking/API.server';
+import API from "../../networking/API.server";
 
 // Type
-import { StrapiResponse } from '../strapi/type';
-import { Repairorders } from './type';
+import { StrapiResponse } from "../strapi/type";
+import { Repairorders } from "./type";
 
-export async function getRepairorders() {
-    const query = qs.stringify({
+export async function getRepairorders(pageSize = 100) {
+  let page = 1;
+  let totalPages = 1;
+  let allRepairorders: Repairorders[] = [];
+
+  while (page <= totalPages) {
+    const query = qs.stringify(
+      {
         populate: "*",
+        pagination: {
+          page,
+          pageSize,
+        },
       },
       {
         encodeValuesOnly: true,
@@ -18,12 +28,19 @@ export async function getRepairorders() {
     );
 
     try {
-        const response = await API.get(`repairorders?${query}`);
-        return response.data;
+      const response = await API.get(`repairorders?${query}`);
+      const { data, meta } = response.data;
+
+      allRepairorders = [...allRepairorders, ...data];
+      totalPages = meta.pagination.pageCount;
+      page++;
     } catch (error) {
-        console.error("repairoder error", error);
-        throw error;
+      console.error("repairoder error", error);
+      throw error;
     }
+  }
+
+  return allRepairorders;
 }
 
 export async function getRepairorderByDocumentId(documentId: string) {
@@ -61,7 +78,6 @@ export async function getRepairorderByDocumentId(documentId: string) {
     throw error;
   }
 }
-
 
 /**
  * Creates a new repair order.
@@ -144,11 +160,15 @@ export async function updateRepairorder(
 
   try {
     console.log("Updating repair order:", JSON.stringify(data, null, 2));
-    const response = await API.put(`repairorders/${repairData.documentId}`, data, {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    });
+    const response = await API.put(
+      `repairorders/${repairData.documentId}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
     console.log("updated repair order", response.data);
 
     return response.data;

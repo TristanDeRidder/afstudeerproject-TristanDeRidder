@@ -8,22 +8,39 @@ import { Orders } from './type';
 
 // Type
 
-export async function getOrders() {
-    const query = qs.stringify({
-        populate: "*",
-      },
-      {
-        encodeValuesOnly: true,
-      }
-    );
+export async function getOrders(pageSize = 100) {
+    let page = 1;
+    let totalPages = 1;
+    let allOrders: Orders[] = [];
 
-    try {
-        const response = await API.get(`orders?${query}`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
+    while (page <= totalPages) {
+        const query = qs.stringify(
+            {
+                populate: "*",
+                pagination: {
+                    page,
+                    pageSize,
+                },
+            },
+            {
+                encodeValuesOnly: true,
+            }
+        );
+
+        try {
+            const response = await API.get(`orders?${query}`);
+            const { data, meta } = response.data;
+
+            allOrders = [...allOrders, ...data];
+            totalPages = meta.pagination.pageCount;
+            page++;
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+            throw error;
+        }
     }
+
+    return allOrders;
 }
 
 /**
@@ -63,6 +80,31 @@ export async function createOrder(
     return response.data;
   } catch (error) {
     console.error("Error while creating order:", error);
+    throw error;
+  }
+}
+
+export async function updateOrderStatus(
+  orderData: any,
+  authToken: string
+): Promise<StrapiResponse<Orders>> {
+  const data = {
+    data: {
+      orderStatus: orderData.statusOrder,
+    },
+  };
+
+  try {
+    console.log("Updating order status:", JSON.stringify(data, null, 2));
+    const response = await API.put(`orders/${orderData.orderId}`, data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    console.log("Updated order status:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating order status:", error);
     throw error;
   }
 }

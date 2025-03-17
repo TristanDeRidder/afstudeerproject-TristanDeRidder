@@ -28,11 +28,11 @@ export async function loader() {
     const repairs = await getRepairorders();
     const invoices = await getInvoices();
 
-    if (!repairs?.data || !invoices?.data) {
+    if (!repairs.length || !invoices.length) {
       throw new Error("No data available");
     }
 
-    return { repairs: repairs.data, invoices: invoices.data };
+    return { repairs, invoices };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { repairs: [], invoices: [] };
