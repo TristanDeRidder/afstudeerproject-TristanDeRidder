@@ -1,17 +1,21 @@
-import { useState } from "react";
-import { MetaFunction, useLoaderData } from "@remix-run/react";
+import { useRef, useState } from "react";
+import { MetaFunction, useActionData, useLoaderData } from "@remix-run/react";
+import sgMail from "@sendgrid/mail";
+import ContactBanner from "../components/design/Info/ContactBanner";
+import { getImageById } from "../components/.server/images/getImage";
+
 
 // API
 import { getBrands } from "../core/modules/brands/api";
 import { getDevices } from "../core/modules/devices/api";
 import { getParts } from "../core/modules/parts/api";
+import { addContactForm } from "../core/modules/contactForm/api";
 
 // Types
 import { Brand } from "../core/modules/brands/type";
 import { Devices } from "../core/modules/devices/type";
 import { Parts } from "../core/modules/parts/type";
-import ContactBanner from "../components/design/Info/ContactBanner";
-import { getImageById } from "../components/.server/images/getImage";
+import { ActionFunctionArgs } from "@remix-run/node";
 
 type LoaderData = {
   images: any;
@@ -70,14 +74,95 @@ export async function loader() {
   }
 }
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+  try {
+    const formData = new URLSearchParams(await request.text());
+    const data = {
+      firstname: formData.get("firstname") || "",
+      lastname: formData.get("lastname") || "",
+      email: formData.get("email") || "",
+      phonenumber: formData.get("phonenumber") || "",
+      message: formData.get("message") || "",
+      subject: "Herstelling aanvraag",
+    };
+    const { firstname, lastname, email, phonenumber, message, subject } = data;
+
+    // Validate the form fields
+    if (!firstname || !lastname || !email || !message || !subject) {
+      return { error: "Alle verplichte velden moeten ingevuld worden." };
+    }
+
+    // Save the contact form data (optional)
+    const messageResponse = await addContactForm(
+      firstname,
+      lastname,
+      email,
+      phonenumber,
+      message,
+      subject
+    );
+
+    if (!messageResponse.data) {
+      return {
+        error: "Er is een fout opgetreden bij het verzenden van het bericht.",
+      };
+    }
+
+    // Send the email via SendGrid
+    const msg = {
+      // FIXME: Change the email addresses
+      to: `mixmaster578@gmail.com`, // Change to your recipient email
+      from: "tristanderidder1@gmail.com", // Change to your verified sender email
+      subject: `Nieuw bericht: ${subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333;">
+          <p><strong>Van:</strong> ${firstname} ${lastname}</p>
+          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p><strong>Telefoonnummer:</strong> ${phonenumber}</p>
+          <p><strong>Bericht:</strong></p>
+          <p style="background-color: #f9f9f9; padding: 10px; border: 1px solid #93C5FD;">${message}</p>
+        </div>
+      `,
+    };
+
+    // Send the email and check the response
+    await sgMail.send(msg);
+
+    return { success: "Het bericht is succesvol verzonden." };
+  } catch (error) {
+    console.error("Fout bij het verzenden van het bericht:", error);
+    return {
+      error: "Er is een fout opgetreden bij het verzenden van het bericht.",
+    };
+  }
+};
+
 export default function Repair() {
   const { images, brands, devices, parts } = useLoaderData<LoaderData>();
+  const actionData: any = useActionData();
+  const formRef = useRef<HTMLFormElement>(null);
+  
+  
 
   const [step, setStep] = useState(1);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
   const [selectedDevice, setSelectedDevice] = useState<Devices | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedPart, setSelectedPart] = useState<Parts | null>(null);
   const [confirmSelection, setConfirmSelection] = useState(false);
+  const [notFound, setNotFound] = useState(false);
+  const [error, setError] = useState<string | null>(actionData?.error || null);
+  const [success, setSuccess] = useState<string | null>(
+    actionData?.success || null
+  );
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phonenumber: "",
+    message: "",
+    subject: "",
+  });
 
   // New state for search functionality
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -94,8 +179,6 @@ export default function Repair() {
 
   const deviceTypes = Array.from(new Set(devices.map((device) => device.type)));
 
-  // Handle search input and filter devices and parts
-  const [notFound, setNotFound] = useState(false);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -113,29 +196,56 @@ export default function Repair() {
       setSelectedBrand(foundDevice.brand);
       setSelectedType(foundDevice.type);
       setStep(3);
-      setNotFound(false); // Reset "not found" state
+      setNotFound(false);
     } else {
       setSelectedDevice(null);
-      setStep(1); // Optionally stay at step 1 or adjust as needed
-      setNotFound(true); // Trigger "not found" message
+      setStep(1);
+      setNotFound(true);
     }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault()
+    setSuccess(null);
+
+    // Validation
+    if (
+      !formData.firstname ||
+      !formData.lastname ||
+      !formData.email ||
+      !formData.message
+    ) {
+      setError("Alle verplichte velden moeten ingevuld worden.");
+      return;
+    }
+
+    // Reset error message before submitting
+    setError(null);
+
+    // Submit form
+    e.target.submit();
   };
 
   return (
     <div className="px-4 sm:px-8 lg:px-32 py-4 flex flex-col justify-center items-center">
       {/* Search Bar */}
-      <div className="w-full max-w-md p-4">
+      <div className="w-full max-w-md p-4 mb-4">
         <input
           type="text"
           placeholder="Zoek naar een toestel"
           value={searchQuery}
           onChange={handleSearch}
-          className="block w-full p-2 mb-4 border rounded"
+          className="block w-full p-2 border rounded"
         />
         {notFound && (
-          <p className="text-red-500 animate-fade-in">
-            Geen toestel gevonden met deze naam.
-          </p>
+          <p className="text-red-500 ">Geen toestel gevonden met deze naam.</p>
         )}
       </div>
 
@@ -154,14 +264,20 @@ export default function Repair() {
         </div>
 
         {/* Step Content */}
-        <div className="w-full lg:w-1/2 space-y-6">
+        <div className="w-full h-96 lg:h-[40rem] lg:w-1/2 space-y-6 overflow-y-scroll">
           {step === 1 && (
             <div className="bg-primary p-4 rounded-md">
-              <h2 className="text-xl font-bold">Selecteer een type van toestel</h2>
+              <h2 className="text-xl font-bold">
+                Selecteer een type van toestel
+              </h2>
               {deviceTypes.map((type) => (
                 <button
                   key={type}
-                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper hover:bg-accent"
+                  className={`block w-full p-2 my-1 border rounded text-left ${
+                    selectedType === type
+                      ? "bg-accent text-white"
+                      : "bg-primaryHelper hover:bg-accent"
+                  }`}
                   onClick={() => {
                     setSelectedType(type);
                     setConfirmSelection(true);
@@ -190,7 +306,11 @@ export default function Repair() {
               {brands.map((brand) => (
                 <button
                   key={brand.documentId}
-                  className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper hover:bg-accent"
+                  className={`block w-full p-2 my-1 border rounded text-left ${
+                    selectedBrand?.documentId === brand.documentId
+                      ? "bg-accent text-white"
+                      : "bg-primaryHelper hover:bg-accent"
+                  }`}
                   onClick={() => {
                     setSelectedBrand(brand);
                     setConfirmSelection(true);
@@ -284,7 +404,9 @@ export default function Repair() {
 
           {step === 4 && selectedDevice && (
             <div className="bg-primary p-4 rounded-md">
-              <h2 className="text-xl font-bold mb-4">Selecteer een onderdeel</h2>
+              <h2 className="text-xl font-bold mb-4">
+                Selecteer een onderdeel
+              </h2>
               {parts.filter(
                 (part) =>
                   part.device?.modelNumber === selectedDevice.modelNumber
@@ -297,7 +419,15 @@ export default function Repair() {
                   .map((part) => (
                     <button
                       key={part.documentId}
-                      className="block p-2 my-2 border rounded w-full text-left bg-primaryHelper hover:bg-accent"
+                      className={`block w-full p-2 my-1 border rounded text-left ${
+                        selectedPart?.documentId === part.documentId
+                          ? "bg-accent text-white"
+                          : "bg-accentLight hover:bg-accent"
+                      }`}
+                      onClick={() => {
+                        setSelectedPart(part);
+                        setConfirmSelection(true);
+                      }}
                     >
                       {part.name} - € {part.sellingPrice}
                     </button>
@@ -309,6 +439,108 @@ export default function Repair() {
                 <button
                   className="p-2 border rounded-lg bg-accentLight"
                   onClick={() => setStep(3)}
+                >
+                  Terug
+                </button>
+                {confirmSelection && (
+                  <button
+                    className="p-2 border rounded-lg bg-accent text-white"
+                    onClick={() => {
+                      setStep(5);
+                      setConfirmSelection(false);
+                    }}
+                  >
+                    Bevestig
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {step === 5 && selectedDevice && (
+            <div className="bg-primary p-4 rounded-md">
+              <h2 className="text-xl font-bold mb-4">Contacteer ons</h2>
+              <p className="mb-2">
+                U heeft geselecteerd: <strong>{selectedDevice.model}</strong> en
+                onderdeel: <strong>{selectedPart?.name}</strong>
+              </p>
+              <form
+                method="POST"
+                onSubmit={handleSubmit}
+                ref={formRef}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block mb-1">Naam</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      name="firstname"
+                      placeholder="Voornaam"
+                      onChange={handleChange}
+                      required
+                      className="block w-full p-2 border rounded"
+                    />
+                    <input
+                      type="text"
+                      name="lastname"
+                      placeholder="Achternaam"
+                      onChange={handleChange}
+                      required
+                      className="block w-full p-2 border rounded"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block mb-1">Telefoonnummer</label>
+                  <input
+                    type="tel"
+                    name="phonenumber"
+                    onChange={handleChange}
+                    required
+                    className="block w-full p-2 border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">E-mail</label>
+                  <input
+                    type="email"
+                    name="email"
+                    onChange={handleChange}
+                    required
+                    className="block w-full p-2 border rounded"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Bericht</label>
+                  <textarea
+                    name="message"
+                    onChange={handleChange}
+                    required
+                    className="block w-full p-2 border rounded"
+                  />
+                </div>
+                {error && (
+                  <p className="p-4 border border-red-500 text-red-600 rounded-lg">
+                    {error}
+                  </p>
+                )}
+                {success && (
+                  <p className="p-4 border border-green-500 text-green-600 rounded-lg">
+                    {success}
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  className="p-2 w-full border rounded-lg bg-accent text-white"
+                >
+                  Verstuur
+                </button>
+              </form>
+              <div className="flex justify-between mt-4">
+                <button
+                  className="p-2 border rounded-lg bg-accentLight"
+                  onClick={() => setStep(4)}
                 >
                   Terug
                 </button>

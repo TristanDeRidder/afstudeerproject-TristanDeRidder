@@ -48,12 +48,12 @@ export default {
   					transform: 'translateX(0%)'
   				},
   				'100%': {
-  					transform: 'translateX(-50%)'
+  					transform: 'translateX(-25%)'
   				}
   			},
   			'marquee-reverse': {
   				'0%': {
-  					transform: 'translateX(-50%)'
+  					transform: 'translateX(-25%)'
   				},
   				'100%': {
   					transform: 'translateX(0%)'

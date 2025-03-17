@@ -267,7 +267,7 @@ export default function Contact() {
           </p>
         )}
         <form
-          method="post"
+          method="POST"
           ref={formRef}
           onSubmit={handleSubmit}
           className="space-y-4 bg-white p-6 rounded-lg shadow-md"
