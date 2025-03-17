@@ -13,11 +13,7 @@ type LoaderData = {
 export async function loader() {
   try {
     const repairs = await getRepairorders();
-
-    if (!repairs.length) {
-      throw new Error("No data available");
-    }
-
+    if (!repairs.length) throw new Error("No data available");
     return { repairs };
   } catch (error) {
     console.error("Error while fetching data:", error);
@@ -27,20 +23,28 @@ export async function loader() {
 
 export default function Invoices() {
   const { repairs } = useLoaderData<LoaderData>();
-  
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [filterType, setFilterType] = useState<"daily" | "monthly">("daily");
 
   const filteredRepairs = useMemo(() => {
     return repairs.filter((repair) => {
-      const repairDate = new Date(repair.createdAt).toISOString().split("T")[0];
-      return repairDate === selectedDate;
-    });
-  }, [repairs, selectedDate]);
+      const repairDate = new Date(repair.createdAt);
+      const selectedDateObj = new Date(selectedDate);
 
-  // Calculating total income, number of transactions, and number of repaired devices
+      if (filterType === "daily") {
+        return repairDate.toISOString().split("T")[0] === selectedDate;
+      } else {
+        return (
+          repairDate.getFullYear() === selectedDateObj.getFullYear() &&
+          repairDate.getMonth() === selectedDateObj.getMonth()
+        );
+      }
+    });
+  }, [repairs, selectedDate, filterType]);
+
   const totalIncome = useMemo(() => {
     return filteredRepairs.reduce(
       (total, repair) => total + (repair.invoice?.totalAmount || 0),
@@ -49,25 +53,42 @@ export default function Invoices() {
   }, [filteredRepairs]);
 
   const totalTransactions = filteredRepairs.length;
-
-  const totalRepairedDevices = filteredRepairs.reduce((total, repair) => {
-    return total + (repair.parts?.length || 0);
-  }, 0);
+  const totalRepairedDevices = filteredRepairs.reduce(
+    (total, repair) => total + (repair.parts?.length || 0),
+    0
+  );
 
   return (
     <div>
       <div className="flex justify-between items-end mb-4 mt-6">
         <DashboardTitle title="Inkomsten" />
-        <Datepicker
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          showDatePicker={showDatePicker}
-          setShowDatePicker={setShowDatePicker}
-        />
+        <div className="flex items-center gap-4">
+          <button
+            className={`p-2 border rounded-lg ${
+              filterType === "daily" ? "bg-accent text-white" : "bg-gray-200"
+            }`}
+            onClick={() => setFilterType("daily")}
+          >
+            Dagelijks
+          </button>
+          <button
+            className={`p-2 border rounded-lg ${
+              filterType === "monthly" ? "bg-accent text-white" : "bg-gray-200"
+            }`}
+            onClick={() => setFilterType("monthly")}
+          >
+            Maandelijks
+          </button>
+          <Datepicker
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            showDatePicker={showDatePicker}
+            setShowDatePicker={setShowDatePicker}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-4">
-        {/* Cards */}
         <div className="flex gap-4">
           <DashboardCard title="Totaal" data={`€ ${totalIncome}`} />
           <DashboardCard title="Aantal Transacties" data={totalTransactions} />
@@ -77,16 +98,14 @@ export default function Invoices() {
           />
         </div>
 
-        {/* Table */}
-        <div className="bg-primaryHelper rounded-md">
+        <div className="bg-primaryHelper rounded-md ">
           <div className="flex justify-between font-bold px-4 py-2">
             <div className="px-4 py-2 w-1/4">Model</div>
             <div className="px-4 py-2 w-1/4">Onderdeel</div>
             <div className="px-4 py-2 w-1/4">Betalingsmethode</div>
             <div className="px-4 py-2 w-1/4">Bedrag</div>
           </div>
-
-          <div className="px-4 py-2 rounded-md">
+          <div className="px-4 py-2 rounded-md h-[35rem] overflow-y-scroll">
             {filteredRepairs.length > 0 ? (
               filteredRepairs.map((repair) => (
                 <div
@@ -96,19 +115,14 @@ export default function Invoices() {
                   <div className="px-4 py-2 w-1/4">
                     {repair.device?.model} {repair.device?.modelType}
                   </div>
-
                   <div className="px-4 py-2 w-1/4">
                     {repair.parts?.map((part) => (
-                      <div key={part.id}>
-                        {part.name} {part.purchasePrice}
-                      </div>
+                      <div key={part.id}>{part.name}</div>
                     ))}
                   </div>
-
                   <div className="px-4 py-2 w-1/4">
                     {repair.invoice?.paymentmethod}
                   </div>
-
                   <div className="px-4 py-2 w-1/4">
                     € {repair.invoice?.totalAmount}
                   </div>
@@ -116,7 +130,7 @@ export default function Invoices() {
               ))
             ) : (
               <div className="px-4 py-2 text-center">
-                Geen reparaties voor vandaag
+                Geen reparaties voor deze periode
               </div>
             )}
           </div>
