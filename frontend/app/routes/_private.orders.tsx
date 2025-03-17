@@ -3,7 +3,11 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import Datepicker from "../components/design/DatePicker/DataPicker";
 import DashboardTitle from "../components/design/Title/DashboardTitle";
 
-import { createOrder, getOrders } from "../core/modules/orders/api";
+import {
+  createOrder,
+  getOrders,
+  updateOrderStatus,
+} from "../core/modules/orders/api";
 import { getDevices } from "../core/modules/devices/api";
 import { getParts } from "../core/modules/parts/api";
 import { createCustomer } from "../core/modules/customers/api";
@@ -16,6 +20,9 @@ import { Parts } from "../core/modules/parts/type";
 import { jwtCookie } from "../core/cookies/cookies.server";
 
 import CloseIcon from "../assets/svg/X_Icon.svg";
+import Edit from "../components/design/Icons/Edit";
+import Cancel from "../components/design/Icons/Cancel";
+import Check from "../components/design/Icons/Check";
 
 type LoaderData = {
   orders: Orders[];
@@ -29,13 +36,13 @@ export async function loader() {
     const devices = await getDevices();
     const parts = await getParts();
 
-    if (!orders?.data) {
+    if (!orders.length) {
       throw new Error("No data available");
     }
     if (!devices.length) throw new Error("No devices available");
-    if (!parts?.data) throw new Error("No parts available");
+    if (!parts.length) throw new Error("No parts available");
 
-    return { orders: orders.data, devices, parts: parts.data };
+    return { orders, devices, parts };
   } catch (error) {
     console.error("Error while fetching data:", error);
     return { orders: [] };
@@ -45,75 +52,100 @@ export async function loader() {
 export async function action({ request }: any) {
   const jwt = await jwtCookie.parse(request.headers.get("Cookie"));
   const formData = await request.formData();
+  const actionType = formData.get("actionType");
 
-  // customerData
-  const firstname = formData.get("firstname");
-  const lastname = formData.get("lastname");
-  const mail = formData.get("mail");
-  const phonenumber = formData.get("phonenumber");
+  if (actionType === "addOrder") {
+    // customerData
+    const firstname = formData.get("firstname");
+    const lastname = formData.get("lastname");
+    const mail = formData.get("mail");
+    const phonenumber = formData.get("phonenumber");
 
-  // device
-  const deviceId = formData.get("deviceId");
+    // device
+    const deviceId = formData.get("deviceId");
 
-  // invoiceData
-  const invoiceTotal = formData.get("invoiceTotal");
-  const invoiceBool = false;
-  const paid = false;
-  const paymentMethod = "Bancontact";
+    // invoiceData
+    const invoiceTotal = formData.get("invoiceTotal");
+    const invoiceBool = false;
+    const paid = false;
+    const paymentMethod = "Bancontact";
 
-  // orderData
-  const statusRepair = formData.get("statusRepair");
-  const parts = formData.getAll("parts");
+    // orderData
+    const statusRepair = formData.get("statusRepair");
+    const parts = formData.getAll("parts");
 
-  try {
-    // 1. Create customer
-    const customer = await createCustomer(
-      {
-        Firstname: firstname,
-        Lastname: lastname,
-        Mailaddress: mail,
-        Phonenumber: phonenumber,
-      },
-      jwt
-    );
-    const customerId = customer?.data?.id;
+    try {
+      // 1. Create customer
+      const customer = await createCustomer(
+        {
+          Firstname: firstname,
+          Lastname: lastname,
+          Mailaddress: mail,
+          Phonenumber: phonenumber,
+        },
+        jwt
+      );
+      const customerId = customer?.data?.id;
 
-    if (!customerId) throw new Error("Failed to get customer ID");
+      if (!customerId) throw new Error("Failed to get customer ID");
 
-    // 2. Create invoice
-    const invoice = await createInvoice(
-      {
-        TotalAmount: invoiceTotal,
-        Invoice: invoiceBool,
-        Paid: paid,
-        invoiceMethod: paymentMethod,
-      },
-      jwt
-    );
-    const invoiceId = invoice?.data?.id;
+      // 2. Create invoice
+      const invoice = await createInvoice(
+        {
+          TotalAmount: invoiceTotal,
+          Invoice: invoiceBool,
+          Paid: paid,
+          invoiceMethod: paymentMethod,
+        },
+        jwt
+      );
+      const invoiceId = invoice?.data?.id;
 
-    if (!invoiceId) throw new Error("Failed to get invoice ID");
+      if (!invoiceId) throw new Error("Failed to get invoice ID");
 
-    // 3. Create order
+      // 3. Create order
+      const orderData = {
+        statusOrder: statusRepair,
+        device: deviceId,
+        parts:
+          parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
+        customer: customerId,
+        invoice: invoiceId,
+      };
+      await createOrder(orderData, jwt);
+      return { success: true };
+    } catch (error) {
+      console.error("Error while creating order:", error);
+      throw error;
+    }
+  } else if (actionType === "updateOrder") {
+    const orderId = formData.get("documentId");
+    const orderStatus = formData.get("orderStatus");
+
+    console.log("Updating order status:", orderId, orderStatus)
+    
     const orderData = {
-      statusOrder: statusRepair,
-      device: deviceId,
-      parts:
-        parts.length > 0 ? parts.map((partId: any) => ({ id: partId })) : [],
-      customer: customerId,
-      invoice: invoiceId,
+      orderId: orderId,
+      statusOrder: orderStatus,
     };
-    await createOrder(orderData, jwt);
-    return { success: true };
-  } catch (error) {
-    console.error("Error while creating order:", error);
-    throw error;
+
+    console.log("Order data:", orderData);
+
+    try {
+      await updateOrderStatus(orderData, jwt);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error while updating order status:", error);
+      throw error;
+    }
   }
 }
 
 export default function Orders() {
   const fetcher = useFetcher();
   const { orders, devices, parts } = useLoaderData() as LoaderData;
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
@@ -184,6 +216,13 @@ export default function Orders() {
     setSelectedPartIds(selectedOptions);
   };
 
+  const handleUpdateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    fetcher.submit(formData, { method: "put" });
+    setEditingId(null);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-end mb-4 mt-6">
@@ -221,6 +260,8 @@ export default function Orders() {
               </button>
             </div>
             <form onSubmit={handleSubmit}>
+              <input type="hidden" name="actionType" value="addOrder" />
+
               {/* Repair data */}
               <div className="mb-2">
                 <label>Status Bestelling</label>
@@ -346,14 +387,14 @@ export default function Orders() {
             filteredOrders.map((order) => (
               <div
                 key={order.id}
-                className="flex justify-between bg-accentLight mt-2"
+                className="flex justify-between bg-accentLight mt-2 items-center"
               >
                 <div className="px-4 py-2 w-1/5">
                   <p>{new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>
 
                 <div className="px-4 py-2 w-1/5">
-                  {order.device.map((device: any) => (
+                  {order.device.map((device) => (
                     <p key={device.id}>
                       {device.model} {device.modelType || ""}
                     </p>
@@ -361,7 +402,7 @@ export default function Orders() {
                 </div>
 
                 <div className="px-4 py-2 w-1/5">
-                  {order.parts.map((part: any) => (
+                  {order.parts.map((part) => (
                     <p key={part.id}>{part.name}</p>
                   ))}
                 </div>
@@ -370,8 +411,49 @@ export default function Orders() {
                   <p>{order.customer.phonenumber}</p>
                 </div>
 
-                <div className="px-4 py-2 w-1/5">
-                  <p>{order.orderStatus}</p>{" "}
+                <div className="px-4 py-2 w-1/5 flex items-center relative">
+                  {editingId === order.id ? (
+                    <form method="post" className="flex" onSubmit={handleUpdateSubmit}>
+                      <input
+                        type="hidden"
+                        name="actionType"
+                        value="updateOrder"
+                      />
+                      <input type="hidden" name="documentId" value={order.documentId} />
+                      <select
+                        name="orderStatus"
+                        className="border rounded px-2 py-1"
+                        defaultValue={order.orderStatus}
+                      >
+                        <option value="Bestellen">Bestellen</option>
+                        <option value="Besteld">Besteld</option>
+                        <option value="Geleverd">Geleverd</option>
+                      </select>
+                      <button
+                        type="submit"
+                        className="ml-2 px-2 py-1 rounded bg-green-500 text-white"
+                      >
+                        <Check />
+                      </button>
+                      <button
+                        type="button"
+                        className="ml-2 px-2 py-1 rounded bg-gray-500 text-white"
+                        onClick={() => setEditingId(null)}
+                      >
+                        <Cancel />
+                      </button>
+                    </form>
+                  ) : (
+                    <>
+                      <p>{order.orderStatus}</p>
+                      <button
+                        className="absolute right-4"
+                        onClick={() => setEditingId(order.id)}
+                      >
+                        <Edit />
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ))
