@@ -4,7 +4,6 @@ import { useLoaderData, Link, MetaFunction } from "@remix-run/react";
 // Components
 import SecondaryTitle from "../components/design/Title/SecondaryTitle";
 import PrimaryTitle from "../components/design/Title/PrimaryTitle";
-import BrandAnimation from "../components/design/Animation/BrandAnimation";
 
 // API
 import { getBrands } from "../core/modules/brands/api";
@@ -124,7 +123,15 @@ export default function Index() {
         </div>
       </div>
 
-      <BrandAnimation brands={brands} />
+      {/* Brand Section */}
+      {brands.map((brand, index) => (
+        <div
+          key={index}
+          className="bg-accent border rounded-lg w-28 md:w-36 lg:w-40 py-4 md:py-5 lg:py-6 text-center"
+        >
+          <img src={brand.logo.url} alt={brand.logo.url} />
+        </div>
+      ))}
 
       {/* Top Devices Section */}
       <div className="px-5 md:px-16 lg:px-32 xl:px-40 2xl:px-56">
@@ -173,16 +180,16 @@ export default function Index() {
         <SecondaryTitle title="Waarom kiezen voor Fixit?" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 2xl:gap-12 mt-10 pb-5">
-            {whyCards && whyCards.PageContent.length > 0 ? (
+          {whyCards && whyCards.PageContent.length > 0 ? (
             whyCards.PageContent.map(
               (card: {
-              id: number;
-              Title: string;
-              Text: string;
-              Icon: { url: string } | null;
+                id: number;
+                Title: string;
+                Text: string;
+                Icon: { url: string } | null;
               }) => (
-              <div
-                key={card.id}
+                <div
+                  key={card.id}
                   className="bg-bg p-6 2xl:p-10 rounded-lg flex items-center gap-4 2xl:gap-8"
                 >
                   <div>
