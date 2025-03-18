@@ -140,9 +140,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function Repair() {
   const { images, brands, devices, parts } = useLoaderData<LoaderData>();
   const actionData: any = useActionData();
-  const formRef = useRef<HTMLFormElement>(null);
-  
-  
+  const formRef = useRef<HTMLFormElement>(null);  
 
   const [step, setStep] = useState(1);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);

@@ -81,3 +81,31 @@ export async function createPart(
     throw error;
   }
 }
+
+export async function updatePart(
+  partData: any,
+  authToken: string
+): Promise<StrapiResponse<Parts>> {
+  const data = {
+    data: {
+      name: partData.partName,
+      purchasePrice: partData.purchasePrice,
+      sellingPrice: partData.sellingPrice,
+      suppliers: partData.suppliers,
+      quality: partData.quality,
+    },
+  };
+  try {
+    console.log("Update part", partData);
+    const response = await API.put(`parts/${partData.id}`, data, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    console.log("Update part response", response);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
