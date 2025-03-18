@@ -9,7 +9,7 @@ import Cancel from "../components/design/Icons/Cancel";
 
 // API
 import { getDeviceById } from "../core/modules/devices/api";
-import { getParts } from "../core/modules/parts/api";
+import { getParts, updatePart } from "../core/modules/parts/api";
 
 // Types
 import type { Devices } from "../core/modules/devices/type";
@@ -54,7 +54,7 @@ export async function action({ request }: any) {
 
   try {
     const partData = {
-      id: partId,
+      documentId: partId,
       partName: partName,
       purchasePrice: purchasePrice,
       sellingPrice: sellingPrice,
@@ -62,8 +62,7 @@ export async function action({ request }: any) {
     };
 
     // Update part
-    console.log("Update part", partData);
-    // await updatePart(partData, jwt);
+    await updatePart(partData, jwt);
 
     return { success: true };
   } catch (error) {
@@ -88,11 +87,11 @@ export default function DeviceDetail() {
   ) => {
     const updatedParts = formData.map((part) => {
       if (part.id === partId) {
-        return { ...part, [field]: e.target.value };
+        return { ...part, [field]: e.target.value }; // Update specific field
       }
       return part;
     });
-    setFormData(updatedParts);
+    setFormData(updatedParts); // Update state
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -134,76 +133,92 @@ export default function DeviceDetail() {
         <div className="mt-6 p-4 bg-dashboardSidebar text-lg rounded-lg shadow-sm h-[35rem] overflow-y-scroll">
           {parts
             .filter((part) => part.device && part.device.id === device.id)
-            .map((part) => (
-              <div key={part.id} className="grid grid-cols-5 gap-4">
-                {isEditing === part.id ? (
-                  <form
-                    onSubmit={handleSubmit}
-                    className="col-span-4 flex items-center"
-                    method="put"
-                  >
-                    <input type="hidden" name="deviceId" value={device.id} />
-                    <input type="hidden" name="id" value={part.id} />
-                    <input
-                      type="text"
-                      name="partName"
-                      value={part.name}
-                      onChange={(e) => handleChange(e, part.id, "partName")}
-                      className="w-full"
-                    />
-                    <input
-                      type="text"
-                      name="PurchasePrice"
-                      value={part.purchasePrice}
-                      onChange={(e) =>
-                        handleChange(e, part.id, "purchasePrice")
-                      }
-                      className="w-full"
-                    />
-                    <input
-                      type="text"
-                      name="sellingPrice"
-                      value={part.sellingPrice}
-                      onChange={(e) => handleChange(e, part.id, "sellingPrice")}
-                      className="w-full"
-                    />
-                    <select
-                      name="quality"
-                      value={part.quality}
-                      onChange={(e) => handleChange(e, part.id, "quality")}
-                      className="w-full"
+            .map((part) => {
+              const currentPart = formData.find((p) => p.id === part.id);
+
+              return (
+                <div key={part.id} className="grid grid-cols-5 gap-4">
+                  {isEditing === part.id ? (
+                    <form
+                      onSubmit={handleSubmit}
+                      className="col-span-4 flex items-center"
+                      method="put"
                     >
-                      <option value="Origineel">Origineel</option>
-                      <option value="Refurbished">Refurbished</option>
-                      <option value="Pulled">Pulled</option>
-                    </select>
-                    <button
-                      type="submit"
-                      className="ml-2 px-2 py-1 rounded bg-green-500 text-white"
-                    >
-                      <Check />
-                    </button>
-                    <button
-                      type="button"
-                      className="ml-2 px-2 py-1 rounded bg-gray-500 text-white"
-                      onClick={() => setIsEditing(null)}
-                    >
-                      <Cancel />
-                    </button>
-                  </form>
-                ) : (
-                  <>
-                    <strong>{part.name}</strong>
-                    <p>{part.purchasePrice}</p>
-                    <p>{part.sellingPrice}</p>
-                    <p>{part.quality}</p>
-                    <button onClick={() => setIsEditing(part.id)}>
-                      <Edit />
-                    </button>
-                  </>
-                )}
-              </div>
-            ))}
+                      <input type="hidden" name="deviceId" value={device.id} />
+                      <input type="hidden" name="id" value={part.documentId} />
+
+                      <input
+                        type="text"
+                        name="partName"
+                        value={currentPart?.name || ""}
+                        onChange={
+                            (e) => handleChange(e, part.id, "name")
+                        }
+                        className="w-full"
+                      />
+
+                      <input
+                        type="text"
+                        name="purchasePrice"
+                        value={currentPart?.purchasePrice || ""}
+                        onChange={(e) =>
+                          handleChange(e, part.id, "purchasePrice")
+                        }
+                        className="w-full"
+                      />
+
+                      <input
+                        type="text"
+                        name="sellingPrice"
+                        value={currentPart?.sellingPrice || ""}
+                        onChange={(e) =>
+                          handleChange(e, part.id, "sellingPrice")
+                        }
+                        className="w-full"
+                      />
+
+                      <select
+                        name="quality"
+                        value={currentPart?.quality || ""}
+                        onChange={
+                            (e) => handleChange(e, part.id, "quality")
+                        }
+                        className="w-full"
+                      >
+                        <option value="Origineel">Origineel</option>
+                        <option value="Refurbished">Refurbished</option>
+                        <option value="Pulled">Pulled</option>
+                      </select>
+
+                      <button
+                        type="submit"
+                        className="ml-2 px-2 py-1 rounded bg-green-500 text-white"
+                      >
+                        <Check />
+                      </button>
+
+                      <button
+                        type="button"
+                        className="ml-2 px-2 py-1 rounded bg-gray-500 text-white"
+                        onClick={() => setIsEditing(null)}
+                      >
+                        <Cancel />
+                      </button>
+                    </form>
+                  ) : (
+                    <>
+                      <strong>{part.name}</strong>
+                      <p>{part.purchasePrice}</p>
+                      <p>{part.sellingPrice}</p>
+                      <p>{part.quality}</p>
+                      <button onClick={() => setIsEditing(part.id)}>
+                        <Edit />
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
         </div>
       </>
     </div>

@@ -97,7 +97,7 @@ export async function updatePart(
   };
   try {
     console.log("Update part", partData);
-    const response = await API.put(`parts/${partData.id}`, data, {
+    const response = await API.put(`parts/${partData.documentId}`, data, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
