@@ -18,14 +18,14 @@ function Marquee({
   return (
     <div className="relative flex whitespace-nowrap">
       <div
-        className={`flex gap-4 min-w-max animate-marquee ${
+        className={`flex gap-10 min-w-max animate-marquee ${
           reverse ? "animate-reverse" : ""
         }`}
       >
         {[...brands, ...brands].map((brand, index) => (
           <div
             key={index}
-            className="bg-accent border rounded-lg w-28 md:w-36 lg:w-40 py-4 md:py-5 lg:py-6 text-center"
+            className="w-20 md:w-28 lg:w-32 py-4 md:py-5 lg:py-6 text-center"
           >
             <img src={brand.logo.url} alt={brand.logo.url} />
           </div>

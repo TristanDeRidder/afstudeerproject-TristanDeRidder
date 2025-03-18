@@ -21,10 +21,6 @@ export async function getDevices(pageSize = 100) {
   let totalPages = 1;
   let allDevices: Devices[] = [];
 
-  /**
-   * Loop through all pages of devices until we have fetched all devices.
-   * The API returns a maximum of 100 devices per page.
-  */
   while (page <= totalPages) {
     const query = qs.stringify(
       {
@@ -34,9 +30,7 @@ export async function getDevices(pageSize = 100) {
           pageSize,
         },
       },
-      {
-        encodeValuesOnly: true,
-      }
+      { encodeValuesOnly: true }
     );
 
     try {
@@ -46,6 +40,9 @@ export async function getDevices(pageSize = 100) {
       allDevices = [...allDevices, ...data];
       totalPages = meta.pagination.pageCount;
       page++;
+
+      // Delay to prevent hitting the DB too hard
+      await new Promise((resolve) => setTimeout(resolve, 100));
     } catch (error) {
       console.error("Error fetching devices:", error);
       throw error;

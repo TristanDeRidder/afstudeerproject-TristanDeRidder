@@ -1,5 +1,6 @@
 import { json } from "@remix-run/node";
 import { useLoaderData, Link, MetaFunction } from "@remix-run/react";
+import BrandAnimation from "../components/design/Animation/BrandAnimation";
 
 // Components
 import SecondaryTitle from "../components/design/Title/SecondaryTitle";
@@ -124,14 +125,18 @@ export default function Index() {
       </div>
 
       {/* Brand Section */}
-      {brands.map((brand, index) => (
-        <div
-          key={index}
-          className="bg-accent border rounded-lg w-28 md:w-36 lg:w-40 py-4 md:py-5 lg:py-6 text-center"
-        >
-          <img src={brand.logo.url} alt={brand.logo.url} />
-        </div>
-      ))}
+      <BrandAnimation brands={brands} />
+
+      {/* <div className="flex flex-wrap gap-5 items-center">
+        {brands.map((brand, index) => (
+          <div
+            key={index}
+            className="w-16 md:w-36 lg:w-40 py-4 md:py-5 lg:py-6 text-center"
+          >
+            <img src={brand.logo.url} alt={brand.logo.url} />
+          </div>
+        ))}
+      </div> */}
 
       {/* Top Devices Section */}
       <div className="px-5 md:px-16 lg:px-32 xl:px-40 2xl:px-56">

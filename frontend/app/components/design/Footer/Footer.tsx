@@ -23,7 +23,7 @@ export default function Footer({
           <img
             src={images.url}
             alt={images.name}
-            className="h-20 md:h-28 w-auto mb-5 md:mb-0"
+            className="h-20 md:h-36 w-auto mb-5 md:mb-0"
           />
         )}
 
