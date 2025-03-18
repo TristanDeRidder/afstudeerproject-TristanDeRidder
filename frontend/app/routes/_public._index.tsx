@@ -127,17 +127,6 @@ export default function Index() {
       {/* Brand Section */}
       <BrandAnimation brands={brands} />
 
-      {/* <div className="flex flex-wrap gap-5 items-center">
-        {brands.map((brand, index) => (
-          <div
-            key={index}
-            className="w-16 md:w-36 lg:w-40 py-4 md:py-5 lg:py-6 text-center"
-          >
-            <img src={brand.logo.url} alt={brand.logo.url} />
-          </div>
-        ))}
-      </div> */}
-
       {/* Top Devices Section */}
       <div className="px-5 md:px-16 lg:px-32 xl:px-40 2xl:px-56">
         <SecondaryTitle
@@ -159,6 +148,7 @@ export default function Index() {
                     src={device.image?.url}
                     alt={device.model}
                     className="h-40 2xl:h-52 object-contain mt-3"
+                    loading="lazy"
                   />
                   <h3 className="text-lg md:text-xl 2xl:text-2xl font-bold">
                     {device.model} {device.modelType}
@@ -210,6 +200,7 @@ export default function Index() {
                       src={card.Icon.url}
                       alt={card.Title}
                       className="w-12 2xl:w-20"
+                      loading="lazy"
                     />
                   )}
                 </div>

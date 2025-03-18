@@ -27,7 +27,7 @@ function Marquee({
             key={index}
             className="w-20 md:w-28 lg:w-32 py-4 md:py-5 lg:py-6 text-center"
           >
-            <img src={brand.logo.url} alt={brand.logo.url} />
+            <img src={brand.logo.url} alt={brand.logo.url} loading="lazy"/>
           </div>
         ))}
       </div>
