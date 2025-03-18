@@ -4,7 +4,6 @@ import sgMail from "@sendgrid/mail";
 import ContactBanner from "../components/design/Info/ContactBanner";
 import { getImageById } from "../components/.server/images/getImage";
 
-
 // API
 import { getBrands } from "../core/modules/brands/api";
 import { getDevices } from "../core/modules/devices/api";
@@ -140,7 +139,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function Repair() {
   const { images, brands, devices, parts } = useLoaderData<LoaderData>();
   const actionData: any = useActionData();
-  const formRef = useRef<HTMLFormElement>(null);  
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [step, setStep] = useState(1);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
@@ -172,11 +171,10 @@ export default function Repair() {
     if (selectedBrand?.logo?.url) {
       return selectedBrand.logo.url;
     }
-    return images?.url 
+    return images?.url;
   };
 
   const deviceTypes = Array.from(new Set(devices.map((device) => device.type)));
-
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -210,7 +208,7 @@ export default function Repair() {
   };
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
     setSuccess(null);
 
     // Validation
@@ -262,31 +260,33 @@ export default function Repair() {
         </div>
 
         {/* Step Content */}
-        <div className="w-full h-96 lg:h-[40rem] lg:w-1/2 space-y-6 overflow-y-scroll">
+        <div className="w-full h-96 lg:h-[40rem] lg:w-1/2 space-y-6">
           {step === 1 && (
             <div className="bg-primary p-4 rounded-md">
               <h2 className="text-xl font-bold">
                 Selecteer een type van toestel
               </h2>
-              {deviceTypes.map((type) => (
-                <button
-                  key={type}
-                  className={`block w-full p-2 my-1 border rounded text-left ${
-                    selectedType === type
-                      ? "bg-accent text-white"
-                      : "bg-primaryHelper hover:bg-accent"
-                  }`}
-                  onClick={() => {
-                    setSelectedType(type);
-                    setConfirmSelection(true);
-                  }}
-                >
-                  {type}
-                </button>
-              ))}
+              <div className="overflow-y-scroll h-[30rem]">
+                {deviceTypes.map((type) => (
+                  <button
+                    key={type}
+                    className={`block w-full p-2 my-1 border rounded text-left ${
+                      selectedType === type
+                        ? "bg-accent"
+                        : "bg-primaryHelper hover:bg-accent"
+                    }`}
+                    onClick={() => {
+                      setSelectedType(type);
+                      setConfirmSelection(true);
+                    }}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
               {confirmSelection && (
                 <button
-                  className="mt-4 p-2 w-full border rounded-lg bg-accent text-white"
+                  className="mt-4 p-2 w-full border rounded-lg bg-accent"
                   onClick={() => {
                     setStep(2);
                     setConfirmSelection(false);
@@ -301,22 +301,24 @@ export default function Repair() {
           {step === 2 && selectedType && (
             <div className="bg-primary p-4 rounded-md">
               <h2 className="text-xl font-bold">Selecteer een merk</h2>
-              {brands.map((brand) => (
-                <button
-                  key={brand.documentId}
-                  className={`block w-full p-2 my-1 border rounded text-left ${
-                    selectedBrand?.documentId === brand.documentId
-                      ? "bg-accent text-white"
-                      : "bg-primaryHelper hover:bg-accent"
-                  }`}
-                  onClick={() => {
-                    setSelectedBrand(brand);
-                    setConfirmSelection(true);
-                  }}
-                >
-                  {brand.brandName}
-                </button>
-              ))}
+              <div className="overflow-y-scroll h-[30rem]">
+                {brands.map((brand) => (
+                  <button
+                    key={brand.documentId}
+                    className={`block w-full p-2 my-1 border rounded text-left ${
+                      selectedBrand?.documentId === brand.documentId
+                        ? "bg-accent"
+                        : "bg-primaryHelper hover:bg-accent"
+                    }`}
+                    onClick={() => {
+                      setSelectedBrand(brand);
+                      setConfirmSelection(true);
+                    }}
+                  >
+                    {brand.brandName}
+                  </button>
+                ))}
+              </div>
               <div className="flex justify-between mt-4">
                 <button
                   className="p-2 border rounded-lg bg-accentLight"
@@ -326,7 +328,7 @@ export default function Repair() {
                 </button>
                 {confirmSelection && (
                   <button
-                    className="p-2 border rounded-lg bg-accent text-white"
+                    className="p-2 border rounded-lg bg-accent"
                     onClick={() => {
                       setStep(3);
                       setConfirmSelection(false);
@@ -342,45 +344,48 @@ export default function Repair() {
           {step === 3 && selectedBrand && (
             <div className="bg-primary p-4 rounded-md">
               <h2 className="text-xl font-bold mb-4">Selecteer een model</h2>
-              {Array.from(
-                new Set(
-                  devices
-                    .filter(
-                      (device) =>
-                        device.brand?.brandName === selectedBrand.brandName &&
-                        device.type === selectedType
-                    )
-                    .map((device) => device.model)
-                )
-              ).map((model) => (
-                <details key={model} className="border rounded mb-2">
-                  <summary className="p-2 bg-primaryHelper cursor-pointer">
-                    {model}
-                  </summary>
-                  <div className="p-2">
-                    {devices
+              <div className="overflow-y-scroll h-[30rem]">
+                {Array.from(
+                  new Set(
+                    devices
                       .filter(
                         (device) =>
-                          device.model === model &&
                           device.brand?.brandName === selectedBrand.brandName &&
                           device.type === selectedType
                       )
-                      .map((variant) => (
-                        <button
-                          key={variant.documentId}
-                          className={`block w-full p-2 my-1 border rounded text-left ${
-                            selectedDevice?.documentId === variant.documentId
-                              ? "bg-accent text-white"
-                              : "bg-accentLight hover:bg-accent"
-                          }`}
-                          onClick={() => setSelectedDevice(variant)}
-                        >
-                          {variant.model} {variant.modelType}
-                        </button>
-                      ))}
-                  </div>
-                </details>
-              ))}
+                      .map((device) => device.model)
+                  )
+                ).map((model) => (
+                  <details key={model} className="border rounded mb-2">
+                    <summary className="p-2 bg-primaryHelper cursor-pointer">
+                      {model}
+                    </summary>
+                    <div className="p-2">
+                      {devices
+                        .filter(
+                          (device) =>
+                            device.model === model &&
+                            device.brand?.brandName ===
+                              selectedBrand.brandName &&
+                            device.type === selectedType
+                        )
+                        .map((variant) => (
+                          <button
+                            key={variant.documentId}
+                            className={`block w-full p-2 my-1 border rounded text-left ${
+                              selectedDevice?.documentId === variant.documentId
+                                ? "bg-accent"
+                                : "bg-accentLight hover:bg-accent"
+                            }`}
+                            onClick={() => setSelectedDevice(variant)}
+                          >
+                            {variant.model} {variant.modelType}
+                          </button>
+                        ))}
+                    </div>
+                  </details>
+                ))}
+              </div>
               <div className="flex justify-between mt-4">
                 <button
                   className="p-2 border rounded-lg bg-accentLight"
@@ -390,7 +395,7 @@ export default function Repair() {
                 </button>
                 {selectedDevice && (
                   <button
-                    className="p-2 border rounded-lg bg-accent text-white"
+                    className="p-2 border rounded-lg bg-accent"
                     onClick={() => setStep(4)}
                   >
                     Bevestig
@@ -405,34 +410,36 @@ export default function Repair() {
               <h2 className="text-xl font-bold mb-4">
                 Selecteer een onderdeel
               </h2>
-              {parts.filter(
-                (part) =>
-                  part.device?.modelNumber === selectedDevice.modelNumber
-              ).length > 0 ? (
-                parts
-                  .filter(
-                    (part) =>
-                      part.device?.modelNumber === selectedDevice.modelNumber
-                  )
-                  .map((part) => (
-                    <button
-                      key={part.documentId}
-                      className={`block w-full p-2 my-1 border rounded text-left ${
-                        selectedPart?.documentId === part.documentId
-                          ? "bg-accent text-white"
-                          : "bg-accentLight hover:bg-accent"
-                      }`}
-                      onClick={() => {
-                        setSelectedPart(part);
-                        setConfirmSelection(true);
-                      }}
-                    >
-                      {part.name} - € {part.sellingPrice}
-                    </button>
-                  ))
-              ) : (
-                <p>Geen onderdelen voor dit model</p>
-              )}
+              <div className="overflow-y-scroll h-[30rem]">
+                {parts.filter(
+                  (part) =>
+                    part.device?.modelNumber === selectedDevice.modelNumber
+                ).length > 0 ? (
+                  parts
+                    .filter(
+                      (part) =>
+                        part.device?.modelNumber === selectedDevice.modelNumber
+                    )
+                    .map((part) => (
+                      <button
+                        key={part.documentId}
+                        className={`block w-full p-2 my-1 border rounded text-left ${
+                          selectedPart?.documentId === part.documentId
+                            ? "bg-accent"
+                            : "bg-accentLight hover:bg-accent"
+                        }`}
+                        onClick={() => {
+                          setSelectedPart(part);
+                          setConfirmSelection(true);
+                        }}
+                      >
+                        {part.name} - € {part.sellingPrice}
+                      </button>
+                    ))
+                ) : (
+                  <p>Geen onderdelen voor dit model</p>
+                )}
+              </div>
               <div className="flex justify-between mt-4">
                 <button
                   className="p-2 border rounded-lg bg-accentLight"
@@ -442,7 +449,7 @@ export default function Repair() {
                 </button>
                 {confirmSelection && (
                   <button
-                    className="p-2 border rounded-lg bg-accent text-white"
+                    className="p-2 border rounded-lg bg-accent"
                     onClick={() => {
                       setStep(5);
                       setConfirmSelection(false);
@@ -530,7 +537,7 @@ export default function Repair() {
                 )}
                 <button
                   type="submit"
-                  className="p-2 w-full border rounded-lg bg-accent text-white"
+                  className="p-2 w-full border rounded-lg bg-accent"
                 >
                   Verstuur
                 </button>
