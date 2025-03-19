@@ -37,7 +37,7 @@ export default function RepairCard({
             className="absolute -right-32 md:-right-24 lg:-right-20 xl:-right-16 w-64 sm:w-72 md:w-80 max-w-none h-auto -rotate-12"
           />
         )}
-        <span className="absolute left-8 bottom-0 bg-primaryHelper rounded-full p-4 text-text border border-text rotate-45 group-hover:bg-accentLight group-hover:-rotate-45 transition-all duration-500 ease-in-out">
+        <span className="absolute left-14 bottom-0 bg-primaryHelper rounded-full p-4 text-text border border-text rotate-45 group-hover:bg-accentLight group-hover:-rotate-45 transition-all duration-500 ease-in-out">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
