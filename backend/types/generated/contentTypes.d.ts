@@ -524,6 +524,37 @@ export interface ApiContactContact extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiCustomerServiceCustomerService
+  extends Struct.SingleTypeSchema {
+  collectionName: 'customer_services';
+  info: {
+    displayName: 'CustomerService';
+    pluralName: 'customer-services';
+    singularName: 'customer-service';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::customer-service.customer-service'
+    > &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.rich-text', 'blocks.rich-text-image', 'blocks.header']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCustomerCustomer extends Struct.CollectionTypeSchema {
   collectionName: 'customers';
   info: {
@@ -804,6 +835,36 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiParkingParking extends Struct.SingleTypeSchema {
+  collectionName: 'parkings';
+  info: {
+    displayName: 'Parking';
+    pluralName: 'parkings';
+    singularName: 'parking';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::parking.parking'
+    > &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.rich-text', 'blocks.header']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPartPart extends Struct.CollectionTypeSchema {
   collectionName: 'parts';
   info: {
@@ -839,6 +900,36 @@ export interface ApiPartPart extends Struct.CollectionTypeSchema {
       'manyToMany',
       'api::supplier.supplier'
     >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPaymentPayment extends Struct.SingleTypeSchema {
+  collectionName: 'payments';
+  info: {
+    displayName: 'Payment';
+    pluralName: 'payments';
+    singularName: 'payment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::payment.payment'
+    > &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.rich-text', 'blocks.header']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -924,6 +1015,64 @@ export interface ApiRepairorderRepairorder extends Struct.CollectionTypeSchema {
       'oneToOne',
       'api::technician.technician'
     >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiShipmentShipment extends Struct.SingleTypeSchema {
+  collectionName: 'shipments';
+  info: {
+    description: '';
+    displayName: 'Shipment';
+    pluralName: 'shipments';
+    singularName: 'shipment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::shipment.shipment'
+    > &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.rich-text', 'blocks.header']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiShopShop extends Struct.SingleTypeSchema {
+  collectionName: 'shops';
+  info: {
+    displayName: 'Shop';
+    pluralName: 'shops';
+    singularName: 'shop';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::shop.shop'> &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.rich-text', 'blocks.rich-text-image', 'blocks.header']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1017,6 +1166,66 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
     Password: Schema.Attribute.Password;
     publishedAt: Schema.Attribute.DateTime;
     role: Schema.Attribute.Enumeration<['Head Technician', 'Technician']>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiWarrantyWarranty extends Struct.SingleTypeSchema {
+  collectionName: 'warranties';
+  info: {
+    displayName: 'Warranty';
+    pluralName: 'warranties';
+    singularName: 'warranty';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::warranty.warranty'
+    > &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.rich-text', 'blocks.header']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiWhichDeviceWhichDevice extends Struct.SingleTypeSchema {
+  collectionName: 'which_devices';
+  info: {
+    displayName: 'WhichDevice';
+    pluralName: 'which-devices';
+    singularName: 'which-device';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::which-device.which-device'
+    > &
+      Schema.Attribute.Private;
+    PageContent: Schema.Attribute.DynamicZone<
+      ['blocks.rich-text', 'blocks.header']
+    >;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1563,6 +1772,7 @@ declare module '@strapi/strapi' {
       'api::business.business': ApiBusinessBusiness;
       'api::contact-form.contact-form': ApiContactFormContactForm;
       'api::contact.contact': ApiContactContact;
+      'api::customer-service.customer-service': ApiCustomerServiceCustomerService;
       'api::customer.customer': ApiCustomerCustomer;
       'api::device.device': ApiDeviceDevice;
       'api::faq.faq': ApiFaqFaq;
@@ -1571,12 +1781,18 @@ declare module '@strapi/strapi' {
       'api::navigation.navigation': ApiNavigationNavigation;
       'api::opening-hour.opening-hour': ApiOpeningHourOpeningHour;
       'api::order.order': ApiOrderOrder;
+      'api::parking.parking': ApiParkingParking;
       'api::part.part': ApiPartPart;
+      'api::payment.payment': ApiPaymentPayment;
       'api::protection.protection': ApiProtectionProtection;
       'api::repairorder.repairorder': ApiRepairorderRepairorder;
+      'api::shipment.shipment': ApiShipmentShipment;
+      'api::shop.shop': ApiShopShop;
       'api::sidebar.sidebar': ApiSidebarSidebar;
       'api::supplier.supplier': ApiSupplierSupplier;
       'api::technician.technician': ApiTechnicianTechnician;
+      'api::warranty.warranty': ApiWarrantyWarranty;
+      'api::which-device.which-device': ApiWhichDeviceWhichDevice;
       'api::why.why': ApiWhyWhy;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
