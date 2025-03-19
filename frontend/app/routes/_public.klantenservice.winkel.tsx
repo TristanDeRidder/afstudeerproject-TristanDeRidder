@@ -65,7 +65,7 @@ export default function Shop() {
   }
 
   return (
-    <div className="space-y-6 px-5 md:px-10 lg:px-32">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32 w-2/3 mx-auto">
       {shop.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
@@ -80,7 +80,7 @@ export default function Shop() {
 
           case "blocks.rich-text":
             return (
-              <section key={block.id} className="p-4 w-1/2 mx-auto">
+              <section key={block.id} className="p-4">
                 {block.content?.map((paragraph: any, index: number) => (
                   <p key={index} className="text-gray-700">
                     {paragraph.children.map((child: any, i: number) => (
@@ -91,7 +91,7 @@ export default function Shop() {
               </section>
             );
 
-          case "blocks.rich-text-image" :
+          case "blocks.rich-text-image":
             return (
               <section
                 key={block.id}
@@ -114,7 +114,7 @@ export default function Shop() {
                     <img
                       src={block.Image.url}
                       alt={block.Image.alternativeText}
-                      className="w-1/2 h-auto"
+                      className="w-1/2 h-auto rounded-lg"
                     />
                   )}
                 </div>

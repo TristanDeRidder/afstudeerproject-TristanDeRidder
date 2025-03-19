@@ -48,21 +48,18 @@ export async function loader() {
 }
 
 export default function PublicLayout() {
-  const location = useLocation();
   const { images, nav, brands } = useLoaderData() as LoaderData;
 
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <header>
         <Navigation images={images} navLinks={nav} />
       </header>
-      <main
-        className="overflow-hidden"
-      >
+      <main className="overflow-hidden flex-grow">
         <Outlet />
       </main>
-        <Footer images={images} BrandLinks={brands} />
-    </>
+      <Footer images={images} BrandLinks={brands} />
+    </div>
   );
 }

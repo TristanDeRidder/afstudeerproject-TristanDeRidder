@@ -65,12 +65,12 @@ export default function whichDevice() {
   }
 
   return (
-    <div className="space-y-6 px-5 md:px-10 lg:px-32">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32 w-2/3 mx-auto">
       {whichDevice.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
             return (
-              <header key={block.id} className="text-center w-2/3 mx-auto">
+              <header key={block.id} className="text-center">
                 <h1 className="text-3xl font-bold">{block.Title}</h1>
                 {block.Subtext && (
                   <p className="text-gray-600">{block.Subtext}</p>

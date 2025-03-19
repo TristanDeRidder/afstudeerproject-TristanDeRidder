@@ -65,7 +65,7 @@ export default function Warranty() {
   }
 
   return (
-    <div className="space-y-6 px-5 md:px-10 lg:px-32">
+    <div className="space-y-6 px-5 md:px-10 lg:px-32 w-2/3 mx-auto">
       {warranty.PageContent.map((block: any) => {
         switch (block.__component) {
           case "blocks.header":
