@@ -74,12 +74,13 @@ export async function action({ request }: any) {
 
   // invoice
   const invoiceTotal = formData.get("invoiceTotal");
-  const invoiceBool = formData.get("invoiceBool");
+  const invoiceBool = formData.get("invoiceBool") === "on";
   const paid = false;
   const paymentMethod = "Bancontact";
 
   // technician
   const technicianId = formData.get("technicianId");
+
 
   try {
     // Create customer
@@ -453,7 +454,7 @@ export default function Repairorders() {
                     Totaal met korting: € {totalPriceWithDiscount.toFixed(2)}
                   </p>
                   <label>
-                    <input type="checkbox" name="invoiceBool" value="false" />{" "}
+                    <input type="checkbox" name="invoiceBool" />
                     Factuur
                   </label>
                 </div>

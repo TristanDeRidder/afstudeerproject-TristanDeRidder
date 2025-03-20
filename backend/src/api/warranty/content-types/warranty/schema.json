@@ -4,7 +4,8 @@
   "info": {
     "singularName": "warranty",
     "pluralName": "warranties",
-    "displayName": "Warranty"
+    "displayName": "Warranty",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true

@@ -1175,6 +1175,7 @@ export interface ApiTechnicianTechnician extends Struct.CollectionTypeSchema {
 export interface ApiWarrantyWarranty extends Struct.SingleTypeSchema {
   collectionName: 'warranties';
   info: {
+    description: '';
     displayName: 'Warranty';
     pluralName: 'warranties';
     singularName: 'warranty';

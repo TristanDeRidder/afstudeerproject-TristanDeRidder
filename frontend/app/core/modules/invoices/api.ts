@@ -55,14 +55,13 @@ export async function createInvoice(
   const data = {
     data: {
       totalAmount: invoiceData.TotalAmount,
-      paymentmethod: invoiceData.Paymentmethod,
+      paymentmethod: "Bancontact",
       paid: invoiceData.Paid,
       invoice: invoiceData.Invoice,
     },
   };
 
   try {
-    console.log("invoice data", data);
     const response = await API.post('invoices', data, {
       headers: {
         Authorization: `Bearer ${authToken}`,
