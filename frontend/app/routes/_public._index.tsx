@@ -28,7 +28,7 @@ type LoaderData = {
       Text: string;
       Icon: {
         url: string;
-      } | null; // in case Icon might be null
+      } | null;
     }[];
   };
 };
@@ -66,16 +66,12 @@ export async function loader() {
     const topDevices = await getTopDevices();
     const whyCards = await getWhyCard();
   
-    // Collect all image IDs you need
-    const repairImages = ["20", "21", "22"]; // Replace with real IDs
+    const repairImages = ["20", "21", "22"];
   
-    // Fetch all images in parallel
     const imageResponses = await Promise.all(
       repairImages.map((id) => getImageById({ id }))
     );
-
   
-    // Create an object mapping IDs to URLs
     const images = imageResponses.reduce((acc, image) => {
       acc[image.id] = image.url;
       return acc;

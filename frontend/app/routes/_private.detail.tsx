@@ -132,6 +132,17 @@ export default function Repair() {
   if (error) return <div>Error: {error}</div>;
   if (!repairorder) return <div>Loading repair order...</div>;
 
+  /**
+   * The handleChange function updates nested values in a form data object based on the input element's
+   * value and a specified path.
+   * @param e - The `e` parameter is an event object that represents a change event on an input element
+   * (`<input>`) or a select element (`<select>`). It is of type `React.ChangeEvent<HTMLInputElement |
+   * HTMLSelectElement>`, which means it can be used to handle changes in both input and
+   * @param {string} path - The `path` parameter in the `handleChange` function is a string that
+   * represents the path to a specific property in the `formData` object. It is used to update a nested
+   * property within the `formData` state based on the input value of the form element that triggered
+   * the change event.
+   */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     path: string

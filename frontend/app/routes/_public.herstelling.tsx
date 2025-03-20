@@ -54,7 +54,7 @@ export async function loader() {
   try {
     const images = await getImageById({ id: "3" });
     const brands = await getBrands();
-    const devices = await getDevices(); // Now returns an array instead of { data: [...] }
+    const devices = await getDevices(); 
     const parts = await getParts();
 
     if (!brands?.data || !devices.length || !parts.length) {
@@ -64,7 +64,7 @@ export async function loader() {
     return {
       images,
       brands: brands.data,
-      devices, // Already an array, no need for `devices.data`
+      devices,
       parts,
     };
   } catch (error) {
@@ -91,7 +91,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       return { error: "Alle verplichte velden moeten ingevuld worden." };
     }
 
-    // Save the contact form data (optional)
     const messageResponse = await addContactForm(
       firstname,
       lastname,
@@ -107,11 +106,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       };
     }
 
-    // Send the email via SendGrid
     const msg = {
       // FIXME: Change the email addresses
-      to: `mixmaster578@gmail.com`, // Change to your recipient email
-      from: "tristanderidder1@gmail.com", // Change to your verified sender email
+      to: `mixmaster578@gmail.com`,
+      from: "tristanderidder1@gmail.com", 
       subject: `Nieuw bericht: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; color: #333;">
@@ -161,7 +159,6 @@ export default function Repair() {
     subject: "",
   });
 
-  // New state for search functionality
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const getImageSrc = () => {
@@ -176,6 +173,15 @@ export default function Repair() {
 
   const deviceTypes = Array.from(new Set(devices.map((device) => device.type)));
 
+  /**
+   * The handleSearch function takes an input event, updates the search query state, and finds a device
+   * based on the search query to update the selected device, brand, type, step, and not found state
+   * accordingly.
+   * @param event - The `event` parameter in the `handleSearch` function is of type
+   * `React.ChangeEvent<HTMLInputElement>`. This means it is an event object that is triggered when the
+   * value of an input element changes, specifically an input element of type `HTMLInputElement` in a
+   * React component.
+   */
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
     const foundDevice = devices.find(
@@ -222,10 +228,8 @@ export default function Repair() {
       return;
     }
 
-    // Reset error message before submitting
     setError(null);
 
-    // Submit form
     e.target.submit();
   };
 

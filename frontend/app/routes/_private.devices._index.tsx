@@ -65,7 +65,6 @@ export async function action({ request }: any) {
   const actionType = formData.get("actionType");
 
   if (actionType === "addDevice") {
-    // Handle Device creation
     const type = formData.get("type");
     const brand = formData.get("brandId");
     const model = formData.get("model");

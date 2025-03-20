@@ -11,5 +11,5 @@ export const action: ActionFunction = async () => {
 };
 
 export default function LogoutPage() {
-  return null; // This page doesn't need to render anything
+  return null;
 }

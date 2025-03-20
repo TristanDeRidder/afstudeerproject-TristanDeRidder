@@ -182,7 +182,6 @@ export default function Orders() {
     }, [fetcher.data]);
   };
 
-  /* Filter parts based on selected device */
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
 
   const filteredParts = useMemo(() => {
@@ -197,7 +196,6 @@ export default function Orders() {
     setSelectedDeviceId(newDeviceId);
   };
 
-  /* Selected parts (for calculating the total price) */
   const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
 
   const totalPrice = useMemo(() => {

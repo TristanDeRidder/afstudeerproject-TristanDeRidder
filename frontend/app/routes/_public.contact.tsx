@@ -98,11 +98,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       };
     }
 
-    // Send the email via SendGrid
     const msg = {
       // FIXME: Change the email addresses
-      to: `mixmaster578@gmail.com`, // Change to your recipient email
-      from: "tristanderidder1@gmail.com", // Change to your verified sender email
+      to: `mixmaster578@gmail.com`, 
+      from: "tristanderidder1@gmail.com",
       subject: `Nieuw bericht: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; color: #333;">

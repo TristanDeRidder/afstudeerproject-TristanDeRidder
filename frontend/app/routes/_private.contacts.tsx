@@ -79,7 +79,6 @@ export default function Contact() {
                     <div className="px-4 py-2 w-1/5">{contact.phonenumber}</div>
                   </div>
 
-                  {/* Expanded message (appears below) */}
                   <div
                     className={`overflow-hidden transition-all duration-500 ease-in-out ${
                       openIndex === index

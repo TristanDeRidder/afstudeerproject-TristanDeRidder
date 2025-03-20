@@ -22,7 +22,6 @@ export async function getPaymentPage() {
 
     try {
         const response = await API.get(`payment?${query}`);
-        console.log("response", response.data);
         return response.data;
     } catch (error) {
         console.error("error", error);

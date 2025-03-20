@@ -178,6 +178,12 @@ export default function Repairorders() {
   const [selectedPartIds, setSelectedPartIds] = useState<string[]>([]);
 
 
+  /* This code is a useEffect hook in a TypeScript React component. It checks if the code is
+  running on the server-side (when typeof window === "undefined"). If it is on the server-side, it
+  checks if the SENDGRID_API_KEY environment variable is defined. If the SENDGRID_API_KEY is
+  defined, it sets the API key for SendGrid using sgMail.setApiKey. If the SENDGRID_API_KEY is not
+  defined, it throws an error indicating that the key is not defined. This code is likely setting up
+  the SendGrid API key for server-side operations in a React application. */
   useEffect(() => {
     if (typeof window === "undefined") {
       // This code runs only on the server
@@ -193,6 +199,8 @@ export default function Repairorders() {
     }
   }, []);
 
+  /* This code snippet is using the `useMemo` hook in a TypeScript React component to filter a
+  list of repairs based on a selected date. */
   const filteredRepairs = useMemo(() => {
     if (!selectedDate) return repairs;
     return repairs.filter((repair) => {
@@ -202,11 +210,21 @@ export default function Repairorders() {
   }, [selectedDate, repairs]);
 
 
+  /* This code snippet is using the `useMemo` hook in React to create a memoized version of the
+  `openRepairs` array. It filters the `filteredRepairs` array to only include repairs where the
+  `statusRepair` property is not equal to "Opgehaald" (which means "picked up" in Dutch). This
+  memoized `openRepairs` array will be recalculated only when the `filteredRepairs` array changes. */
   const openRepairs = useMemo(
     () =>
       filteredRepairs.filter((repair) => repair.statusRepair !== "Opgehaald"),
     [filteredRepairs]
   );
+
+
+  /* This code is using the `useMemo` hook in React to create a memoized version of the
+  `completedRepairs` array. It filters the `filteredRepairs` array to only include repairs with a
+  `statusRepair` value of "Opgehaald" (which likely means "picked up" in Dutch). The memoized
+  `completedRepairs` array will only be recalculated when the `filteredRepairs` array changes. */
   const completedRepairs = useMemo(
     () =>
       filteredRepairs.filter((repair) => repair.statusRepair === "Opgehaald"),
@@ -230,6 +248,9 @@ export default function Repairorders() {
   // Filter parts based on selected device
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
 
+  /* This code snippet is using the `useMemo` hook in a TypeScript React component. It is creating
+  a memoized version of the `filteredParts` array based on the `parts` array and the
+  `selectedDeviceId` value. */
   const filteredParts = useMemo(() => {
     const filtered = parts.filter(
       (part) => part.device?.id.toString() === selectedDeviceId.toString()
@@ -243,6 +264,11 @@ export default function Repairorders() {
   };
 
   
+  /* This code is using the `useMemo` hook in a TypeScript React component to calculate the total
+  price of selected parts. It is iterating over the `selectedPartIds` array and finding the
+  corresponding part in the `filteredParts` array based on the `id`. It then sums up the selling
+  prices of these parts to calculate the `totalPrice`. The `useMemo` hook is used to memoize the
+  calculation and only recompute it when the `selectedPartIds` or `filteredParts` arrays change. */
   const totalPrice = useMemo(() => {
     return selectedPartIds.reduce((sum, partId) => {
       const part = filteredParts.find(
@@ -252,9 +278,10 @@ export default function Repairorders() {
     }, 0);
   }, [selectedPartIds, filteredParts]);
 
-  // calculate total price minus discount
   const totalPriceWithDiscount = totalPrice - discount;
 
+  /* This code is a TypeScript React function called `handlePartChange` that is triggered when a
+  selection change event occurs on a HTML select element. */
   const handlePartChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(e.target.selectedOptions).map(
       (opt) => opt.value

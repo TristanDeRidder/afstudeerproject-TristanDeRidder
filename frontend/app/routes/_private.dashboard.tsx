@@ -48,7 +48,7 @@ function getWeekDates(referenceDate: Date) {
   const dates = [];
   const startOfWeek = new Date(referenceDate);
   const dayOfWeek = startOfWeek.getDay();
-  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust so Monday is the start
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   startOfWeek.setDate(startOfWeek.getDate() + diff);
 
   for (let i = 0; i < 7; i++) {
@@ -82,6 +82,12 @@ export default function Dashboard() {
     new Date(today.setDate(today.getDate() - 7))
   );
 
+  /* This code snippet is creating an array of objects called `currentWeekIncome` by mapping over the
+  `currentWeekDates` array. For each date in `currentWeekDates`, it filters the `invoices` array to
+  only include invoices that have a `createdAt` value starting with the current date. Then, it
+  calculates the total income for that specific date by summing up the `totalAmount` of each invoice
+  using the `reduce` method. Finally, it returns an object for each date with the date itself and
+  the total income for that date. */
   const currentWeekIncome = currentWeekDates.map((date) => {
     const dailyTotal = invoices
       .filter((invoice) => invoice.createdAt.startsWith(date))
@@ -90,6 +96,8 @@ export default function Dashboard() {
     return { date, income: dailyTotal };
   });
 
+  /* This code snippet is creating an array of total income values for each day in the previous week.
+  Here's a breakdown of what it does: */
   const previousWeekIncome = previousWeekDates.map((date) => {
     const dailyTotal = invoices
       .filter((invoice) => invoice.createdAt.startsWith(date))
@@ -106,12 +114,10 @@ export default function Dashboard() {
     0
   );
 
-  /* Calculate the percentage difference */
   const percentageChange = previousWeekTotal
     ? ((lastWeekTotal - previousWeekTotal) / previousWeekTotal) * 100
     : 0;
 
-  /* Format with + or - sign */
   const formattedPercentage = `${
     percentageChange >= 0 ? "+" : ""
   }${percentageChange.toFixed(2)}%`;

@@ -87,11 +87,11 @@ export default function DeviceDetail() {
   ) => {
     const updatedParts = formData.map((part) => {
       if (part.id === partId) {
-        return { ...part, [field]: e.target.value }; // Update specific field
+        return { ...part, [field]: e.target.value };
       }
       return part;
     });
-    setFormData(updatedParts); // Update state
+    setFormData(updatedParts);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
