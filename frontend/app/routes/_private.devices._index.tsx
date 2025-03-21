@@ -147,6 +147,7 @@ export default function DevicesIndex() {
   const [showDeviceOverlay, setShowDeviceOverlay] = useState<boolean>(false);
   const [showPartOverlay, setShowPartOverlay] = useState<boolean>(false);
   const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<string>("");
 
   useEffect(() => {
     if (searchQuery) {
@@ -172,6 +173,7 @@ export default function DevicesIndex() {
     e.preventDefault();
     const formElement = e.target as HTMLFormElement;
     const formData = new FormData(formElement);
+    setShowDeviceOverlay(false);
 
     fetcher.submit(formData, {
       method: "post",
@@ -184,6 +186,7 @@ export default function DevicesIndex() {
     const formElement = e.target as HTMLFormElement;
     const formData = new FormData(formElement);
 
+    setShowPartOverlay(false);
     fetcher.submit(formData, {
       method: "post",
       encType: "multipart/form-data",
@@ -315,6 +318,8 @@ export default function DevicesIndex() {
               {/* Add Part Form */}
               <form onSubmit={handlePartSubmit} className="mb-4 space-y-4">
                 <input type="hidden" name="actionType" value="addPart" />
+
+                {/* Brand Selection */}
                 <select
                   name="brand"
                   className="p-2 rounded-md border w-full"
@@ -329,6 +334,24 @@ export default function DevicesIndex() {
                   ))}
                 </select>
 
+                {/* Device Type Selection */}
+                <select
+                  name="deviceType"
+                  className="p-2 rounded-md border w-full"
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  required
+                >
+                  <option value="">Selecteer een toesteltype</option>
+                  {Array.from(
+                    new Set(filteredDevices.map((device) => device.type))
+                  ).map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Device Selection */}
                 <select
                   name="deviceId"
                   className="p-2 rounded-md border w-full"
@@ -337,7 +360,9 @@ export default function DevicesIndex() {
                   <option value="">Selecteer een toestel</option>
                   {filteredDevices
                     .filter(
-                      (device) => device.brand?.brandName === selectedBrand
+                      (device) =>
+                        device.brand?.brandName === selectedBrand &&
+                        device.type === selectedType
                     )
                     .map((device) => (
                       <option key={device.id} value={device.id}>
@@ -365,6 +390,8 @@ export default function DevicesIndex() {
                   placeholder="Aankoop prijs"
                   className="p-2 rounded-md border w-full"
                 />
+
+                {/* Supplier Selection */}
                 <select
                   name="supplierId"
                   className="p-2 rounded-md border w-full"
@@ -376,6 +403,8 @@ export default function DevicesIndex() {
                     </option>
                   ))}
                 </select>
+
+                {/* Quality Selection */}
                 <select
                   name="quality"
                   className="p-2 rounded-md border w-full"
@@ -386,6 +415,7 @@ export default function DevicesIndex() {
                   <option value="Pulled">Pulled</option>
                   <option value="Refurbished">Refurbished</option>
                 </select>
+
                 <button
                   type="submit"
                   className="bg-accent p-2 rounded-md text-text w-full cursor-pointer"

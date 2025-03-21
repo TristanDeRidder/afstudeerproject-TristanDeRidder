@@ -4,7 +4,7 @@ export type Brand = {
     id: number;
     documentId: string;
     brandName: string;
-    logo: any;
+    logo?: any;
     devices: Devices[];
     createdAt: string;
     updatedAt: string;

@@ -306,22 +306,33 @@ export default function Repair() {
             <div className="bg-primary p-4 rounded-md">
               <h2 className="text-xl font-bold">Selecteer een merk</h2>
               <div className="overflow-y-scroll h-[30rem]">
-                {brands.map((brand) => (
-                  <button
-                    key={brand.documentId}
-                    className={`block w-full p-2 my-1 border rounded text-left ${
-                      selectedBrand?.documentId === brand.documentId
-                        ? "bg-accent"
-                        : "bg-primaryHelper hover:bg-accent"
-                    }`}
-                    onClick={() => {
-                      setSelectedBrand(brand);
-                      setConfirmSelection(true);
-                    }}
-                  >
-                    {brand.brandName}
-                  </button>
-                ))}
+                {Array.from(
+                  new Set(
+                    devices
+                      .filter((device) => device.type === selectedType)
+                      .map((device) => device.brand.documentId) // Extract unique brand IDs
+                  )
+                ).map((brandId) => {
+                  const brand = devices.find(
+                    (device) => device.brand.documentId === brandId
+                  )?.brand; // Get brand details
+                  return (
+                    <button
+                      key={brand?.documentId}
+                      className={`block w-full p-2 my-1 border rounded text-left ${
+                        selectedBrand?.documentId === brand?.documentId
+                          ? "bg-accent"
+                          : "bg-primaryHelper hover:bg-accent"
+                      }`}
+                      onClick={() => {
+                        setSelectedBrand(brand);
+                        setConfirmSelection(true);
+                      }}
+                    >
+                      {brand?.brandName}
+                    </button>
+                  );
+                })}
               </div>
               <div className="flex justify-between mt-4">
                 <button
