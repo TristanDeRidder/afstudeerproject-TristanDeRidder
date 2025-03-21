@@ -160,6 +160,7 @@ export default function Repair() {
   });
 
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [partsInfo, setPartsInfo] = useState(false);
 
   const getImageSrc = () => {
     if (selectedDevice?.image?.url) {
@@ -421,36 +422,96 @@ export default function Repair() {
           )}
 
           {step === 4 && selectedDevice && (
-            <div className="bg-primary p-4 rounded-md">
-              <h2 className="text-xl font-bold mb-4">
-                Selecteer een onderdeel
-              </h2>
+            <div className="bg-primary p-4 rounded-md relative">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold mb-4">
+                  Selecteer een onderdeel
+                </h2>
+                <button
+                  className="p-2 border rounded-lg bg-accentLight"
+                  onClick={() => setPartsInfo(!partsInfo)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4" />
+                    <path d="M12 8h.01" />
+                  </svg>
+                </button>
+              </div>
+              {partsInfo && (
+                <div className="absolute top-14 right-0 w-80 bg-accent text-text p-2 border rounded-lg">
+                  <p>
+                    Origineel: Onderdelen afkomstig van de fabrikant van het
+                    apparaat.
+                  </p>
+                  <p>
+                    Pulled: Originele onderdelen afkomstig van een gedemonteerd
+                    nieuw apparaat.
+                  </p>
+                  <p>
+                    Refurbished: Onderdelen die zijn gerepareerd en opnieuw
+                    op de markt komen.
+                  </p>
+                </div>
+              )}
+
               <div className="overflow-y-scroll h-[30rem]">
                 {parts.filter(
                   (part) =>
                     part.device?.modelNumber === selectedDevice.modelNumber
                 ).length > 0 ? (
-                  parts
-                    .filter(
-                      (part) =>
-                        part.device?.modelNumber === selectedDevice.modelNumber
+                  Array.from(
+                    new Set(
+                      parts
+                        .filter(
+                          (part) =>
+                            part.device?.modelNumber ===
+                            selectedDevice.modelNumber
+                        )
+                        .map((part) => part.name)
                     )
-                    .map((part) => (
-                      <button
-                        key={part.documentId}
-                        className={`block w-full p-2 my-1 border rounded text-left ${
-                          selectedPart?.documentId === part.documentId
-                            ? "bg-accent"
-                            : "bg-accentLight hover:bg-accent"
-                        }`}
-                        onClick={() => {
-                          setSelectedPart(part);
-                          setConfirmSelection(true);
-                        }}
-                      >
-                        {part.name} - € {part.sellingPrice}
-                      </button>
-                    ))
+                  ).map((partName) => (
+                    <details key={partName} className="border rounded mb-2">
+                      <summary className="p-2 bg-primaryHelper cursor-pointer">
+                        {partName}
+                      </summary>
+                      <div className="p-2">
+                        {parts
+                          .filter(
+                            (part) =>
+                              part.name === partName &&
+                              part.device?.modelNumber ===
+                                selectedDevice.modelNumber
+                          )
+                          .map((variant) => (
+                            <button
+                              key={variant.documentId}
+                              className={`block w-full p-2 my-1 border rounded text-left ${
+                                selectedPart?.documentId === variant.documentId
+                                  ? "bg-accent"
+                                  : "bg-accentLight hover:bg-accent"
+                              }`}
+                              onClick={() => {
+                                setSelectedPart(variant);
+                                setConfirmSelection(true);
+                              }}
+                            >
+                              {variant.quality} - € {variant.sellingPrice}
+                            </button>
+                          ))}
+                      </div>
+                    </details>
+                  ))
                 ) : (
                   <p>Geen onderdelen voor dit model</p>
                 )}
@@ -482,7 +543,10 @@ export default function Repair() {
               <h2 className="text-xl font-bold mb-4">Contacteer ons</h2>
               <p className="mb-2">
                 U heeft geselecteerd: <strong>{selectedDevice.model}</strong> en
-                onderdeel: <strong>{selectedPart?.name}</strong>
+                onderdeel:{" "}
+                <strong>
+                  {selectedPart?.quality} - {selectedPart?.name}
+                </strong>
               </p>
               <form
                 method="POST"
