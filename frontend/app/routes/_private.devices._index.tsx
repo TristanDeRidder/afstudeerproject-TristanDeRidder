@@ -290,7 +290,7 @@ export default function DevicesIndex() {
                 />
                 <button
                   type="submit"
-                  className="bg-accentLight p-2 rounded-md text-white w-full"
+                  className="bg-accent p-2 rounded-md text-text w-full"
                 >
                   Add Device
                 </button>
@@ -368,7 +368,6 @@ export default function DevicesIndex() {
                 <select
                   name="supplierId"
                   className="p-2 rounded-md border w-full"
-                  required
                 >
                   <option value="">Selecteer een leverancier</option>
                   {suppliers.map((supplier) => (
@@ -389,7 +388,7 @@ export default function DevicesIndex() {
                 </select>
                 <button
                   type="submit"
-                  className="bg-accentLight p-2 rounded-md text-white w-full"
+                  className="bg-accent p-2 rounded-md text-text w-full cursor-pointer"
                 >
                   Add Part
                 </button>
