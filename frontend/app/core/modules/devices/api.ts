@@ -83,6 +83,9 @@ export async function getTopDevices() {
         parts: true,
         customer: true,
       },
+      pagination: {
+        limit: 100,
+      },
     });
     const response = await API.get(`/repairorders?${query}`);
     const repairOrders = response.data;
@@ -107,12 +110,14 @@ export async function getTopDevices() {
       deviceCounts[device.documentId].count++;
     });
 
+    console.log("Device counts", deviceCounts);
     // Sorteer de toestellen op aantal reparaties en pak de top 10
     const sortedDevices = Object.values(deviceCounts)
       .sort((a, b) => b.count - a.count)
       .slice(0, 10)
       .map((item) => item.device);
 
+      console.log("Sorted devices", sortedDevices.length);
     return sortedDevices;
   } catch (error) {
     console.error(error);
