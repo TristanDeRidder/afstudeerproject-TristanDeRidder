@@ -433,7 +433,7 @@ export default function DevicesIndex() {
           <div className="font-bold px-4 py-2 w-1/3">Merk</div>
           <div className="font-bold px-4 py-2 w-1/3">Model</div>
         </div>
-        <div className="overflow-y-auto h-[35rem] 2xl:h-[50rem]">
+        <div className="overflow-y-auto h-[35rem]">
           {filteredDevices
             .sort((a, b) => {
               if (a.brand?.brandName && b.brand?.brandName) {

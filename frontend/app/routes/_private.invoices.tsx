@@ -106,7 +106,7 @@ export default function Invoices() {
             <div className="px-4 py-2 w-1/5">Bedrag</div>
             <div className="px-4 py-2 w-1/5">Factuur</div>
           </div>
-          <div className="px-4 py-2 rounded-md h-[35rem] 2xl:h-[50rem] overflow-y-scroll">
+          <div className="px-4 py-2 rounded-md h-[35rem] overflow-y-scroll">
             {filteredRepairs.length > 0 ? (
               filteredRepairs.map((repair) => (
                 <div

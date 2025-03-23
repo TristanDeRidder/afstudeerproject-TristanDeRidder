@@ -48,7 +48,7 @@ export default function Contact() {
             <div className="px-4 py-2 w-1/5">Telefoonnummer</div>
           </div>
 
-          <div className="px-4 py-2 rounded-md overflow-y-auto h-[35rem] 2xl:h-[50rem]">
+          <div className="px-4 py-2 rounded-md overflow-y-auto h-[35rem] 2xl:h-[45rem]">
             {contact.length > 0 ? (
               contact.map((contact, index) => (
                 <div key={index} className="mt-2">
