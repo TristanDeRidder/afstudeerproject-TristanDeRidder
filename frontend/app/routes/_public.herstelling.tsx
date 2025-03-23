@@ -74,6 +74,12 @@ export async function loader() {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+    if (process.env.SENDGRID_API_KEY) {
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    } else {
+      throw new Error("SENDGRID_API_KEY is not defined");
+    }
+    
   try {
     const formData = new URLSearchParams(await request.text());
     const data = {
