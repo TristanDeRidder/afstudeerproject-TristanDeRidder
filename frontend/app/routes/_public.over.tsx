@@ -70,15 +70,17 @@ export default function About() {
             return (
               <section key={block.id} className="space-y-2">
                 <div className="flex flex-col md:flex-row gap-4">
-                  <h2 className="text-2xl font-semibold">{block.Title}</h2>
-                  <div className="text-gray-700">
-                    {block.Text.map((paragraph: any, index: number) => (
-                      <p key={index}>
-                        {paragraph.children.map((child: any, i: number) => (
-                          <span key={i}>{child.text}</span>
-                        ))}
-                      </p>
-                    ))}
+                  <div>
+                    <h2 className="text-2xl font-semibold">{block.Title}</h2>
+                    <div className="text-gray-700">
+                      {block.Text.map((paragraph: any, index: number) => (
+                        <p key={index}>
+                          {paragraph.children.map((child: any, i: number) => (
+                            <span key={i}>{child.text}</span>
+                          ))}
+                        </p>
+                      ))}
+                    </div>
                   </div>
                   {block.Image && (
                     <img
