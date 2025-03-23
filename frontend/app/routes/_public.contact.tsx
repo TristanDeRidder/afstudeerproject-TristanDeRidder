@@ -13,12 +13,6 @@ type LoaderData = {
   contact: any;
 };
 
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-} else {
-  throw new Error("SENDGRID_API_KEY is not defined");
-}
-
 export const meta: MetaFunction = () => {
   return [
     { title: "Contact | Fixit Aalst" },
@@ -65,6 +59,12 @@ export async function loader() {
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  if (process.env.SENDGRID_API_KEY) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  } else {
+    throw new Error("SENDGRID_API_KEY is not defined");
+  }
+
   try {
     const formData = new URLSearchParams(await request.text());
     const data = {
@@ -203,8 +203,17 @@ export default function Contact() {
                   Openingstijden
                 </h2>
                 <ul className="space-y-2">
-                  {Object.entries(block.Open).map(
-                    ([day, hours]: [string, any]) => (
+                  {[
+                    "maandag",
+                    "dinsdag",
+                    "woensdag",
+                    "donderdag",
+                    "vrijdag",
+                    "zaterdag",
+                    "zondag",
+                  ].map((day) => {
+                    const hours = block.Open[day] || [];
+                    return (
                       <li key={day} className="flex justify-between text-lg">
                         <span className="capitalize font-medium">{day}</span>
                         {hours.length > 0 ? (
@@ -224,8 +233,8 @@ export default function Contact() {
                           <span className="text-gray-500">Gesloten</span>
                         )}
                       </li>
-                    )
-                  )}
+                    );
+                  })}
                 </ul>
               </section>
             );
