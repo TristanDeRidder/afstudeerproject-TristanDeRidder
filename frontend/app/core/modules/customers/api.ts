@@ -98,20 +98,22 @@ export async function updateCustomer(
 ):Promise<StrapiResponse<Customers>> {
   const data = {
     data: {
-      firstname: customerData.Firstname,
-      lastname: customerData.Lastname,
-      mailadress: customerData.Mailaddress,
+      firstname: customerData.Firstname || null,
+      lastname: customerData.Lastname || null,
+      mailadress: customerData.Mailaddress || null,
       phonenumber: customerData.Phonenumber,
     },
   };
 
   try {
+    console.log("customer data", data);
     const response = await API.put(`customers/${customerData.documentId}`, data, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     });
 
+    console.log("customer data", response.data);
     return response.data;
   } catch (error) {
     console.error(error);
